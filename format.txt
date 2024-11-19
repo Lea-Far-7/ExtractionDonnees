@@ -1,0 +1,3 @@
+nbProducers nbClients
+lat lon nbDispos dispos capacity nbPossiblePartners possiblePartners
+lat lon nbDispos dispos demands

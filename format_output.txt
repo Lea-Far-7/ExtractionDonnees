@@ -1,0 +1,29 @@
+le fichier est composé de plusieurs blocs, chacun représentant une tournée distincte. Chaque bloc est séparé par une ligne de tirets (------------------------).
+les producteurs sont numérotés de 0 à nb_producteurs - 1 ; les clients sont numérotés de nb_producteurs à nb_producteurs + nb_clients - 1
+
+La première ligne de chaque bloc contient deux éléments : <producteur_id> <jour>
+
+<producteur_id> : Identifiant du producteur (entier)
+<jour> : demi-journée de la tournée (entier allant de 0 à 9, càd du lundi matin au vendredi après-midi)
+
+La deuxième ligne répertorie les noeuds visités lors de cette tournée (le producteur qui fait la tournée est exclus de cette liste) : <noeuds_visites>
+
+<noeuds_visites> est une liste d'entiers séparés par des espaces
+
+Chaque tâche effectuée pendant la tournée est présentée sur une nouvelle ligne : <type_action> <charge> <lieu> <info_requete> <horaire>
+
+<type_action> :
+
+    P pour une action de Pick-Up (ramassage).
+    D pour une action de Drop-Off (dépose).
+
+<charge> : Charge associée à l'action, arrondie à deux chiffres après la virgule (float).
+
+<lieu> : Identifiant du lieu où se passe la tâche (entier).
+
+<info_requete> : 
+
+	Si la tâche est un Pickup : contient l'identifiant du client associé.
+	Si la tâche est un DropOff : contient l'identifiant du producteur associé.
+
+<horaire> : Horaire de l'action au format HH:MM (24 heures)
