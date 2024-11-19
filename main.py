@@ -40,3 +40,5 @@ if liste_fichiers_donnees:
     print("\nDonnées extraites du premier fichier dans 'Solution':")
     for ligne in donnees:
         print(ligne)
+
+print ("This is succesful")
