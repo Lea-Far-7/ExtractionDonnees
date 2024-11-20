@@ -1,9 +1,9 @@
 from tkinter import *
-from tkinter import filedialog
 from  tkinter import ttk
-import tkinter.messagebox
 from tkintermapview import TkinterMapView
+from PIL import Image
 import customtkinter
+from Interface.PopUp import PopUp
 
 # Modes: "System", "Dark", "Light"
 customtkinter.set_appearance_mode("Dark")
@@ -12,12 +12,14 @@ customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("blue")
 
 
+
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
         # Permet de mettre un titre et de définir la taille originale de la fenêtre
         self.title("OLOCAP Viewer")
+        self.iconbitmap("../Images/Logo_Olocap_small.ico")
         self.geometry(f"{1100}x{580}")
 
         # Mise en arrière définitive de la fenêtre (pour que les pop-ups puissent toujours se situer devant)
@@ -34,27 +36,35 @@ class App(customtkinter.CTk):
         self.sidebar = customtkinter.CTkFrame(self, width=140, corner_radius=0)
         self.sidebar.grid(row=0, column=0, rowspan=4, sticky="nsew")
 
-        # Créé un label, contenu dans la sidebar
-        self.logo_label = customtkinter.CTkLabel(self.sidebar, text="OLOCAP", font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        # Crée une Image mise dans un Label pour être affichée et contenue dans la sidebar
+        self.my_image = customtkinter.CTkImage(light_image=Image.open("../Images/Logo_Olocap.png"), dark_image=Image.open("../Images/Logo_Olocap.png"), size=(192,58))
+
+        self.image_label = customtkinter.CTkLabel(self.sidebar, image=self.my_image, text=" ")
+        self.image_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+
+        self.couleur_bouton = customtkinter.CTkImage(light_image=Image.open('../Images/Couleur_Boutons.png'), size=(500, 150))
 
         # Création des boutons dans la sidebar
-        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar, command="""self.popup""", text = "Importer")
+        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", text = "Importer")
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
-        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar, command=self.sidebar_button_event, text = "Filtres")
+
+        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",  command=self.sidebar_button_event, text = "Filtres")
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
-        self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar, command=self.sidebar_button_event, text = "Export")
+
+        self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command=self.sidebar_button_event, text = "Export")
         self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
-        self.sidebar_button_4 = customtkinter.CTkButton(self.sidebar, command=self.sidebar_button_event, text = "Ajout")
+
+        self.sidebar_button_4 = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command=self.sidebar_button_event, text = "Ajout")
         self.sidebar_button_4.grid(row=4, column=0, padx=20, pady=10)
-        self.sidebar_button_5 = customtkinter.CTkButton(self.sidebar, command=self.sidebar_button_event, text = "Supprimer")
+
+        self.sidebar_button_5 = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command=self.sidebar_button_event, text = "Supprimer")
         self.sidebar_button_5.grid(row=5, column=0, padx=20, pady=10)
 
         # Création des boutons de navigation entre la map et le tableau
-        self.button_map = customtkinter.CTkButton(self, command=self.select_map, text="Carte")
+        self.button_map = customtkinter.CTkButton(self, fg_color="#1d7c69", hover_color="#275855", command=self.select_map, text="Carte")
         self.button_map.grid(row=0, column=2, sticky="e", padx=5, pady=5)
 
-        self.button_tableau = customtkinter.CTkButton(self, command=self.select_tab, text="Tableau")
+        self.button_tableau = customtkinter.CTkButton(self, fg_color="#1d7c69", hover_color="#275855", command=self.select_tab, text="Tableau")
         self.button_tableau.grid(row=0, column=3, sticky="w", padx=5, pady=5)
 
         # Création de la map et mise dans une grid (ligne 1 et colonne 1)
@@ -64,13 +74,11 @@ class App(customtkinter.CTk):
         # Définition de la position de départ
         self.map_widget.set_position(47.3565655, 0.7035767)
 
-
         #Défintion de valeurs de test (deux marqueurs et une ligne les reliant)
         self.pos1 = self.map_widget.set_marker(47.3565655, 0.7035767, text="Pos1")
         self.pos2 = self.map_widget.set_marker(47.3561294, 0.6977163, text="Pos2")
 
-        self.traj1 = self.map_widget.set_path([self.pos2.position, self.pos1.position])
-
+        self.traj1 = self.map_widget.set_path([self.pos2.position, self.pos1.position],color="#1d7c69")
 
 
         # Définition d'une variable exclusive pour le resize de la fenêtre
@@ -79,16 +87,15 @@ class App(customtkinter.CTk):
 
         # Création du tableau
         self.tableau = ttk.Treeview()
-        self.tableau['columns'] = ["Producteur","Client","Poids Maximal","Demi-Jour travaillé ?","Autre",]
+        self.tableau['columns'] = ["Producteur","Client","Poids Maximal","Demi-Jour travaillé ?","Autre"]
 
-        self.tableau.column("#0",width=0)
+        self.tableau.column("#0",width=0, stretch=NO)
         self.tableau.column("Producteur", width=80, anchor = CENTER)
         self.tableau.column("Client", width=80, anchor = CENTER)
         self.tableau.column("Poids Maximal", width=80, anchor = CENTER)
         self.tableau.column("Demi-Jour travaillé ?", width=80, anchor = CENTER)
         self.tableau.column("Autre", width=80, anchor = CENTER)
 
-        #self.tableau.heading("#0")
         self.tableau.heading("Producteur", text="Producteur")
         self.tableau.heading("Client", text="Client")
         self.tableau.heading("Poids Maximal", text="Poids Maximal")

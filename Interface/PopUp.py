@@ -12,7 +12,7 @@ class PopUp(customtkinter.CTk):
 
         # Création d'une nouvelle fenêtre
         self.window = customtkinter.CTkToplevel()
-
+        print("Test")
 
         #Focus sur cette nouvelle fenêtre (cela désactive la fenêtre principale)
         self.window.grab_set()
@@ -20,7 +20,9 @@ class PopUp(customtkinter.CTk):
         # Suppression de la topbar (Titre, Minimiser, Maximiser, Fermer)
         self.window.overrideredirect(True)
 
-        # Placement de la fenêtre à des coordonnées relatives à la fenêtre principale
-        if (self.masterwindow == None) :
-            self.window.geometry("+%d+%d" % (self.window.masterwindow.winfo_rootx()+self.window.masterwindow.winfo_width()/5, self.window.masterwindow.winfo_rooty()+self.window.masterwindow.winfo_height()/4))
+        self.sidebar_button_1 = customtkinter.CTkButton(self.window, fg_color="#1d7c69", hover_color="#275855", command=self.window.destroy, text = "Fermer")
+        self.sidebar_button_1.grid(row=10, column=0, padx=20, pady=10)
 
+        # Placement de la fenêtre à des coordonnées relatives à la fenêtre principale
+        if (self.masterwindow != None) :
+            self.window.geometry("+%d+%d" % (self.masterwindow.winfo_rootx()+self.masterwindow.winfo_width(), self.masterwindow.winfo_rooty()+self.masterwindow.winfo_height()))
