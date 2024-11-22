@@ -1,3 +1,4 @@
+from acteur import Acteur
 from producteur import Producteur
 from demiJour import DemiJour
 from tache import Tache
@@ -22,3 +23,12 @@ class Tournee:
     def removeTache(self, tache:Tache):
         self.taches.remove(tache)
         del(tache)
+
+    def __str__(self)->str:
+        result = ("Tournée " + str(self.idTournee) + " : "
+                + "\n\t" + str(self.demiJour)
+                + "\n\tProducteur " + str(self.producteur.id)
+                + "\n\tTaches : ")
+        for tache in self.taches:
+            result += "\n\t\t" + str(tache)
+        return result
