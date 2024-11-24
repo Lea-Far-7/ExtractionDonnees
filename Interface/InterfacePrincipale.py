@@ -1,4 +1,5 @@
 from tkinter import *
+import tkinter
 from  tkinter import ttk
 from tkintermapview import TkinterMapView
 from PIL import Image
@@ -22,6 +23,72 @@ class App(customtkinter.CTk):
         self.iconbitmap("../Images/Logo_Olocap_small.ico")
         self.geometry(f"{1100}x{580}")
 
+        self.test = None
+        # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
+        def popupImportCreate():
+
+            self.resizable(0, 0)
+            self.test = PopUp(self)
+
+            # Création de la Frame contenant les RadioButtons
+            scrollable_frame = customtkinter.CTkScrollableFrame(self.test.window, label_text="Fichiers Données")
+            scrollable_frame.grid(row=0, column=0, padx=(20, 20), pady=(20, 0), sticky="nsew")
+            radio_var = tkinter.IntVar(value=0)
+
+            # Génère temporairement toutes les RadioButtons
+            for i in range(10):
+                radio = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i, text=f"Data {i+1}")
+                radio.grid(row=i, column=0, padx=10, pady=(0, 20))
+
+            # Génère la Frame qui va contenir les Switchs
+            scrollable_frame2 = customtkinter.CTkScrollableFrame(self.test.window, label_text="Fichiers Solution")
+            scrollable_frame2.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+            scrollable_frame_choices = []
+
+            # Génère temporairement tous les Switchs
+            for i in range(10):
+                switch = customtkinter.CTkSwitch(master=scrollable_frame2, progress_color="#1d7c69", text=f"Solution {i+1}")
+                switch.grid(row=i, column=0, padx=10, pady=(0, 20))
+                scrollable_frame_choices.append(switch)
+
+
+
+            #Replace la pop-up au centre de la fenêtre principale
+            self.test.window.geometry("+%d+%d" % ((self.test.masterwindow.winfo_rootx() + self.test.masterwindow.winfo_width() / 2)-(self.test.window.winfo_width()*1.5),
+                           (self.test.masterwindow.winfo_rooty() + self.test.masterwindow.winfo_height() / 2)-(self.test.window.winfo_height()*1.25)))
+
+        self.mode = 1
+        def importVer2():
+            if self.mode == 1:
+                # Création de la Frame contenant les RadioButtons
+                scrollable_frame = customtkinter.CTkScrollableFrame(self.sidebar, label_text="Fichiers Données")
+                scrollable_frame.grid(row=2, column=0, padx=(20, 20), pady=(20, 0), sticky="")
+                radio_var = tkinter.IntVar(value=0)
+
+                # Génère temporairement toutes les RadioButtons
+                for i in range(10):
+                    radio = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69",
+                                                         hover_color="#275855", variable=radio_var, value=i,
+                                                         text=f"Data {i + 1}")
+                    radio.grid(row=i, column=0, padx=10, pady=(0, 20))
+
+                # Génère la Frame qui va contenir les Switchs
+                scrollable_frame2 = customtkinter.CTkScrollableFrame(self.sidebar, label_text="Fichiers Solution")
+                scrollable_frame2.grid(row=3, column=0, padx=(20, 20), pady=(20, 0), sticky="")
+                scrollable_frame_choices = []
+
+                # Génère temporairement tous les Switchs
+                for i in range(10):
+                    switch = customtkinter.CTkSwitch(master=scrollable_frame2, progress_color="#1d7c69",
+                                                     text=f"Solution {i + 1}")
+                    switch.grid(row=i, column=0, padx=10, pady=(0, 20))
+                    scrollable_frame_choices.append(switch)
+                self.mode = 0
+
+            else :
+                self.mode = 1
+
+
         # Mise en arrière définitive de la fenêtre (pour que les pop-ups puissent toujours se situer devant)
         self.attributes('-topmost',False)
 
@@ -33,7 +100,7 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure((1, 2), weight=1)
 
         # Création de la zone contenant les boutons de gestion
-        self.sidebar = customtkinter.CTkFrame(self, width=140, corner_radius=0)
+        self.sidebar = customtkinter.CTkFrame(self, width=230, corner_radius=0)
         self.sidebar.grid(row=0, column=0, rowspan=4, sticky="nsew")
 
         # Crée une Image mise dans un Label pour être affichée et contenue dans la sidebar
@@ -44,21 +111,21 @@ class App(customtkinter.CTk):
 
         self.couleur_bouton = customtkinter.CTkImage(light_image=Image.open('../Images/Couleur_Boutons.png'), size=(500, 150))
 
-        # Création des boutons dans la sidebar
-        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", text = "Importer")
-        self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
+        # Création des boutons dans la sidebar ( soit popupImportCreate, soit importVer2)
+        self.importer = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command= popupImportCreate , text = "Importer")
+        self.importer.grid(row=1, column=0, padx=20, pady=10)
 
-        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",  command=self.sidebar_button_event, text = "Filtres")
-        self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
+        self.filtre = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",  command=self.sidebar_button_event, text = "Filtres")
+        self.filtre.grid(row=4, column=0, padx=20, pady=10)
 
-        self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command=self.sidebar_button_event, text = "Export")
-        self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
+        self.export = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command=self.sidebar_button_event, text = "Export")
+        self.export.grid(row=6, column=0, padx=20, pady=10)
 
-        self.sidebar_button_4 = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command=self.sidebar_button_event, text = "Ajout")
-        self.sidebar_button_4.grid(row=4, column=0, padx=20, pady=10)
+        self.ajout = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command=self.sidebar_button_event, text = "Ajout")
+        self.ajout.grid(row=7, column=0, padx=20, pady=10)
 
-        self.sidebar_button_5 = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command=self.sidebar_button_event, text = "Supprimer")
-        self.sidebar_button_5.grid(row=5, column=0, padx=20, pady=10)
+        self.supprime = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command=self.sidebar_button_event, text = "Supprimer")
+        self.supprime.grid(row=8, column=0, padx=20, pady=10)
 
         # Création des boutons de navigation entre la map et le tableau
         self.button_map = customtkinter.CTkButton(self, fg_color="#1d7c69", hover_color="#275855", command=self.select_map, text="Carte")
@@ -129,60 +196,13 @@ class App(customtkinter.CTk):
     # Evenement déclenché lors d'une maximisation de fenêtre OU lorsque l'on quitte la maximisation pour revenir sur une fenêtre plus petite
     def resize_button(self, event):
         # print(self.state())
-        if (self.state() == 'zoomed' and self.zoom == 1) :
-            customtkinter.set_widget_scaling(1.25)
-            self.zoom = 0
-        elif (self.state() != 'zoomed' and self.zoom == 0) :
-            customtkinter.set_widget_scaling(1)
-            self.zoom = 1
-
-
-"""
-    def popup(self):
-        # Création d'une nouvelle fenêtre
-        window = customtkinter.CTkToplevel()
-
-        # Ouvre une fenêtre de selection de multiples fichiers et (Actuellement mais à changer) Affiche le contenu de chaque fichier
-        def search():
-            listfile = filedialog.askopenfilename(multiple = True, title = "Select a File",
-                                          filetypes = (("Text files",
-                                                        "*.txt*"),
-                                                       ("all files",
-                                                        "*.*")))
-            print (listfile)
-            for i in range(0,len(listfile),1):
-                with open(listfile[i], 'r') as file:
-                    content = file.read()
-                    print (content)
-
-
-
-        #Focus sur cette nouvelle fenêtre (cela désactive la fenêtre principale)
-        window.grab_set()
-
-        # Création d'un Label
-        label = customtkinter.CTkLabel(window, text="Test")
-        label.pack(pady=50)
-
-        # Création d'un bouton pour chercher les fichiers à importer
-        button_search = customtkinter.CTkButton(window, text="Rechercher", command=search)
-        button_search.pack(pady=10, padx=50)
-
-        # Création d'un bouton pour fermer la pop-up et revenir sur la fenêtre principale
-        button_close = customtkinter.CTkButton(window, text="Fermer", command=window.destroy)
-        button_close.pack(pady=10, padx=50)
-
-
-
-
-
-
-        # Suppression de la topbar (Titre, Minimiser, Maximiser, Fermer)
-        window.overrideredirect(True)
-
-        # Placement de la fenêtre à des coordonnées relatives à la fenêtre principale
-        window.geometry("+%d+%d" % (window.master.winfo_rootx()+window.master.winfo_width()/5, window.master.winfo_rooty()+window.master.winfo_height()/4))
-"""
+        if self.test :
+            if (self.state() == 'zoomed' and self.zoom == 1) :
+                customtkinter.set_widget_scaling(1.25)
+                self.zoom = 0
+            elif (self.state() != 'zoomed' and self.zoom == 0) :
+                customtkinter.set_widget_scaling(1)
+                self.zoom = 1
 
 
 
