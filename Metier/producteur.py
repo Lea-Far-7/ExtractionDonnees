@@ -1,5 +1,4 @@
-from acteur import Acteur
-
+from .acteur import Acteur
 
 class Producteur(Acteur):
 
@@ -20,7 +19,7 @@ class Producteur(Acteur):
     def __str__(self)->str:
         result = "Producteur " + str(self.id) + " :"
         result += "\n\tCoordonnées : (" + str(self.latitude) + " ; " + str(self.longitude) + ")"
-        result += "\n\tCapacité : " + str(self.capacity)
+        result += "\n\tCapacité : " + str(self.capacity) + "kg"
         result += "\n\tDispos : "
         for dispo in self.dispos:
             result += "\n\t\t" + str(dispo)

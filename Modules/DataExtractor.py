@@ -2,11 +2,11 @@
 from csv import reader
 
 class DataExtractor:
-    def __init__(self, chemin_vers_fichier, delimiteur=" "):
+    def __init__(self, chemin_vers_fichier:str, delimiteur=" "):
         self.chemin_vers_fichier = chemin_vers_fichier
         self.delimiteur = delimiteur
 
-    def extraction(self):
+    def extraction(self) -> list:
         # Utilise reader qui retourne un objet de type readerObject
         # Dois renvoyer une liste de liste
         try:

@@ -8,15 +8,15 @@ from os import listdir, path
 
 class FileManager :
 
-    def __init__(self, chemin_vers_repertoire):
+    def __init__(self, chemin_vers_repertoire : str):
         self.repertoire = chemin_vers_repertoire
 
-    def lister_fichiers(self):
+    def lister_fichiers(self) -> list:
         try:
             contenu_repertoire = listdir(self.repertoire)
             # Filtrer pour ne garder que les fichiers
-            #fichiers = [f for f in contenu if path.isfile(path.join(repertoire, f))]
-            #return fichiers
+            # fichiers = [f for f in contenu if path.isfile(path.join(repertoire, f))]
+            # return fichiers
             return contenu_repertoire
         except FileNotFoundError:
             print(f"Le répertoire {self.repertoire} n'existe pas.")
@@ -26,8 +26,6 @@ class FileManager :
 import os
 
 directory = 'Donnees'
-
-
 for entry in os.scandir(directory):
     if entry.is_file() and entry.name.endswith('.txt'):
         print(entry.name)

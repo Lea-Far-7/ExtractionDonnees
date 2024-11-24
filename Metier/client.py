@@ -1,4 +1,4 @@
-from acteur import Acteur
+from .acteur import Acteur
 
 
 class Client(Acteur):

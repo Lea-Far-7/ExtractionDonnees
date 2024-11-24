@@ -1,5 +1,5 @@
 import abc # pour classe abstraite
-from demiJour import DemiJour
+from .demiJour import DemiJour
 
 
 class Acteur(abc.ABC):

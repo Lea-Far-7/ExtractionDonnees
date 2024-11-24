@@ -1,44 +1,46 @@
-# Créé par leleo, le 18/11/2024 en Python 3.7
-
-import os
+from Modules.CreerClasses import CreerProducteursClients
 from Modules.FileManager import FileManager
 from Modules.DataExtractor import DataExtractor
 
-# Chemins des répertoires
-repertoire_donnees = "Donnees"
-repertoire_solutions = "Solutions"
+print("Récupération des fichiers du dossier Donnees")
+manager = FileManager("Donnees")
+liste = manager.lister_fichiers()
+print(liste)
+print("-------------------------")
 
-file_manager_donnees = FileManager(repertoire_donnees)
-file_manager_solutions = FileManager(repertoire_solutions)
+# On remplace l'input par la sélection du fichier avec les boutons par l'utilisateur
+indice = int(input("Choisissez le fichier")) # Donner 0, il n'y a qu'un fichier pour le test
+fichier = liste[indice]
 
-liste_fichiers_donnees = file_manager_donnees.lister_fichiers()
-liste_fichiers_solution = file_manager_solutions.lister_fichiers()
+# On extrait les données du fichier
+extractor = DataExtractor("Donnees\\" + fichier)
+donnees = extractor.extraction()
+print(donnees)
+print("-------------------------")
 
-print("Fichiers dans le répertoire 'Donnees':")
-for fichier in liste_fichiers_donnees:
-    print(fichier)
+# On fournit une liste de liste au créateur de classes
+# Il prend le premier élément qui est le nb de producteurs et de clients et créé les bornes
+# Il parcourt la liste de l'indice 1 à nb_producteurs +1
+# Il créé à chaque itération un nouvel objet Producteur dans lequel il place les différents arguments
+# Il fait de même en parcourant les éléments à partir de l'indice nb_clients à la fin.
+# Il créé une instance Client à chaque itération en mettant les bons arguments
 
-print("\nFichiers dans le répertoire 'Solutions':")
-for fichier in liste_fichiers_solution:
-    print(fichier)
+createur = CreerProducteursClients(donnees)
+liste_producteurs = createur.creerProducteurs()
+liste_clients = createur.creerClients()
 
-# extraction de données
-if liste_fichiers_donnees:
-    chemin_fichier = os.path.join(repertoire_donnees, liste_fichiers_donnees[0])
-    data_extractor = DataExtractor(chemin_fichier)
-    donnees = data_extractor.extraction()
-    print("\nDonnées extraites du premier fichier dans 'Donnees':")
-    for ligne in donnees:
-        print(ligne)
+# Si on veut le producteur n°2 par exemple
+print(liste_producteurs[1])
 
-# extraction de solutions
-if liste_fichiers_donnees:
-    chemin_fichier = os.path.join(repertoire_solutions, liste_fichiers_solution[0])
-    data_extractor = DataExtractor(chemin_fichier)
-    donnees = data_extractor.extraction()
-    print("\nDonnées extraites du premier fichier dans 'Solution':")
-    for ligne in donnees:
-        print(ligne)
+# Si on veut le client n°1 par exemple
+print(liste_clients[0])
 
-print ("This is succesful")
-print ("Test Modification 2")
+"""
+Verifier dans les dispos addDispos si la dispos n'est pas déjà dans la liste
+Le numéro des clients est celui des acteurs, il n'est pas différencié !!
+"""
+
+"""
+Est-ce qu'on fait une interface ? Genre Createur avec methode create implémenté par CreateurProducteurs et CreateurClient
+Les noms d'interfaces sont préfixés par un I donc: ICreator
+"""
