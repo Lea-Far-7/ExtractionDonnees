@@ -1,4 +1,4 @@
-from Modules.CreerClasses import CreerProducteursClients
+from Modules.CreerClasses import CreerClasses
 from Modules.FileManager import FileManager
 from Modules.DataExtractor import DataExtractor
 
@@ -25,22 +25,19 @@ print("-------------------------")
 # Il fait de même en parcourant les éléments à partir de l'indice nb_clients à la fin.
 # Il créé une instance Client à chaque itération en mettant les bons arguments
 
-createur = CreerProducteursClients(donnees)
-liste_producteurs = createur.creerProducteurs()
-liste_clients = createur.creerClients()
+createur = CreerClasses(donnees)
+liste_producteurs = createur.getProducteurs()
+liste_clients = createur.getClients()
+liste_demandes = createur.getDemandes()
 
-# Si on veut le producteur n°2 par exemple
+# Si on veut le producteur n°1 par exemple (sachant qu'ils vont de producteur 0 à 4
 print(liste_producteurs[1])
+print("-------------------------")
 
-# Si on veut le client n°1 par exemple
+# Si on veut le client n°5 par exemple (sachant qu'ils vont de 5 à 9)
 print(liste_clients[0])
+print("-------------------------")
 
-"""
-Verifier dans les dispos addDispos si la dispos n'est pas déjà dans la liste
-Le numéro des clients est celui des acteurs, il n'est pas différencié !!
-"""
-
-"""
-Est-ce qu'on fait une interface ? Genre Createur avec methode create implémenté par CreateurProducteurs et CreateurClient
-Les noms d'interfaces sont préfixés par un I donc: ICreator
-"""
+# Si on veut afficher toutes les demandes
+for demande in liste_demandes:
+    print(demande)

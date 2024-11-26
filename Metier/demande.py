@@ -1,5 +1,5 @@
-from producteur import Producteur
-from client import Client
+from .producteur import Producteur
+from .client import Client
 
 
 class Demande:
@@ -14,6 +14,6 @@ class Demande:
         Demande.nb += 1
 
     def __str__(self)->str:
-        return ("Demande "+ str(self.idDemande) + " : " + str(self.masse)
+        return ("Demande "+ str(self.idDemande) + " : " + str(self.masse) + " kg"
                 + " de Client " + str(self.client.id)
-                + " à Producteur " + str(self.client.id))
+                + " à Producteur " + str(self.producteur.id))

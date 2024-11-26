@@ -1,3 +1,4 @@
+from Metier.demande import Demande
 from Metier.producteur import Producteur
 from Metier.client import Client
 from Metier.demiJour import DemiJour
@@ -8,17 +9,81 @@ Le fichier est fourni à la classe sous forme de liste de listes. Chaque sous-li
 Et chaque ligne du fichier étant un producteur ou un client
 """
 
-class CreerProducteursClients:
+class CreerClasses:
 
     def __init__(self, fichier : list):
         self.fichier = fichier
         self.producteurs = []
         self.clients = []
+        self.demandes = []
+
 
     """
-    Cette méthode retourne la liste des Producteur présents dans le fichier.
+    Cette méthode publique renvoie la liste des Producteurs si elle existe déjà
+     et appelle la méthode privée creerProducteurs si celle-ci est vide.
+     Cela garantit que l'on ne crée qu'une seule instance de chaque producteur
+     et que l'on ne parcoure pas inutilement le fichier.
     """
-    def creerProducteurs(self) -> list:
+    def getProducteurs(self) -> "list" :
+        if self.producteurs:
+            return self.producteurs
+        else:
+            self.__creerProducteurs()
+            return self.producteurs
+
+
+    """
+    Cette méthode publique renvoie la liste des Clients si elle existe déjà
+     et appelle la méthode privée creerClients si celle-ci est vide.
+     Cela garantit que l'on ne crée qu'une seule instance de chaque client
+     et que l'on ne parcoure pas inutilement le fichier.
+    """
+    def getClients(self) -> "list" :
+        if self.clients:
+            return self.clients
+        else:
+            self.__creerClients()
+            return self.clients
+
+
+    """
+    Cette méthode publique renvoie la liste des Demandes si elle existe déjà
+     et une liste de vide sinon
+    """
+    def getDemandes(self) -> "list" :
+        return self.demandes
+
+
+    """
+    Cette méthode retourne le nombre de producteurs dans le fichier
+    """
+    def getNbProducteurs(self) -> "int" :
+        # On regarde combien de lignes sont des producteurs
+        if self.fichier:
+            # La première ligne du fichier correspond au nombre de producteurs et de clients
+            nbProducteurs = int(self.fichier[0][0])
+        else:
+            # Si le fichier (la liste) est vide
+            nbProducteurs = 0
+        return nbProducteurs
+
+
+    """
+    Cette méthode retourne le nombre de clients présents dans le fichier
+    """
+    def getNbClients(self) -> "int" :
+        if self.fichier:
+            nbClients = int(self.fichier[0][1])
+        else:
+            nbClients = 0
+        return nbClients
+
+
+    """
+    Cette méthode privée retourne la liste des Producteur présents dans le fichier.
+    def __creerProducteurs(self) -> list:
+    """
+    def __creerProducteurs(self):
 
         nbProducteurs = self.getNbProducteurs()
         # Les partenaires sont une liste de Prodcteurs.
@@ -68,51 +133,45 @@ class CreerProducteursClients:
             # et on lui assigne la liste par compréhension des Producteurs désignés
             prod.partners = [self.producteurs[int(id)] for id in partners_ids]
 
-        return self.producteurs
+        #return self.producteurs
 
     """
-    Cette méthode retourne la liste des Client présents dans le fichier.
+    Cette méthode privée retourne la liste des Client présents dans le fichier.
+    def __creerClients(self) -> list:
     """
-    def creerClients(self) -> list:
+    def __creerClients(self):
 
         # indice de la première ligne de client = nombre de producteurs + 1
         debutClients = self.getNbProducteurs() + 1
 
         # On parcourt le fichier de debutClients à la fin du fichier
         for i in range(debutClients, len(self.fichier)):
-            client = self.fichier[i]
+            client_en_cours = self.fichier[i]
             # On crée une variable indice comme pointeur que l'on va incrémenter
             # au fur et à mesure de l'avancée dans la ligne.
             indice = 0
 
-            latitude = float(client[indice])
+            latitude = float(client_en_cours[indice])
             indice += 1
-            longitude = float(client[indice])
+            longitude = float(client_en_cours[indice])
             indice += 1
 
-            nbDispos = int(client[indice])
+            nbDispos = int(client_en_cours[indice])
             indice += 1
             dispos = []
 
             for jour in range(indice, nbDispos + indice):
-                dispos.append( DemiJour(int (client[jour]) ) )
+                dispos.append( DemiJour(int (client_en_cours[jour]) ) )
 
             indice += nbDispos
 
-            self.clients.append(Client(latitude, longitude, dispos))
+            client = Client(latitude, longitude, dispos)
+            self.clients.append(client)
 
-            """
-            Implémenter les demands
-            """
+            for j in range(len(self.producteurs)):
+                masse = float(client_en_cours[indice + j])
+                if masse > 0:
+                    producteur = self.producteurs[j]
+                    self.demandes.append(Demande(client, producteur, masse))
 
-        return self.clients
-
-    def getNbProducteurs(self) -> "int" :
-        # On regarde combien de lignes sont des producteurs
-        if self.fichier:
-            # La première ligne du fichier correspond au nombre de producteurs et de clients
-            nbProducteurs = int(self.fichier[0][0])
-        else:
-            # Si le fichier (la liste) est vide
-            nbProducteurs = 0
-        return nbProducteurs
+        #return self.clients
