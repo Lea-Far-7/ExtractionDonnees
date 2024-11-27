@@ -26,22 +26,20 @@ class App(customtkinter.CTk):
         self.test = None
         # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
         def popupImportCreate():
-
-            self.resizable(0, 0)
             self.test = PopUp(self)
 
             # Création de la Frame contenant les RadioButtons
-            scrollable_frame = customtkinter.CTkScrollableFrame(self.test.window, label_text="Fichiers Données")
+            scrollable_frame = customtkinter.CTkScrollableFrame(self.test.window, label_text="Projets")
             scrollable_frame.grid(row=0, column=0, padx=(20, 20), pady=(20, 0), sticky="nsew")
             radio_var = tkinter.IntVar(value=0)
 
             # Génère temporairement toutes les RadioButtons
-            for i in range(10):
-                radio = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i, text=f"Data {i+1}")
+            for i in range(1,11,1):
+                radio = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i, text=f"Data {i}")
                 radio.grid(row=i, column=0, padx=10, pady=(0, 20))
 
             # Génère la Frame qui va contenir les Switchs
-            scrollable_frame2 = customtkinter.CTkScrollableFrame(self.test.window, label_text="Fichiers Solution")
+            scrollable_frame2 = customtkinter.CTkScrollableFrame(self.test.window, label_text="Fichiers Solution Associés")
             scrollable_frame2.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
             scrollable_frame_choices = []
 
@@ -56,37 +54,7 @@ class App(customtkinter.CTk):
             #Replace la pop-up au centre de la fenêtre principale
             self.test.window.geometry("+%d+%d" % ((self.test.masterwindow.winfo_rootx() + self.test.masterwindow.winfo_width() / 2)-(self.test.window.winfo_width()*1.5),
                            (self.test.masterwindow.winfo_rooty() + self.test.masterwindow.winfo_height() / 2)-(self.test.window.winfo_height()*1.25)))
-
-        self.mode = 1
-        def importVer2():
-            if self.mode == 1:
-                # Création de la Frame contenant les RadioButtons
-                scrollable_frame = customtkinter.CTkScrollableFrame(self.sidebar, label_text="Fichiers Données")
-                scrollable_frame.grid(row=2, column=0, padx=(20, 20), pady=(20, 0), sticky="")
-                radio_var = tkinter.IntVar(value=0)
-
-                # Génère temporairement toutes les RadioButtons
-                for i in range(10):
-                    radio = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69",
-                                                         hover_color="#275855", variable=radio_var, value=i,
-                                                         text=f"Data {i + 1}")
-                    radio.grid(row=i, column=0, padx=10, pady=(0, 20))
-
-                # Génère la Frame qui va contenir les Switchs
-                scrollable_frame2 = customtkinter.CTkScrollableFrame(self.sidebar, label_text="Fichiers Solution")
-                scrollable_frame2.grid(row=3, column=0, padx=(20, 20), pady=(20, 0), sticky="")
-                scrollable_frame_choices = []
-
-                # Génère temporairement tous les Switchs
-                for i in range(10):
-                    switch = customtkinter.CTkSwitch(master=scrollable_frame2, progress_color="#1d7c69",
-                                                     text=f"Solution {i + 1}")
-                    switch.grid(row=i, column=0, padx=10, pady=(0, 20))
-                    scrollable_frame_choices.append(switch)
-                self.mode = 0
-
-            else :
-                self.mode = 1
+            self.wait_window(self.test.window)
 
 
         # Mise en arrière définitive de la fenêtre (pour que les pop-ups puissent toujours se situer devant)
@@ -147,11 +115,6 @@ class App(customtkinter.CTk):
 
         self.traj1 = self.map_widget.set_path([self.pos2.position, self.pos1.position],color="#1d7c69")
 
-
-        # Définition d'une variable exclusive pour le resize de la fenêtre
-        self.zoom = 1
-        self.bind("<Configure>", self.resize_button)
-
         # Création du tableau
         self.tableau = ttk.Treeview()
         self.tableau['columns'] = ["Producteur","Client","Poids Maximal","Demi-Jour travaillé ?","Autre"]
@@ -193,16 +156,6 @@ class App(customtkinter.CTk):
         self.map_widget.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
         self.tableau.grid_forget()
 
-    # Evenement déclenché lors d'une maximisation de fenêtre OU lorsque l'on quitte la maximisation pour revenir sur une fenêtre plus petite
-    def resize_button(self, event):
-        # print(self.state())
-        if self.test :
-            if (self.state() == 'zoomed' and self.zoom == 1) :
-                customtkinter.set_widget_scaling(1.25)
-                self.zoom = 0
-            elif (self.state() != 'zoomed' and self.zoom == 0) :
-                customtkinter.set_widget_scaling(1)
-                self.zoom = 1
 
 
 
