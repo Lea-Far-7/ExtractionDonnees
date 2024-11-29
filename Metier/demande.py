@@ -1,5 +1,5 @@
-from .producteur import Producteur
-from .client import Client
+from Metier.producteur import Producteur
+from Metier.client import Client
 
 
 class Demande:
