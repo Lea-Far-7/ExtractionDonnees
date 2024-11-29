@@ -2,16 +2,19 @@ from Modules.CreerClasses import CreerClasses
 from Modules.FileManager import FileManager
 from Modules.DataExtractor import DataExtractor
 
-print("Récupération des fichiers du dossier Donnees")
+# Pour la version où les dossiers sont organisés en projets
 manager = FileManager()
+liste = manager.lister_dossiers("Projets")
+print(liste)
+
+chemin = "Projets\\" + liste[0] + "\Solutions"
+liste = manager.lister_fichiers(chemin)
+print(liste)
+
+print("Récupération des fichiers du dossier Projet_1")
 liste = manager.lister_fichiers("Projets\Projet_1")
 print(liste)
 print("-------------------------")
-
-# Pour la version où les dossiers sont organisés en projets
-manager = FileManager()
-liste = manager.lister_fichiers("Projets\Projet_1\Solutions")
-print(liste)
 
 # Le user sélectionne un projet dans la liste -> renvoie "Projet_1
 # S'affiche le fichier de données à gauche -> fonction qui retourne les (le) fichiers du dossier "Projet_1"
@@ -19,7 +22,7 @@ print(liste)
 # En fait, on garde la fonction mais on oblige la récupération que des fichiers et on prend le nom en paramètre.
 # Faire une variable qui créé le chemin avec le projet choisi
 # Faire une variable statique dans la classe qui utilise la fonction pour "Projets" et "Solutions"
-print("-------------------------")
+
 
 # On remplace l'input par la sélection du fichier avec les boutons par l'utilisateur
 indice = int(input("Choisissez le fichier")) # Donner 0, il n'y a qu'un fichier pour le test
@@ -27,8 +30,8 @@ fichier = liste[indice]
 print()
 
 # On extrait les données du fichier
-extractor = DataExtractor("Donnees\\" + fichier)
-donnees = extractor.extraction()
+extractor = DataExtractor()
+donnees = extractor.extraction("Projets\Projet_1\\" + fichier)
 print(donnees)
 print("-------------------------")
 
@@ -55,3 +58,9 @@ print("-------------------------")
 # Si on veut afficher toutes les demandes
 for demande in liste_demandes:
     print(demande)
+print("-------------------------")
+
+# Extraction fichier solution
+donnees = extractor.extraction(chemin + "\exemple_output.txt")
+for ligne in donnees:
+    print(ligne)
