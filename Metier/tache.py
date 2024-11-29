@@ -1,4 +1,4 @@
-from acteur import Acteur
+from Metier.acteur import Acteur
 
 
 class Tache:

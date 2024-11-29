@@ -1,7 +1,7 @@
-from acteur import Acteur
-from producteur import Producteur
-from demiJour import DemiJour
-from tache import Tache
+from Metier.acteur import Acteur
+from Metier.producteur import Producteur
+from Metier.demiJour import DemiJour
+from Metier.tache import Tache
 
 
 class Tournee:
