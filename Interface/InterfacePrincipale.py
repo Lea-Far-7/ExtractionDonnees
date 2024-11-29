@@ -1,10 +1,12 @@
 from tkinter import *
 import tkinter
+import os
 from  tkinter import ttk
 from tkintermapview import TkinterMapView
-from PIL import Image
+from PIL import Image, ImageTk
 import customtkinter
 from Interface.PopUp import PopUp
+from Modules.FileManager import FileManager
 
 # Modes: "System", "Dark", "Light"
 customtkinter.set_appearance_mode("Dark")
@@ -23,23 +25,53 @@ class App(customtkinter.CTk):
         self.iconbitmap("../Images/Logo_Olocap_small.ico")
         self.geometry(f"{1100}x{580}")
 
-        self.test = None
+        # Charge les images pour les icônes des producteurs et clients
+        self.current_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
+        self.image_client = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "client.png")).resize((35, 35)))
+        self.image_producteur = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "producteur.png")).resize((35, 35)))
+
+        self.popup = None
         # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
         def popupImportCreate():
-            self.test = PopUp(self)
+
+            #Initialise la popup
+            self.popup = PopUp(self)
+
+
 
             # Création de la Frame contenant les RadioButtons
-            scrollable_frame = customtkinter.CTkScrollableFrame(self.test.window, label_text="Projets")
+            scrollable_frame = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Projets")
             scrollable_frame.grid(row=0, column=0, padx=(20, 20), pady=(20, 0), sticky="nsew")
             radio_var = tkinter.IntVar(value=0)
 
+            """
+            # Récupère le chemin des fichiers de données et de solutions associées
+            liste_fichiers_donnees = FileManager().lister_fichiers(os.path.join(self.current_path, "../Projets"))
+            liste_fichiers_solutions = FileManager().lister_fichiers(os.path.join(self.current_path, "../Projets/Solutions"))
+            print(liste_fichiers_donnees)
+            print(liste_fichiers_solutions)
+            
+            # Créé la liste des solutions (à changer pour créer la liste des projets)
+            projets = {}
+            i = 0
+            for projet in liste_fichiers:
+                projets[projet] = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i, text=f"{projet}")
+                projets[projet].grid(row=i, column=0, padx=10, pady=(0, 20))
+                i = i + 1
+
+            print(projets[liste_fichiers[0]].cget("text"))
+            """
+
+
+            """
             # Génère temporairement toutes les RadioButtons
             for i in range(1,11,1):
-                radio = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i, text=f"Data {i}")
+                radio = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i, text=f"Projet {i}")
                 radio.grid(row=i, column=0, padx=10, pady=(0, 20))
+            """
 
             # Génère la Frame qui va contenir les Switchs
-            scrollable_frame2 = customtkinter.CTkScrollableFrame(self.test.window, label_text="Fichiers Solution Associés")
+            scrollable_frame2 = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Fichiers Solution Associés")
             scrollable_frame2.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
             scrollable_frame_choices = []
 
@@ -52,9 +84,23 @@ class App(customtkinter.CTk):
 
 
             #Replace la pop-up au centre de la fenêtre principale
-            self.test.window.geometry("+%d+%d" % ((self.test.masterwindow.winfo_rootx() + self.test.masterwindow.winfo_width() / 2)-(self.test.window.winfo_width()*1.5),
-                           (self.test.masterwindow.winfo_rooty() + self.test.masterwindow.winfo_height() / 2)-(self.test.window.winfo_height()*1.25)))
-            self.wait_window(self.test.window)
+            self.popup.window.geometry("+%d+%d" % ((self.popup.masterwindow.winfo_rootx() + self.popup.masterwindow.winfo_width() / 2)-(self.popup.window.winfo_width()*1.5),
+                           (self.popup.masterwindow.winfo_rooty() + self.popup.masterwindow.winfo_height() / 2)-(self.popup.window.winfo_height()*1.25)))
+            self.wait_window(self.popup.window)
+
+        # Affiche les données des markers et les caches si deuxième clic
+        def showDataMarker(marker):
+            if marker.text != "" and marker.text is not None:
+                marker.set_text("")
+            else :
+                marker.set_text("Infos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \n")
+
+        def showDataLine(line):
+            if line.name != "" and line.name is not None:
+                line.name = ""
+            else :
+                line.name = "Infos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \n"
+
 
 
         # Mise en arrière définitive de la fenêtre (pour que les pop-ups puissent toujours se situer devant)
@@ -110,10 +156,10 @@ class App(customtkinter.CTk):
         self.map_widget.set_position(47.3565655, 0.7035767)
 
         #Défintion de valeurs de test (deux marqueurs et une ligne les reliant)
-        self.pos1 = self.map_widget.set_marker(47.3565655, 0.7035767, text="Pos1")
-        self.pos2 = self.map_widget.set_marker(47.3561294, 0.6977163, text="Pos2")
+        self.pos1 = self.map_widget.set_marker(47.3565655, 0.7035767, icon=self.image_client, command=showDataMarker)
+        self.pos2 = self.map_widget.set_marker(47.3561294, 0.6977163, icon=self.image_producteur, command=showDataMarker)
 
-        self.traj1 = self.map_widget.set_path([self.pos2.position, self.pos1.position],color="#1d7c69")
+        self.traj1 = self.map_widget.set_path([self.pos2.position, self.pos1.position],color="#1d7c69", command=showDataLine)
 
         # Création du tableau
         self.tableau = ttk.Treeview()
@@ -155,11 +201,6 @@ class App(customtkinter.CTk):
     def select_map(self) :
         self.map_widget.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
         self.tableau.grid_forget()
-
-
-
-
-
 
 if __name__ == "__main__":
     app = App()
