@@ -1,5 +1,6 @@
 import customtkinter
 
+# Un fichier de données, plusieurs fichiers de solutions. Peut-être importer un projet au lieu de Données et Solutions différents
 
 class PopUp:
     def __init__(self, masterwindow):
@@ -18,7 +19,6 @@ class PopUp:
         self.window.overrideredirect(True)
 
         def destroyWindow():
-            self.masterwindow.resizable(True, True)
             self.window.destroy()
 
 
