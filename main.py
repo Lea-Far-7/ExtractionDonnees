@@ -3,14 +3,28 @@ from Modules.FileManager import FileManager
 from Modules.DataExtractor import DataExtractor
 
 print("Récupération des fichiers du dossier Donnees")
-manager = FileManager("Donnees")
-liste = manager.lister_fichiers()
+manager = FileManager()
+liste = manager.lister_fichiers("Projets\Projet_1")
 print(liste)
+print("-------------------------")
+
+# Pour la version où les dossiers sont organisés en projets
+manager = FileManager()
+liste = manager.lister_fichiers("Projets\Projet_1\Solutions")
+print(liste)
+
+# Le user sélectionne un projet dans la liste -> renvoie "Projet_1
+# S'affiche le fichier de données à gauche -> fonction qui retourne les (le) fichiers du dossier "Projet_1"
+# S'affiche à droite les fichiers du sous-dossier solutions -> fonction qui retourne les(le) fichier du dossier
+# En fait, on garde la fonction mais on oblige la récupération que des fichiers et on prend le nom en paramètre.
+# Faire une variable qui créé le chemin avec le projet choisi
+# Faire une variable statique dans la classe qui utilise la fonction pour "Projets" et "Solutions"
 print("-------------------------")
 
 # On remplace l'input par la sélection du fichier avec les boutons par l'utilisateur
 indice = int(input("Choisissez le fichier")) # Donner 0, il n'y a qu'un fichier pour le test
 fichier = liste[indice]
+print()
 
 # On extrait les données du fichier
 extractor = DataExtractor("Donnees\\" + fichier)
