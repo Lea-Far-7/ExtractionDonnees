@@ -2,6 +2,7 @@ from Metier.acteur import Acteur
 from Metier.producteur import Producteur
 from Metier.demiJour import DemiJour
 from Metier.tache import Tache
+from Modules.distance import distance
 
 
 class Tournee:
@@ -23,6 +24,25 @@ class Tournee:
     def removeTache(self, tache:Tache):
         self.taches.remove(tache)
         del(tache)
+
+    def distanceTot(self)->float:
+        if len(self.taches) < 2:
+            return 0
+        d = 0
+        p0 = self.taches[0].lieu # point départ
+        for tache in self.taches[1:]:
+            p1 = tache.lieu # point suivant
+            if p0 != p1:
+                d += distance([p0.latitude,p0.longitude],[p1.latitude,p1.longitude])
+            p0 = p1 # décalage pour le prochain point
+        return d
+
+    def chargementTot(self)->float:
+        chargement = 0
+        for tache in self.taches:
+            if tache.type == 'P':
+                chargement += tache.charge
+        return chargement
 
     def __str__(self)->str:
         result = ("Tournée " + str(self.idTournee) + " : "

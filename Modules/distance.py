@@ -4,9 +4,9 @@ from math import *
 r = 6371 #rayon de la Terre en km
 
 def distance(A:list,B:list):
-    '''Calcule la distance en km entre deux points sur Terre
+    """Calcule la distance en km entre deux points sur Terre
     A et B sont les couples (listes) de coordonnées (latitude, longitude) en degrés des 2 points
-    '''
+    """
 
     A[0],A[1],B[0],B[1] = radians(A[0]), radians(A[1]), radians(B[0]), radians(B[1])
 
