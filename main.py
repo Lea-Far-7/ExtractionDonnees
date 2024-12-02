@@ -12,7 +12,7 @@ liste = manager.lister_fichiers(chemin)
 print(liste)
 
 print("Récupération des fichiers du dossier Projet_1")
-liste = manager.lister_fichiers("Projets\Projet_1")
+liste = manager.lister_fichiers("Projets\Projet_3")
 print(liste)
 print("-------------------------")
 
@@ -31,7 +31,7 @@ print()
 
 # On extrait les données du fichier
 extractor = DataExtractor()
-donnees = extractor.extraction("Projets\Projet_1\\" + fichier)
+donnees = extractor.extraction("Projets\Projet_3\\" + fichier)
 print(donnees)
 print("-------------------------")
 
@@ -61,6 +61,6 @@ for demande in liste_demandes:
 print("-------------------------")
 
 # Extraction fichier solution
-donnees = extractor.extraction(chemin + "\exemple_output.txt")
+donnees = extractor.extraction("Projets/Projet_3/Solutions/routes_1_pt.txt")
 for ligne in donnees:
     print(ligne)
