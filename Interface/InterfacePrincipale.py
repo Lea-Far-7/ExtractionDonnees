@@ -7,6 +7,8 @@ from PIL import Image, ImageTk
 import customtkinter
 from Interface.PopUp import PopUp
 from Modules.FileManager import FileManager
+from Modules.CreerClasses import CreerClasses
+from Modules.DataExtractor import DataExtractor
 
 # Modes: "System", "Dark", "Light"
 customtkinter.set_appearance_mode("Dark")
@@ -30,7 +32,67 @@ class App(customtkinter.CTk):
         self.image_client = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "client.png")).resize((35, 35)))
         self.image_producteur = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "producteur.png")).resize((35, 35)))
 
-        self.popup = None
+        def valider():
+
+            print(self.fichier_producteurs)
+            donnees = CreerClasses(self.fichier_producteurs)
+
+            self.person_var_name = {}
+            for person in donnees.getProducteurs():
+                # TODO : Si producteur, sinon :
+                if (1==1) :
+                    self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude, icon=self.image_producteur,
+                                                       command=showDataMarker)
+
+            for person in donnees.getClients():
+                # TODO : Si producteur, sinon :
+                if (1 == 1):
+                    self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude,
+                                                                                 icon=self.image_client,
+                                                                                 command=showDataMarker)
+
+
+            print(donnees.getProducteurs())
+            print(donnees.getClients())
+            for selected in self.choixSolutions:
+                if (selected.get() == 1) :
+                    # TODO : Attendre la création de tous les producteurs et clients, puis faire tous les trajets
+                    print(selected.cget("text"))
+
+        def assignProjet(projet, frame_solutions):
+
+            # Détruit les objets précédemment créés dans la ScrollableFrame où sont contenues les solutions
+            for widget in frame_solutions.winfo_children():
+                widget.destroy()
+
+            # Remets la liste des solutions à vide
+            self.choixSolutions = []
+
+            # Récupère la liste des fichiers solutions dans le projet sélectionné
+            liste_fichiers_solutions = FileManager().lister_fichiers(
+                os.path.join(self.current_path, "../Projets/" + projet + "/Solutions"))
+
+            # Récupère le fichier données dans le projet sélectionné
+            fichier_donnees = FileManager().lister_fichiers(
+                os.path.join(self.current_path, "../Projets/" + projet))
+
+            # Extrait les données du fichier de données du projet
+            self.fichier_producteurs = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + projet +"/"+ fichier_donnees[0]))
+
+
+
+            # Créé les différents Switchs permettant de selectionner les boutons et les ajoute dans
+            # l'attribut contenant les différents noms des fichiers solution
+            liste_solutions = {}
+            j = 0
+            for solutions in liste_fichiers_solutions:
+                liste_solutions[solutions] = customtkinter.CTkSwitch(master=frame_solutions, progress_color="#1d7c69",
+                                                                     text=f"{solutions}")
+                liste_solutions[solutions].grid(row=j, column=0, padx=10, pady=(0, 20))
+                self.choixSolutions.append(liste_solutions[solutions])
+                j = j + 1
+
+
         # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
         def popupImportCreate():
 
@@ -38,49 +100,30 @@ class App(customtkinter.CTk):
             self.popup = PopUp(self)
 
 
-
             # Création de la Frame contenant les RadioButtons
             scrollable_frame = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Projets")
             scrollable_frame.grid(row=0, column=0, padx=(20, 20), pady=(20, 0), sticky="nsew")
+
             radio_var = tkinter.IntVar(value=0)
 
-            """
+
             # Récupère le chemin des fichiers de données et de solutions associées
-            liste_fichiers_donnees = FileManager().lister_fichiers(os.path.join(self.current_path, "../Projets"))
-            liste_fichiers_solutions = FileManager().lister_fichiers(os.path.join(self.current_path, "../Projets/Solutions"))
-            print(liste_fichiers_donnees)
-            print(liste_fichiers_solutions)
-            
-            # Créé la liste des solutions (à changer pour créer la liste des projets)
-            projets = {}
-            i = 0
-            for projet in liste_fichiers:
-                projets[projet] = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i, text=f"{projet}")
-                projets[projet].grid(row=i, column=0, padx=10, pady=(0, 20))
-                i = i + 1
-
-            print(projets[liste_fichiers[0]].cget("text"))
-            """
-
-
-            """
-            # Génère temporairement toutes les RadioButtons
-            for i in range(1,11,1):
-                radio = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i, text=f"Projet {i}")
-                radio.grid(row=i, column=0, padx=10, pady=(0, 20))
-            """
+            liste_dossiers_projets = FileManager().lister_dossiers(os.path.join(self.current_path, "../Projets"))
 
             # Génère la Frame qui va contenir les Switchs
-            scrollable_frame2 = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Fichiers Solution Associés")
-            scrollable_frame2.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
-            scrollable_frame_choices = []
+            frame_solutions = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Fichiers Solution Associés")
+            frame_solutions.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
 
-            # Génère temporairement tous les Switchs
-            for i in range(10):
-                switch = customtkinter.CTkSwitch(master=scrollable_frame2, progress_color="#1d7c69", text=f"Solution {i+1}")
-                switch.grid(row=i, column=0, padx=10, pady=(0, 20))
-                scrollable_frame_choices.append(switch)
+            # Créé la liste des projets
+            liste_projets = {}
+            i = 0
+            for projet in liste_dossiers_projets:
+                liste_projets[projet] = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i+1, text=f"{projet}", command=lambda p=projet: assignProjet(p,frame_solutions))
+                liste_projets[projet].grid(row=i, column=0, padx=10, pady=(0, 20))
+                i = i + 1
 
+            boutonValider = customtkinter.CTkButton(self.popup.window, fg_color="#1d7c69", hover_color="#275855", command=valider, text="Valider")
+            boutonValider.grid(row=9, column=0, columnspan=10, padx=20, pady=10)
 
 
             #Replace la pop-up au centre de la fenêtre principale
@@ -151,15 +194,19 @@ class App(customtkinter.CTk):
         # Création de la map et mise dans une grid (ligne 1 et colonne 1)
         self.map_widget = TkinterMapView()
         self.map_widget.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
+        self.map_widget.set_zoom(8)
 
         # Définition de la position de départ
         self.map_widget.set_position(47.3565655, 0.7035767)
 
-        #Défintion de valeurs de test (deux marqueurs et une ligne les reliant)
+
+        """
+        #Définition de valeurs de test (deux marqueurs et une ligne les reliant)
         self.pos1 = self.map_widget.set_marker(47.3565655, 0.7035767, icon=self.image_client, command=showDataMarker)
         self.pos2 = self.map_widget.set_marker(47.3561294, 0.6977163, icon=self.image_producteur, command=showDataMarker)
 
         self.traj1 = self.map_widget.set_path([self.pos2.position, self.pos1.position],color="#1d7c69", command=showDataLine)
+        """
 
         # Création du tableau
         self.tableau = ttk.Treeview()
