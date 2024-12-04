@@ -32,118 +32,6 @@ class App(customtkinter.CTk):
         self.image_client = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "client.png")).resize((35, 35)))
         self.image_producteur = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "producteur.png")).resize((35, 35)))
 
-        def valider():
-
-            print(self.fichier_producteurs)
-            donnees = CreerClasses(self.fichier_producteurs)
-
-            self.person_var_name = {}
-            for person in donnees.getProducteurs():
-                # TODO : Si producteur, sinon :
-                if (1==1) :
-                    self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude, icon=self.image_producteur,
-                                                       command=showDataMarker)
-
-            for person in donnees.getClients():
-                # TODO : Si producteur, sinon :
-                if (1 == 1):
-                    self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude,
-                                                                                 icon=self.image_client,
-                                                                                 command=showDataMarker)
-
-
-            print(donnees.getProducteurs())
-            print(donnees.getClients())
-            for selected in self.choixSolutions:
-                if (selected.get() == 1) :
-                    # TODO : Attendre la création de tous les producteurs et clients, puis faire tous les trajets
-                    print(selected.cget("text"))
-
-        def assignProjet(projet, frame_solutions):
-
-            # Détruit les objets précédemment créés dans la ScrollableFrame où sont contenues les solutions
-            for widget in frame_solutions.winfo_children():
-                widget.destroy()
-
-            # Remets la liste des solutions à vide
-            self.choixSolutions = []
-
-            # Récupère la liste des fichiers solutions dans le projet sélectionné
-            liste_fichiers_solutions = FileManager().lister_fichiers(
-                os.path.join(self.current_path, "../Projets/" + projet + "/Solutions"))
-
-            # Récupère le fichier données dans le projet sélectionné
-            fichier_donnees = FileManager().lister_fichiers(
-                os.path.join(self.current_path, "../Projets/" + projet))
-
-            # Extrait les données du fichier de données du projet
-            self.fichier_producteurs = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + projet +"/"+ fichier_donnees[0]))
-
-
-
-            # Créé les différents Switchs permettant de selectionner les boutons et les ajoute dans
-            # l'attribut contenant les différents noms des fichiers solution
-            liste_solutions = {}
-            j = 0
-            for solutions in liste_fichiers_solutions:
-                liste_solutions[solutions] = customtkinter.CTkSwitch(master=frame_solutions, progress_color="#1d7c69",
-                                                                     text=f"{solutions}")
-                liste_solutions[solutions].grid(row=j, column=0, padx=10, pady=(0, 20))
-                self.choixSolutions.append(liste_solutions[solutions])
-                j = j + 1
-
-
-        # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
-        def popupImportCreate():
-
-            #Initialise la popup
-            self.popup = PopUp(self)
-
-
-            # Création de la Frame contenant les RadioButtons
-            scrollable_frame = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Projets")
-            scrollable_frame.grid(row=0, column=0, padx=(20, 20), pady=(20, 0), sticky="nsew")
-
-            radio_var = tkinter.IntVar(value=0)
-
-
-            # Récupère le chemin des fichiers de données et de solutions associées
-            liste_dossiers_projets = FileManager().lister_dossiers(os.path.join(self.current_path, "../Projets"))
-
-            # Génère la Frame qui va contenir les Switchs
-            frame_solutions = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Fichiers Solution Associés")
-            frame_solutions.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
-
-            # Créé la liste des projets
-            liste_projets = {}
-            i = 0
-            for projet in liste_dossiers_projets:
-                liste_projets[projet] = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i+1, text=f"{projet}", command=lambda p=projet: assignProjet(p,frame_solutions))
-                liste_projets[projet].grid(row=i, column=0, padx=10, pady=(0, 20))
-                i = i + 1
-
-            boutonValider = customtkinter.CTkButton(self.popup.window, fg_color="#1d7c69", hover_color="#275855", command=valider, text="Valider")
-            boutonValider.grid(row=9, column=0, columnspan=10, padx=20, pady=10)
-
-
-            #Replace la pop-up au centre de la fenêtre principale
-            self.popup.window.geometry("+%d+%d" % ((self.popup.masterwindow.winfo_rootx() + self.popup.masterwindow.winfo_width() / 2)-(self.popup.window.winfo_width()*1.5),
-                           (self.popup.masterwindow.winfo_rooty() + self.popup.masterwindow.winfo_height() / 2)-(self.popup.window.winfo_height()*1.25)))
-            self.wait_window(self.popup.window)
-
-        # Affiche les données des markers et les caches si deuxième clic
-        def showDataMarker(marker):
-            if marker.text != "" and marker.text is not None:
-                marker.set_text("")
-            else :
-                marker.set_text("Infos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \n")
-
-        def showDataLine(line):
-            if line.name != "" and line.name is not None:
-                line.name = ""
-            else :
-                line.name = "Infos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \n"
-
 
 
         # Mise en arrière définitive de la fenêtre (pour que les pop-ups puissent toujours se situer devant)
@@ -169,7 +57,7 @@ class App(customtkinter.CTk):
         self.couleur_bouton = customtkinter.CTkImage(light_image=Image.open('../Images/Couleur_Boutons.png'), size=(500, 150))
 
         # Création des boutons dans la sidebar ( soit popupImportCreate, soit importVer2)
-        self.importer = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command= popupImportCreate , text = "Importer")
+        self.importer = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command= self.popupImportCreate , text = "Importer")
         self.importer.grid(row=1, column=0, padx=20, pady=10)
 
         self.filtre = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",  command=self.sidebar_button_event, text = "Filtres")
@@ -233,6 +121,119 @@ class App(customtkinter.CTk):
 
         # Dissimulation du tableau
         self.tableau.grid_forget()
+
+    def valider(self):
+
+        print(self.fichier_producteurs)
+        donnees = CreerClasses(self.fichier_producteurs)
+
+        self.person_var_name = {}
+        for person in donnees.getProducteurs():
+            # TODO : Si producteur, sinon :
+            if (1==1) :
+                self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude, icon=self.image_producteur,
+                                                       command=self.showDataMarker)
+
+        for person in donnees.getClients():
+            # TODO : Si producteur, sinon :
+            if (1 == 1):
+                self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude,
+                                                                                 icon=self.image_client,
+                                                                                 command=self.showDataMarker)
+
+
+        print(donnees.getProducteurs())
+        print(donnees.getClients())
+        for selected in self.choixSolutions:
+            if (selected.get() == 1) :
+                # TODO : Attendre la création de tous les producteurs et clients, puis faire tous les trajets
+                print(selected.cget("text"))
+
+    def assignProjet(self, projet, frame_solutions):
+
+        # Détruit les objets précédemment créés dans la ScrollableFrame où sont contenues les solutions
+        for widget in frame_solutions.winfo_children():
+            widget.destroy()
+
+        # Remets la liste des solutions à vide
+        self.choixSolutions = []
+
+        # Récupère la liste des fichiers solutions dans le projet sélectionné
+        liste_fichiers_solutions = FileManager().lister_fichiers(
+            os.path.join(self.current_path, "../Projets/" + projet + "/Solutions"))
+
+        # Récupère le fichier données dans le projet sélectionné
+        fichier_donnees = FileManager().lister_fichiers(
+            os.path.join(self.current_path, "../Projets/" + projet))
+
+        # Extrait les données du fichier de données du projet
+        self.fichier_producteurs = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + projet +"/"+ fichier_donnees[0]))
+
+
+
+        # Créé les différents Switchs permettant de selectionner les boutons et les ajoute dans
+        # l'attribut contenant les différents noms des fichiers solution
+        liste_solutions = {}
+        j = 0
+        for solutions in liste_fichiers_solutions:
+            liste_solutions[solutions] = customtkinter.CTkSwitch(master=frame_solutions, progress_color="#1d7c69",
+                                                                     text=f"{solutions}")
+            liste_solutions[solutions].grid(row=j, column=0, padx=10, pady=(0, 20))
+            self.choixSolutions.append(liste_solutions[solutions])
+            j = j + 1
+
+
+        # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
+    def popupImportCreate(self):
+
+        #Initialise la popup
+        self.popup = PopUp(self)
+
+
+        # Création de la Frame contenant les RadioButtons
+        scrollable_frame = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Projets")
+        scrollable_frame.grid(row=0, column=0, padx=(20, 20), pady=(20, 0), sticky="nsew")
+
+        radio_var = tkinter.IntVar(value=0)
+
+
+        # Récupère le chemin des fichiers de données et de solutions associées
+        liste_dossiers_projets = FileManager().lister_dossiers(os.path.join(self.current_path, "../Projets"))
+
+        # Génère la Frame qui va contenir les Switchs
+        frame_solutions = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Fichiers Solution Associés")
+        frame_solutions.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+
+        # Créé la liste des projets
+        liste_projets = {}
+        i = 0
+        for projet in liste_dossiers_projets:
+            liste_projets[projet] = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i+1, text=f"{projet}", command=lambda p=projet: self.assignProjet(p,frame_solutions))
+            liste_projets[projet].grid(row=i, column=0, padx=10, pady=(0, 20))
+            i = i + 1
+
+        boutonValider = customtkinter.CTkButton(self.popup.window, fg_color="#1d7c69", hover_color="#275855", command=self.valider, text="Valider")
+        boutonValider.grid(row=9, column=0, columnspan=10, padx=20, pady=10)
+
+
+        #Replace la pop-up au centre de la fenêtre principale
+        self.popup.window.geometry("+%d+%d" % ((self.popup.masterwindow.winfo_rootx() + self.popup.masterwindow.winfo_width() / 2)-(self.popup.window.winfo_width()*1.5),
+                (self.popup.masterwindow.winfo_rooty() + self.popup.masterwindow.winfo_height() / 2)-(self.popup.window.winfo_height()*1.25)))
+        self.wait_window(self.popup.window)
+
+    # Affiche les données des markers et les caches si deuxième clic
+    def showDataMarker(self,marker):
+        if marker.text != "" and marker.text is not None:
+            marker.set_text("")
+        else :
+            marker.set_text("Infos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \n")
+
+    def showDataLine(self,line):
+        if line.name != "" and line.name is not None:
+            line.name = ""
+        else :
+            line.name = "Infos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \n"
+
 
 
     # Evenement temporaire declenché par appui sur bouton
