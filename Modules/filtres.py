@@ -8,6 +8,7 @@ def filtreTournees(tournees:list, producteursId:list, clientsId:list, demiJours:
     :param list[int] clientsId: Seuls les tournées qui impliquent l'un des clients représentés dans cette liste seront prises en compte.
     :param list[DemiJour] demiJours: Seuls les tournées qui se déroulent sur l'une des demi-journées de cette liste seront prises en compte.
     :return: Nouvelle liste de tournées filtrées.
+
     Une valeur None sur l'une des listes en paramètre permet d'évacuer la contrainte
     """
 
