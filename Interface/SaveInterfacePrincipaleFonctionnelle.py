@@ -1,10 +1,11 @@
 from tkinter import *
+import tkinter
 import os
 from  tkinter import ttk
 from tkintermapview import TkinterMapView
 from PIL import Image, ImageTk
 import customtkinter
-from Interface.PopupImport import PopupImport
+from Interface.PopUp import PopUp
 from Modules.FileManager import FileManager
 from Modules.CreerClasses import CreerClasses
 from Modules.DataExtractor import DataExtractor
@@ -31,6 +32,8 @@ class App(customtkinter.CTk):
         self.image_client = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "client.png")).resize((35, 35)))
         self.image_producteur = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "producteur.png")).resize((35, 35)))
 
+
+
         # Mise en arrière définitive de la fenêtre (pour que les pop-ups puissent toujours se situer devant)
         self.attributes('-topmost',False)
 
@@ -54,7 +57,7 @@ class App(customtkinter.CTk):
         self.couleur_bouton = customtkinter.CTkImage(light_image=Image.open('../Images/Couleur_Boutons.png'), size=(500, 150))
 
         # Création des boutons dans la sidebar ( soit popupImportCreate, soit importVer2)
-        self.importer = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command = lambda : PopupImport(self) , text = "Importer")
+        self.importer = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855", command= self.popupImportCreate , text = "Importer")
         self.importer.grid(row=1, column=0, padx=20, pady=10)
 
         self.filtre = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",  command=self.sidebar_button_event, text = "Filtres")
@@ -84,6 +87,15 @@ class App(customtkinter.CTk):
         # Définition de la position de départ
         self.map_widget.set_position(47.3565655, 0.7035767)
 
+
+        """
+        #Définition de valeurs de test (deux marqueurs et une ligne les reliant)
+        self.pos1 = self.map_widget.set_marker(47.3565655, 0.7035767, icon=self.image_client, command=showDataMarker)
+        self.pos2 = self.map_widget.set_marker(47.3561294, 0.6977163, icon=self.image_producteur, command=showDataMarker)
+
+        self.traj1 = self.map_widget.set_path([self.pos2.position, self.pos1.position],color="#1d7c69", command=showDataLine)
+        """
+
         # Création du tableau
         self.tableau = ttk.Treeview()
         self.tableau['columns'] = ["Producteur","Client","Poids Maximal","Demi-Jour travaillé ?","Autre"]
@@ -100,6 +112,12 @@ class App(customtkinter.CTk):
         self.tableau.heading("Poids Maximal", text="Poids Maximal")
         self.tableau.heading("Demi-Jour travaillé ?", text="Demi-Jour travaillé ?")
         self.tableau.heading("Autre", text="Autre")
+
+        # Jeu de données temporaires
+        self.tableau.insert(parent='',index='end',iid=0,text='',values=('0','Test','101','Test2', 'efguazielgf'))
+        for i in range(0,50,1):
+            self.tableau.insert(parent='',index='end',iid=i+1,text='',values=(i+1,'Test','101','Test', 'Moore'))
+        self.tableau.insert(parent='',index='end',iid=51,text='',values=('51','Test','101','Test2', 'efguazielgf'))
 
         # Dissimulation du tableau
         self.tableau.grid_forget()
@@ -162,7 +180,43 @@ class App(customtkinter.CTk):
             j = j + 1
 
 
+    # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
+    def popupImportCreate(self):
 
+        #Initialise la popup
+        self.popup = PopUp(self)
+
+
+        # Création de la Frame contenant les RadioButtons
+        scrollable_frame = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Projets")
+        scrollable_frame.grid(row=0, column=0, padx=(20, 20), pady=(20, 0), sticky="nsew")
+
+        radio_var = tkinter.IntVar(value=0)
+
+
+        # Récupère le chemin des fichiers de données et de solutions associées
+        liste_dossiers_projets = FileManager().lister_dossiers(os.path.join(self.current_path, "../Projets"))
+
+        # Génère la Frame qui va contenir les Switchs
+        frame_solutions = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Fichiers Solution Associés")
+        frame_solutions.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+
+        # Créé la liste des projets
+        liste_projets = {}
+        i = 0
+        for projet in liste_dossiers_projets:
+            liste_projets[projet] = customtkinter.CTkRadioButton(master=scrollable_frame, fg_color="#1d7c69", hover_color="#275855", variable=radio_var, value=i+1, text=f"{projet}", command=lambda p=projet: self.assignProjet(p,frame_solutions))
+            liste_projets[projet].grid(row=i, column=0, padx=10, pady=(0, 20))
+            i = i + 1
+
+        boutonValider = customtkinter.CTkButton(self.popup.window, fg_color="#1d7c69", hover_color="#275855", command=self.valider, text="Valider")
+        boutonValider.grid(row=9, column=0, columnspan=10, padx=20, pady=10)
+
+
+        #Replace la pop-up au centre de la fenêtre principale
+        self.popup.window.geometry("+%d+%d" % ((self.popup.masterwindow.winfo_rootx() + self.popup.masterwindow.winfo_width() / 2)-(self.popup.window.winfo_width()*1.5),
+                (self.popup.masterwindow.winfo_rooty() + self.popup.masterwindow.winfo_height() / 2)-(self.popup.window.winfo_height()*1.25)))
+        self.wait_window(self.popup.window)
 
     # Affiche les données des markers et les caches si deuxième clic
     def showDataMarker(self,marker):
