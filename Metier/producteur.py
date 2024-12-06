@@ -54,3 +54,7 @@ class Producteur(Acteur):
         for partner in self.partners:
             result += "\n\t\tProducteur " + str(partner.id)
         return result
+
+    def __repr__(self)->str:
+        """Affichage simple"""
+        return "Producteur " + str(self.id)

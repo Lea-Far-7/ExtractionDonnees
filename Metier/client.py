@@ -31,3 +31,7 @@ class Client(Acteur):
         for dispo in self.dispos:
             result += "\n\t\t" + str(dispo)
         return result
+
+    def __repr__(self)->str:
+        """Affichage simple"""
+        return "Client " + str(self.id)

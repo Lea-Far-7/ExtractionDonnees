@@ -24,3 +24,7 @@ class DemiJour:
         Affiche les informations sur la demi-journée.
         """
         return "Demi-jour "+ str(self.num) + " : " + self.label
+
+    def __repr__(self)->str:
+        """Affichage simple"""
+        return self.label
