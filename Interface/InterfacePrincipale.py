@@ -118,26 +118,27 @@ class App(customtkinter.CTk):
         # Dissimulation du tableau
         self.tableau.grid_forget()
 
+    # Valide le projet sélectionné
     def valider(self):
 
+        # Supprime les markers précédemment créés lors de l'import de projets précédents
         for element in self.person_var_name.keys() :
             self.person_var_name[element].delete()
 
-        donnees = CreerClasses(self.fichier_producteurs)
+        # Créé une liste contenant toutes les informations du projet (Producteurs et Clients avec leurs informations respectives, pas le fichier solution)
+        donnees = CreerClasses(self.projet)
 
-
+        # Parcourt les producteurs créés et inclut leurs données dans le marker créé
         for person in donnees.getProducteurs():
             self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude, icon=self.image_producteur,
-                                                       command=self.showDataMarker)
+                                                       command="")
 
+        # Parcourt les producteurs créés et inclut leurs données dans le marker créé
         for person in donnees.getClients():
             self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude,
                                                                                  icon=self.image_client,
-                                                                                 command=self.showDataMarker)
-
-
-        # print(donnees.getProducteurs())
-        # print(donnees.getClients())
+                                                                                 command="")
+        # Lecture de choix de solutions en cours de construction, pas fonctionnel
         for selected in self.choixSolutions:
             if (selected.get() == 1) :
                 print(selected.cget("text"))
@@ -160,9 +161,7 @@ class App(customtkinter.CTk):
             os.path.join(self.current_path, "../Projets/" + projet))
 
         # Extrait les données du fichier de données du projet
-        self.fichier_producteurs = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + projet +"/"+ fichier_donnees[0]))
-
-
+        self.projet = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + projet +"/"+ fichier_donnees[0]))
 
         # Créé les différents Switchs permettant de selectionner les boutons et les ajoute dans
         # l'attribut contenant les différents noms des fichiers solution
@@ -175,23 +174,11 @@ class App(customtkinter.CTk):
             self.choixSolutions.append(liste_solutions[solutions])
             j = j + 1
 
-
-
-
-    # Affiche les données des markers et les caches si deuxième clic
-    def showDataMarker(self,marker):
-        if marker.text != "" and marker.text is not None:
-            marker.set_text("")
-        else :
-            marker.set_text("Infos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \n")
-
     def showDataLine(self,line):
         if line.name != "" and line.name is not None:
             line.name = ""
         else :
             line.name = "Infos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \n"
-
-
 
     # Evenement temporaire declenché par appui sur bouton
     def sidebar_button_event(self):
