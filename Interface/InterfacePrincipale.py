@@ -4,6 +4,8 @@ from  tkinter import ttk
 from tkintermapview import TkinterMapView
 from PIL import Image, ImageTk
 import customtkinter
+
+from Interface.PopupFiltre import PopupFiltre
 from Interface.PopupImport import PopupImport
 from Modules.FileManager import FileManager
 from Modules.CreerClasses import CreerClasses
@@ -18,6 +20,7 @@ class App(customtkinter.CTk):
         super().__init__()
 
         # Définition des composants essentiels
+        self.projet = None
         self.person_var_name = {}
         self.tableau = None
 
@@ -67,7 +70,7 @@ class App(customtkinter.CTk):
                                                 command=lambda: PopupImport(self), text="Importer")
         self.importer.grid(row=1, column=0, padx=20, pady=10)
         self.filtre = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
-                                              command=self.sidebar_button_event, text="Filtres")
+                                              command=lambda: PopupFiltre(self), text="Filtres")
         self.filtre.grid(row=4, column=0, padx=20, pady=10)
         self.export = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
                                               command=self.sidebar_button_event, text="Export")
