@@ -1,8 +1,6 @@
-import os
-import tkinter
 import customtkinter
 from Interface.PopUp import PopUp
-from Modules.CreerClasses import CreerClasses
+from Modules.ListeDemiJours import ListeDemiJours
 
 
 class PopupFiltre:
@@ -41,11 +39,11 @@ class PopupFiltre:
                 switch.grid(row=i, column=0, padx=10, pady=(0, 20))
                 i += 1
 
-            #i = 0
-            #for dj in data.getDemiJour():
-            #    switch = customtkinter.CTkSwitch(master=frame_dj, progress_color="#1d7c69", text=repr(dj))
-            #    switch.grid(row=i, column=0, padx=10, pady=(0, 20))
-            #    i += 1
+            i = 0
+            for dj in ListeDemiJours.getlisteDJ():
+                switch = customtkinter.CTkSwitch(master=frame_dj, progress_color="#1d7c69", text=repr(dj))
+                switch.grid(row=i, column=0, padx=0, pady=(0, 20))
+                i += 1
 
 
         validButton = customtkinter.CTkButton(self.popup.window, fg_color="#1d7c69", hover_color="#275855",
