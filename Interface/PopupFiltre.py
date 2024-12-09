@@ -42,7 +42,7 @@ class PopupFiltre:
             i = 0
             for dj in ListeDemiJours.getlisteDJ():
                 switch = customtkinter.CTkSwitch(master=frame_dj, progress_color="#1d7c69", text=repr(dj))
-                switch.grid(row=i, column=0, padx=0, pady=(0, 20))
+                switch.grid(row=i, column=1, padx=10, pady=(0, 20), sticky="w")
                 i += 1
 
 
