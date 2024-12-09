@@ -21,6 +21,7 @@ class App(customtkinter.CTk):
 
         # Définition des composants essentiels
         self.projet = None
+        self.donnees = None
         self.person_var_name = {}
         self.tableau = None
 
@@ -129,15 +130,15 @@ class App(customtkinter.CTk):
             self.person_var_name[element].delete()
 
         # Créé une liste contenant toutes les informations du projet (Producteurs et Clients avec leurs informations respectives, pas le fichier solution)
-        donnees = CreerClasses(self.projet)
+        self.donnees = CreerClasses(self.projet)
 
         # Parcourt les producteurs créés et inclut leurs données dans le marker créé
-        for person in donnees.getProducteurs():
+        for person in self.donnees.getProducteurs():
             self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude, icon=self.image_producteur,
                                                        command="")
 
         # Parcourt les producteurs créés et inclut leurs données dans le marker créé
-        for person in donnees.getClients():
+        for person in self.donnees.getClients():
             self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude,
                                                                                  icon=self.image_client,
                                                                                  command="")

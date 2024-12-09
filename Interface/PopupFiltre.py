@@ -27,18 +27,16 @@ class PopupFiltre:
 
 
         # Récupération des données s'il y en a et ajouts dans les Frame
-        if interface.projet:
-
-            data = CreerClasses(interface.projet)
+        if interface.donnees:
 
             i = 0
-            for prod in data.getProducteurs():
+            for prod in interface.donnees.getProducteurs():
                 switch = customtkinter.CTkSwitch(master=frame_prod, progress_color="#1d7c69", text=repr(prod))
                 switch.grid(row=i, column=0, padx=10, pady=(0, 20))
                 i+=1
 
             i = 0
-            for cl in data.getClients():
+            for cl in interface.donnees.getClients():
                 switch = customtkinter.CTkSwitch(master=frame_cl, progress_color="#1d7c69", text=repr(cl))
                 switch.grid(row=i, column=0, padx=10, pady=(0, 20))
                 i += 1
