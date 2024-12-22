@@ -1,9 +1,13 @@
+import tkinter.messagebox
+from time import strftime, gmtime
 from tkinter import *
 import os
 from  tkinter import ttk
 from tkintermapview import TkinterMapView
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageGrab
 import customtkinter
+
+import ctypes
 
 from Interface.PopupFiltre import PopupFiltre
 from Interface.PopupImport import PopupImport
@@ -74,14 +78,8 @@ class App(customtkinter.CTk):
                                               command=lambda: PopupFiltre(self), text="Filtres")
         self.filtre.grid(row=4, column=0, padx=20, pady=10)
         self.export = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
-                                              command=self.sidebar_button_event, text="Export")
+                                              command=self.screenshot, text="Export")
         self.export.grid(row=6, column=0, padx=20, pady=10)
-        self.ajout = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
-                                             command=self.sidebar_button_event, text="Ajout")
-        self.ajout.grid(row=7, column=0, padx=20, pady=10)
-        self.supprime = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
-                                                command=self.sidebar_button_event, text="Supprimer")
-        self.supprime.grid(row=8, column=0, padx=20, pady=10)
 
         # Création des boutons de navigation entre la map et le tableau
         self.button_map = customtkinter.CTkButton(self, fg_color="#1d7c69", hover_color="#275855",
@@ -178,15 +176,22 @@ class App(customtkinter.CTk):
             self.choixSolutions.append(liste_solutions[solutions])
             j = j + 1
 
+    def screenshot(self):
+        bbox = (self.map_widget.winfo_rootx(), self.map_widget.winfo_rooty(), self.map_widget.winfo_rootx()+self.map_widget.winfo_width(), self.map_widget.winfo_rooty()+self.map_widget.winfo_height())
+
+        # Capture the screenshot
+        screenshot = ImageGrab.grab(bbox)
+
+        # Save the screenshot
+        screenshot.save('../Exports/Screenshot_'+strftime("%Y%m%d_%H%M%S", gmtime())+'.png')
+
+        tkinter.messagebox.showinfo(title="Information", message="Image enregistrée")
+
     def showDataLine(self,line):
         if line.name != "" and line.name is not None:
             line.name = ""
         else :
             line.name = "Infos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \n"
-
-    # Evenement temporaire declenché par appui sur bouton
-    def sidebar_button_event(self):
-        print("Clic bouton")
 
     # Evenement permettant d'afficher le tableau tout en cachant la map
     def select_tab(self) :
