@@ -84,6 +84,10 @@ class CreerClasses:
     def __creerProducteurs(self) -> list:
     """
     def __creerProducteurs(self):
+        """
+        Méthode privée qui créé les producteurs associés au fichier
+        :return: void modifie directement les attributs de classe
+        """
 
         nbProducteurs = self.getNbProducteurs()
         # Les partenaires sont une liste de Prodcteurs.
@@ -140,6 +144,10 @@ class CreerClasses:
     def __creerClients(self) -> list:
     """
     def __creerClients(self):
+        """
+        Méthode privée qui créé les clients associés au fichier
+        :return: void modifie directement les attributs de classe
+        """
 
         # indice de la première ligne de client = nombre de producteurs + 1
         debutClients = self.getNbProducteurs() + 1

@@ -3,12 +3,13 @@ from csv import reader
 
 class DataExtractor:
     def __init__(self, delimiteur=" "):
-        #self.chemin_vers_fichier = chemin_vers_fichier
         self.delimiteur = delimiteur
 
     def extraction(self, chemin_vers_fichier : str) -> list:
-        # Utilise reader qui retourne un objet de type readerObject
-        # Dois renvoyer une liste de liste
+        """
+        Utilise reader qui retourne un objet de type readerObject
+        Dois renvoyer une liste de liste
+        """
         try:
             with open(chemin_vers_fichier, "r") as fichier:
                 lignes = (l.strip() for l in fichier)
