@@ -219,25 +219,13 @@ class CreerClasses:
 
         if fichier:
             # Pour chaque tournée du fichier, on conserve son numéro
-            for i, tournee in enumerate(fichier):
+            for tournee in fichier:
                 producteur = self.producteurs[int(tournee[0][0])]
                 demiJour = DemiJour(int(tournee[0][1]))
                 liste_taches = []
 
                 # ligne 1 = liste des nœuds visités = pas utile
 
-                """
-                type = tournee[2][0]
-                charge = float(tournee[2][1])
-                if type == 'P':
-                    lieu = self.producteurs[int(tournee[2][2])]
-                    info_requete = self.clients[int(tournee[2][3])]
-                else:
-                    lieu = self.clients[int(tournee[2][2])]
-                    info_requete = self.producteurs[int(tournee[2][3])]
-    
-                horaire = tournee[2][4]
-                """
                 for j in range (2, len(tournee)):
                     tache = self.__creerTache(tournee[j])
                     liste_taches.append(tache)
