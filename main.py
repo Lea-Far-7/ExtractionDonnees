@@ -7,31 +7,32 @@ manager = FileManager()
 liste = manager.lister_dossiers("Projets")
 print(liste)
 
-chemin = "Projets\\" + liste[0] + "\Solutions"
+chemin = "Projets\\" + liste[1] + "\Solutions"
 liste = manager.lister_fichiers(chemin)
 print(liste)
 
-print("Récupération des fichiers du dossier Projet_1")
+print("Récupération des fichiers du dossier Projet_3")
 liste = manager.lister_fichiers("Projets\Projet_3")
 print(liste)
 print("-------------------------")
 
-# Le user sélectionne un projet dans la liste -> renvoie "Projet_1
+# Le user sélectionne un projet dans la liste -> renvoie "Projet_1"
 # S'affiche le fichier de données à gauche -> fonction qui retourne les (le) fichiers du dossier "Projet_1"
-# S'affiche à droite les fichiers du sous-dossier solutions -> fonction qui retourne les(le) fichier du dossier
+# S'affichent à droite les fichiers du sous-dossier solutions -> fonction qui retourne les(le) fichier du dossier
 # En fait, on garde la fonction mais on oblige la récupération que des fichiers et on prend le nom en paramètre.
-# Faire une variable qui créé le chemin avec le projet choisi
+# Faire une variable qui crée le chemin avec le projet choisi
 # Faire une variable statique dans la classe qui utilise la fonction pour "Projets" et "Solutions"
 
 
 # On remplace l'input par la sélection du fichier avec les boutons par l'utilisateur
-indice = int(input("Choisissez le fichier")) # Donner 0, il n'y a qu'un fichier pour le test
+indice = int(input("Choisissez le fichier")) # Donner 0, car il n'y a qu'un fichier de données
 fichier = liste[indice]
 print()
 
 # On extrait les données du fichier
 extractor = DataExtractor()
 donnees = extractor.extraction("Projets\Projet_3\\" + fichier)
+print("Liste des lignes")
 print(donnees)
 print("-------------------------")
 
@@ -42,7 +43,8 @@ print("-------------------------")
 # Il fait de même en parcourant les éléments à partir de l'indice nb_clients à la fin.
 # Il créé une instance Client à chaque itération en mettant les bons arguments
 
-createur = CreerClasses(donnees)
+createur = CreerClasses()
+createur.load_donnees(donnees)
 liste_producteurs = createur.getProducteurs()
 liste_clients = createur.getClients()
 liste_demandes = createur.getDemandes()
@@ -61,6 +63,10 @@ for demande in liste_demandes:
 print("-------------------------")
 
 # Extraction fichier solution
-donnees = extractor.extraction("Projets/Projet_3/Solutions/routes_1_pt.txt")
-for ligne in donnees:
-    print(ligne)
+solutions = extractor.extraction_solution("Projets/Projet_3/Solutions/routes_1_pt.txt")
+
+createur.load_solutions(solutions)
+tournees = createur.getTournees()
+print(tournees[0])
+print("---------------")
+print(tournees[5])

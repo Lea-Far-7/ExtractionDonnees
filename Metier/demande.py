@@ -4,7 +4,7 @@ from Metier.client import Client
 
 class Demande:
 
-    nb = 0  # nombre d'instances de Demand
+    nb = 0  # nombre d'instances de Demande
 
     def __init__(self, client:Client, producteur:Producteur, masse:float):
         self.idDemande = Demande.nb

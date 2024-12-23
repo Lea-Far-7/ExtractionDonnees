@@ -3,6 +3,7 @@ from Metier.client import Client
 from Metier.acteur import Acteur
 from Metier.tache import Tache
 from Metier.tournee import Tournee
+from Metier.demiJour import DemiJour
 from Modules.ListeDemiJours import ListeDemiJours
 """
 TODO

@@ -51,4 +51,5 @@ class Tournee:
                 + "\n\tTaches : ")
         for tache in self.taches:
             result += "\n\t\t" + str(tache)
+
         return result
