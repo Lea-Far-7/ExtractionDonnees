@@ -129,7 +129,7 @@ class App(customtkinter.CTk):
 
         # Créé une liste contenant toutes les informations du projet (Producteurs et Clients avec leurs informations respectives, pas le fichier solution)
         self.donnees = CreerClasses()
-        self.donnees.load_donnees(self.projet)
+        self.donnees.load_donnees(self.donnees_projet)
 
         # Parcourt les producteurs créés et inclut leurs données dans le marker créé
         for person in self.donnees.getProducteurs():
@@ -164,7 +164,7 @@ class App(customtkinter.CTk):
             os.path.join(self.current_path, "../Projets/" + projet))
 
         # Extrait les données du fichier de données du projet
-        self.projet = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + projet +"/"+ fichier_donnees[0]))
+        self.donnees_projet = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + projet +"/"+ fichier_donnees[0]))
 
         # Créé les différents Switchs permettant de selectionner les boutons et les ajoute dans
         # l'attribut contenant les différents noms des fichiers solution
