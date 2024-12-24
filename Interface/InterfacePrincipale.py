@@ -128,7 +128,8 @@ class App(customtkinter.CTk):
             self.person_var_name[element].delete()
 
         # Créé une liste contenant toutes les informations du projet (Producteurs et Clients avec leurs informations respectives, pas le fichier solution)
-        self.donnees = CreerClasses(self.projet)
+        self.donnees = CreerClasses()
+        self.donnees.load_donnees(self.projet)
 
         # Parcourt les producteurs créés et inclut leurs données dans le marker créé
         for person in self.donnees.getProducteurs():
