@@ -44,6 +44,25 @@ class Tournee:
                 chargement += tache.charge
         return chargement
 
+    def chargementMax(self)->float:
+        chargement = 0
+        chargement_max = 0
+        for tache in self.taches:
+            if tache.type == 'P':
+                chargement += tache.charge
+                if chargement > chargement_max:
+                    chargement_max = chargement
+            else:
+                chargement -= tache.charge
+        return chargement_max
+
+    def duree(self)->int:
+        debut = self.taches[0].horaire
+        fin = self.taches[-1].horaire
+        [debutH, debutM] = debut.split(':')
+        [finH, finM] = fin.split(':')
+        return (int(finH)-int(debutH))*60 + (int(finM)-int(debutM))
+
     def __str__(self)->str:
         result = ("Tournée " + str(self.idTournee) + " : "
                 + "\n\t" + str(self.demiJour)
