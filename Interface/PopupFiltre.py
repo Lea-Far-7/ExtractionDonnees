@@ -2,6 +2,7 @@ import customtkinter
 from Interface.PopUp import PopUp
 from Modules.ListeDemiJours import ListeDemiJours
 from Modules.extractRange import extractRange
+from Modules.filtres import filtreTournees
 
 
 class PopupFiltre:
@@ -80,24 +81,51 @@ class PopupFiltre:
 
     def validate(self):
 
+        producteurs_id = []
+        clients_id = []
+        demi_jours_num = []
+
         filtrage_text_prod = self.entry_prod.get()
         filtrage_text_cl = self.entry_cl.get()
 
-        # Misa à jour des switch en fonction des plages sélectionnées
+        # Récupération des producteurs à filtrer
         if filtrage_text_prod != "":
-            to_select = extractRange(filtrage_text_prod)
+            # Sélection par le champ textuel dédié
+            producteurs_id = extractRange(filtrage_text_prod)
+            # Mise à jour des switch en fonction des plages sélectionnées
             for key, switch in self.switch_prod.items():
-                if key in to_select:
+                if key in producteurs_id:
                     switch.select()
                 else:
                     switch.deselect()
+        else:
+            # Sélection par les switch
+            for key, switch in self.switch_prod.items():
+                if switch.get():
+                    producteurs_id.append(key)
 
+        # Récupération des clients à filtrer
         if filtrage_text_cl != "":
-            to_select = extractRange(filtrage_text_cl)
+            # Sélection par le champ textuel dédié
+            clients_id = extractRange(filtrage_text_cl)
+            # Mise à jour des switch en fonction des plages sélectionnées
             for key, switch in self.switch_cl.items():
-                if key in to_select:
+                if key in clients_id:
                     switch.select()
                 else:
                     switch.deselect()
+        else:
+            # Sélection par les switch
+            for key, switch in self.switch_prod.items():
+                if switch.get():
+                    clients_id.append(key)
+
+        # Récupération des demi-jours à filtrer : sélection par les switch
+        for key, switch in self.switch_dj.items():
+            if switch.get():
+                demi_jours_num.append(key)
+
+        # Filtrage des tournées
+        # tourneesF = filtreTournees(..., producteurs_id, clients_id, demi_jours_num)
 
         #TODO: Implémenter la sélection des tournées, des producteurs et des clients à faire apparaitre
