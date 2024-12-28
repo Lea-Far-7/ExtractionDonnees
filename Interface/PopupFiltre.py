@@ -126,6 +126,17 @@ class PopupFiltre:
                 demi_jours_num.append(key)
 
         # Filtrage des tournées
-        # tourneesF = filtreTournees(..., producteurs_id, clients_id, demi_jours_num)
+        tournees_filtered = []
+        if self.interface.donnees:
+            tournees_filtered = filtreTournees(self.interface.donnees.getTournees(), producteurs_id, clients_id, demi_jours_num)
 
-        #TODO: Implémenter la sélection des tournées, des producteurs et des clients à faire apparaitre
+        # Sélection des producteurs et clients à afficher (tous ceux parcourus par les tournées filtrées)
+        act_to_display = []
+        for tournee in tournees_filtered:
+            prod_leader = tournee.producteur
+            if not prod_leader in act_to_display:
+                act_to_display.append(prod_leader)
+            for tache in tournee.taches:
+                act = tache.lieu
+                if not act in act_to_display:
+                    act_to_display.append(act)
