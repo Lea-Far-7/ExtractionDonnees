@@ -7,14 +7,22 @@ from Modules.distance import distance
 
 class Tournee:
 
-    nb = 0 # nombre d'instances créées de Tournee
+    nb = 0  # nombre d'instances créées de Tournee
+    instances = []  # instances créées de Tournee
 
     def __init__(self, demiJour:DemiJour, producteur:Producteur, taches=[]):
         self.idTournee = Tournee.nb
         self.demiJour = demiJour
         self.producteur = producteur
         self.taches = taches
+        Tournee.instances.append(self)
         Tournee.nb += 1
+
+    def __del__(self):
+        """
+        Détruit la tournée.
+        """
+        Tournee.nb -= 1
 
     def addTache(self, t:chr, charge:float, lieu:Acteur, infoRequete:Acteur, horaire:str):
         tache = Tache(t,charge,lieu,infoRequete,horaire)
@@ -72,3 +80,8 @@ class Tournee:
             result += "\n\t\t" + str(tache)
 
         return result
+
+    @classmethod
+    def deleteAll(cls):
+        cls.instances.clear()
+        cls.nb = 0

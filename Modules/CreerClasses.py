@@ -49,6 +49,7 @@ class CreerClasses:
         :return: void
         """
         if not self.solutions_loaded:
+            Tournee.deleteAll()
             self.__creerTournees(fichier)
             self.solutions_loaded = True
 
