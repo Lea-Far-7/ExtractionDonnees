@@ -24,7 +24,6 @@ class App(customtkinter.CTk):
         super().__init__()
 
         # Définition des composants essentiels
-        self.projet = None
         self.donnees = None
         self.person_var_name = {}
         self.tableau = None
@@ -131,20 +130,24 @@ class App(customtkinter.CTk):
         self.donnees = CreerClasses()
         self.donnees.load_donnees(self.donnees_projet)
 
-        # Parcourt les producteurs créés et inclut leurs données dans le marker créé
+        # Parcourt les producteurs créés
         for person in self.donnees.getProducteurs():
             self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude, icon=self.image_producteur,
                                                        command="")
 
-        # Parcourt les producteurs créés et inclut leurs données dans le marker créé
+        # Parcourt les producteurs créés
         for person in self.donnees.getClients():
             self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude,
                                                                                  icon=self.image_client,
                                                                                  command="")
+
+
         # Lecture de choix de solutions en cours de construction, pas fonctionnel
         for selected in self.choixSolutions:
             if (selected.get() == 1) :
-                print(selected.cget("text"))
+                self.solutions_fichier = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text')))
+                print(self.solutions_fichier)
+
 
     def assignProjet(self, projet, frame_solutions):
 
@@ -156,7 +159,7 @@ class App(customtkinter.CTk):
         self.choixSolutions = []
 
         # Récupère la liste des fichiers solutions dans le projet sélectionné
-        liste_fichiers_solutions = FileManager().lister_fichiers(
+        self.liste_fichiers_solutions = FileManager().lister_fichiers(
             os.path.join(self.current_path, "../Projets/" + projet + "/Solutions"))
 
         # Récupère le fichier données dans le projet sélectionné
@@ -166,11 +169,13 @@ class App(customtkinter.CTk):
         # Extrait les données du fichier de données du projet
         self.donnees_projet = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + projet +"/"+ fichier_donnees[0]))
 
+        self.projet_selected = projet
+
         # Créé les différents Switchs permettant de selectionner les boutons et les ajoute dans
         # l'attribut contenant les différents noms des fichiers solution
         liste_solutions = {}
         j = 0
-        for solutions in liste_fichiers_solutions:
+        for solutions in self.liste_fichiers_solutions:
             liste_solutions[solutions] = customtkinter.CTkSwitch(master=frame_solutions, progress_color="#1d7c69",
                                                                      text=f"{solutions}")
             liste_solutions[solutions].grid(row=j, column=0, padx=10, pady=(0, 20))
