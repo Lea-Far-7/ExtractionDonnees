@@ -33,43 +33,74 @@ class Tournee:
         self.taches.remove(tache)
         del(tache)
 
-    def distanceTot(self)->float:
-        if len(self.taches) < 2:
-            return 0
-        d = 0
-        p0 = self.taches[0].lieu # point départ
-        for tache in self.taches[1:]:
+    def distance(self)->tuple[list,float,float]:
+        """
+        Calcule les distances parcourues pour effectuer chaque tâche, le maximum et le total.
+        :return:
+            - Liste des distances parcourues en km.
+            - Distance maximale parcourue pour une tâche.
+            - Distance totale parcourue pour la tournée.
+        """
+        distances = []
+        dmax = 0
+        dtot = 0
+        p0 = self.producteur # point départ
+        for tache in self.taches:
             p1 = tache.lieu # point suivant
-            if p0 != p1:
-                d += distance([p0.latitude,p0.longitude],[p1.latitude,p1.longitude])
+            d = distance([p0.latitude,p0.longitude],[p1.latitude,p1.longitude])
+            distances.append(d)
+            if d > dmax:
+                dmax = d
+            dtot += d
             p0 = p1 # décalage pour le prochain point
-        return d
+        return distances, dmax, dtot
 
-    def chargementTot(self)->float:
-        chargement = 0
+    def chargement(self)->tuple[list,float,float]:
+        """
+        Calcule les chargements transportés entre chaque tâche, le maximum et le total.
+        :return:
+            - Liste des chargements transportés entre les tâches en kg.
+            - Chargement maximal transporté entre deux tâches.
+            - Chargement total transporté durant la tournée.
+        """
+        chargements = []
+        cmax = 0
+        ctot = 0
+        c = 0
         for tache in self.taches:
             if tache.type == 'P':
-                chargement += tache.charge
-        return chargement
-
-    def chargementMax(self)->float:
-        chargement = 0
-        chargement_max = 0
-        for tache in self.taches:
-            if tache.type == 'P':
-                chargement += tache.charge
-                if chargement > chargement_max:
-                    chargement_max = chargement
+                c += tache.charge
+                if c > cmax:
+                    cmax = c
             else:
-                chargement -= tache.charge
-        return chargement_max
+                c -= tache.charge
+            chargements.append(c)
+            ctot += c
+        return chargements, cmax, ctot
 
-    def duree(self)->int:
-        debut = self.taches[0].horaire
-        fin = self.taches[-1].horaire
-        [debutH, debutM] = debut.split(':')
-        [finH, finM] = fin.split(':')
-        return (int(finH)-int(debutH))*60 + (int(finM)-int(debutM))
+    def duree(self)->tuple[list,float,float]:
+        """
+        Calcule les durées entre chaque tâche, le maximum et le total.
+        :return:
+            - Liste des durées entre les tâches en minutes.
+            - Durée maximale entre deux tâches.
+            - Durée totale pour la tournée.
+        """
+        durees = []
+        dmax = 0
+        dtot = 0
+        t0 = self.taches[0].horaire
+        for tache in self.taches:
+            t1 = tache.horaire
+            [t0h, t0m] = t0.split(':')
+            [t1h, t1m] = t1.split(':')
+            t = (int(t1h)-int(t0h))*60 + (int(t1m)-int(t0m))
+            durees.append(t)
+            if t > dmax:
+                dmax = t
+            dtot += t
+            t0 = t1
+        return durees, dmax, dtot
 
     def __str__(self)->str:
         result = ("Tournée " + str(self.idTournee) + " : "
