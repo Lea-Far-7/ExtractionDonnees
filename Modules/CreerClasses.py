@@ -1,3 +1,4 @@
+from Metier.acteur import Acteur
 from Metier.demande import Demande
 from Metier.producteur import Producteur
 from Metier.client import Client
@@ -31,6 +32,9 @@ class CreerClasses:
         :return: void
         """
         if not self.donnees_loaded:
+            Acteur.deleteAll()
+            Client.nb = 0
+            Producteur.nb = 0
             self.__creerProducteurs(fichier)
             self.__creerClients(fichier)
             self.donnees_loaded = True

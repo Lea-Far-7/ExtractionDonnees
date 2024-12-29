@@ -1,4 +1,5 @@
 import abc # pour classe abstraite
+
 from Metier.demiJour import DemiJour
 
 
@@ -15,6 +16,7 @@ class Acteur(abc.ABC):
     """
 
     nb = 0 # nombre d'instances créées d'Acteur
+    instances = [] # instances créées d'Acteur
 
     def __init__(self, latitude:float, longitude:float, dispos=None):
         """
@@ -27,7 +29,14 @@ class Acteur(abc.ABC):
         self.latitude = latitude
         self.longitude = longitude
         self.dispos = dispos if dispos is not None else []
+        Acteur.instances.append(self)
         Acteur.nb += 1
+
+    def __del__(self):
+        """
+        Détruit l'acteur.
+        """
+        Acteur.nb -= 1
 
     def addDispo(self, dispo:DemiJour):
         """
@@ -46,3 +55,8 @@ class Acteur(abc.ABC):
     @abc.abstractmethod
     def __str__(self)->str:
         pass
+
+    @classmethod
+    def deleteAll(cls):
+        cls.instances.clear()
+        cls.nb = 0
