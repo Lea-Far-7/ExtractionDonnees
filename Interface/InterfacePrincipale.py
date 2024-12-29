@@ -119,6 +119,7 @@ class App(customtkinter.CTk):
         # Dissimulation du tableau
         self.tableau.grid_forget()
 
+    # /!\ Attention, ici commence le code métier à bouger /!\
     # Valide le projet sélectionné
     def valider(self):
 
@@ -145,7 +146,7 @@ class App(customtkinter.CTk):
         # Lecture de choix de solutions en cours de construction, pas fonctionnel
         for selected in self.choixSolutions:
             if (selected.get() == 1) :
-                self.solutions_fichier = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text')))
+                self.solutions_fichier = DataExtractor().extraction_solution(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text')))
                 print(self.solutions_fichier)
 
 
