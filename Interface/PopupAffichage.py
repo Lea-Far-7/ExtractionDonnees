@@ -38,7 +38,7 @@ class PopupAffichage:
             for partner in prod.partners:
                 partenaires += partner.__repr__() + " "
             label = customtkinter.CTkLabel(self.window, text="Capacité : " + str(prod.capacity) + "\n"
-                                                             + "Partenaires : " + partenaires, fg_color="transparent")
+                                        + "Partenaires : " + partenaires + "\n", fg_color="transparent")
         label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
 
     def afficher(self):

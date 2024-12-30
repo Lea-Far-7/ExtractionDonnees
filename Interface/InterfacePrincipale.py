@@ -126,19 +126,18 @@ class App(customtkinter.CTk):
     def valider(self):
 
         # Supprime les markers précédemment créés lors de l'import de projets précédents
-        for element in self.person_var_name.keys() :
-            self.person_var_name[element].delete()
+        self.map_widget.delete_all_marker()
+        self.mark_list.clear()
+
+        #TODO Faire une vérification pour éviter une réinstantiation inutile
 
         # Créé une liste contenant toutes les informations du projet (Producteurs et Clients avec leurs informations respectives, pas le fichier solution)
         self.donnees = CreerClasses()
         self.donnees.load_donnees(self.donnees_projet)
 
         # Parcourt les producteurs créés
-        for person in self.donnees.getProducteurs():
-            """self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude, icon=self.image_producteur,
-                                                       command="")"""
-
-            self.mark_list.append(Marker(self.map_widget, person, self))
+        for producteur in self.donnees.getProducteurs():
+            self.mark_list.append(Marker(self.map_widget, producteur, self))
 
         # Parcourt les producteurs créés
         for person in self.donnees.getClients():
@@ -149,8 +148,7 @@ class App(customtkinter.CTk):
         # Lecture de choix de solutions en cours de construction, pas fonctionnel
         for selected in self.choixSolutions:
             if (selected.get() == 1) :
-                self.solutions_fichier = DataExtractor().extraction_solution(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text')))
-                print(self.solutions_fichier)
+                self.donnees.load_solutions(DataExtractor().extraction_solution(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text'))))
 
 
 
