@@ -9,6 +9,7 @@ import customtkinter
 
 import ctypes
 
+from Interface.Marker import Marker
 from Interface.PopupFiltre import PopupFiltre
 from Interface.PopupImport import PopupImport
 from Modules.FileManager import FileManager
@@ -24,6 +25,7 @@ class App(customtkinter.CTk):
         super().__init__()
 
         # Définition des composants essentiels
+        self.mark_list = []
         self.donnees = None
         self.person_var_name = {}
         self.tableau = None
@@ -133,8 +135,10 @@ class App(customtkinter.CTk):
 
         # Parcourt les producteurs créés
         for person in self.donnees.getProducteurs():
-            self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude, icon=self.image_producteur,
-                                                       command="")
+            """self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude, icon=self.image_producteur,
+                                                       command="")"""
+
+            self.mark_list.append(Marker(self.map_widget, person, self))
 
         # Parcourt les producteurs créés
         for person in self.donnees.getClients():
@@ -142,12 +146,13 @@ class App(customtkinter.CTk):
                                                                                  icon=self.image_client,
                                                                                  command="")
 
-
         # Lecture de choix de solutions en cours de construction, pas fonctionnel
         for selected in self.choixSolutions:
             if (selected.get() == 1) :
                 self.solutions_fichier = DataExtractor().extraction_solution(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text')))
                 print(self.solutions_fichier)
+
+
 
 
     def assignProjet(self, projet, frame_solutions):
