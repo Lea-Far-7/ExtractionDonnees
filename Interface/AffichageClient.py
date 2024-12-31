@@ -1,10 +1,9 @@
 import customtkinter
 
-from Metier.producteur import Producteur
+from Metier.client import Client
 
 
-class PopupAffichage:
-
+class AffichageClient:
     instances = []
 
     def __init__(self, masterwindow, marker):
@@ -21,8 +20,10 @@ class PopupAffichage:
                         self.masterwindow.winfo_rooty() + self.masterwindow.winfo_height() - self.window.winfo_height()))
 
     @classmethod
-    def hide(cls):
+    def hide(cls,cls2):
         for i in cls.instances:
+            i.window.withdraw()
+        for i in cls2.instances:
             i.window.withdraw()
 
     def update_popup_position(self, event):
@@ -32,13 +33,8 @@ class PopupAffichage:
         self.window.lift()
 
     def ajoutDonnees(self):
-        if self.marker.acteur.__class__ == Producteur:
-            prod = self.marker.acteur
-            partenaires = ""
-            for partner in prod.partners:
-                partenaires += partner.__repr__() + " "
-            label = customtkinter.CTkLabel(self.window, text="Capacité : " + str(prod.capacity) + "\n"
-                                        + "Partenaires : " + partenaires + "\n", fg_color="transparent")
+        client = self.marker.acteur
+        label = customtkinter.CTkLabel(self.window, text=client.__str__(), fg_color="transparent")
         label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
 
     def afficher(self):

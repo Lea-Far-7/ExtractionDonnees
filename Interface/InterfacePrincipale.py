@@ -3,13 +3,14 @@ from time import strftime, gmtime
 from tkinter import *
 import os
 from  tkinter import ttk
+
+from folium.plugins import MarkerCluster
 from tkintermapview import TkinterMapView
 from PIL import Image, ImageTk, ImageGrab
 import customtkinter
 
-import ctypes
-
-from Interface.Marker import Marker
+from Interface.MarkerClient import MarkerClient
+from Interface.MarkerProducteur import MarkerProducteur
 from Interface.PopupFiltre import PopupFiltre
 from Interface.PopupImport import PopupImport
 from Metier.acteur import Acteur
@@ -136,11 +137,11 @@ class App(customtkinter.CTk):
 
         # Parcourt les producteurs créés et créé les marqueurs associés
         for producteur in self.donnees.getProducteurs():
-            self.mark_list.append(Marker(self.map_widget, producteur, self))
+            self.mark_list.append(MarkerProducteur(self.map_widget, producteur, self))
 
         # Parcourt les clients créés et créé les marqueurs associés
         for client in self.donnees.getClients():
-            self.mark_list.append(Marker(self.map_widget, client, self))
+            self.mark_list.append(MarkerClient(self.map_widget, client, self))
 
 
         # Lecture de choix de solutions en cours de construction, pas fonctionnel
