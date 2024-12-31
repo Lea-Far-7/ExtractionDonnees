@@ -16,7 +16,6 @@ from Metier.acteur import Acteur
 from Modules.FileManager import FileManager
 from Modules.CreerClasses import CreerClasses
 from Modules.DataExtractor import DataExtractor
-from colors import color_palette, colors_nb
 
 # Modes: "System", "Dark", "Light"
 customtkinter.set_appearance_mode("Dark")
@@ -135,12 +134,8 @@ class App(customtkinter.CTk):
         self.donnees = CreerClasses()
         self.donnees.load_donnees(self.donnees_projet)
         Acteur.deleteAll()
-        #TODO Faire une vérification pour éviter une ré-instantiation inutile
 
         # Parcourt les producteurs créés
-        for person in self.donnees.getProducteurs():
-            self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude,
-                marker_color_outside="#000000", marker_color_circle= color_palette[person.id % colors_nb], command="")
         for producteur in self.donnees.getProducteurs():
             self.mark_list.append(Marker(self.map_widget, producteur, self))
 
