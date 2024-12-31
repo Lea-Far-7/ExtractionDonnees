@@ -39,7 +39,6 @@ class App(customtkinter.CTk):
         # Charge les images pour les icônes des producteurs et clients
         self.current_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
         self.image_client = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "client.png")).resize((35, 35)))
-        self.image_producteur = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "producteur.png")).resize((35, 35)))
 
         # Crée une Image mise dans un Label pour être affichée et contenue dans la sidebar
         self.my_image = customtkinter.CTkImage(light_image=Image.open("../Images/Logo_Olocap.png"), dark_image=Image.open("../Images/Logo_Olocap.png"), size=(192,58))
@@ -126,24 +125,23 @@ class App(customtkinter.CTk):
     # Valide le projet sélectionné
     def valider(self):
 
-        # Supprime les markers précédemment créés lors de l'import de projets précédents
-        for element in self.person_var_name.keys() :
-            self.person_var_name[element].delete()
+        # Supprime tous les marqueurs présent sur la map
+        self.map_widget.delete_all_marker()
+        self.mark_list.clear()
 
         # Créé une liste contenant toutes les informations du projet (Producteurs et Clients avec leurs informations respectives, pas le fichier solution)
         self.donnees = CreerClasses()
         self.donnees.load_donnees(self.donnees_projet)
         Acteur.deleteAll()
 
-        # Parcourt les producteurs créés
+        # Parcourt les producteurs créés et créé les marqueurs associés
         for producteur in self.donnees.getProducteurs():
             self.mark_list.append(Marker(self.map_widget, producteur, self))
 
-        # Parcourt les producteurs créés
-        for person in self.donnees.getClients():
-            self.person_var_name[person.id] = self.map_widget.set_marker(person.latitude, person.longitude,
-                                                                                 icon=self.image_client,
-                                                                                 command="")
+        # Parcourt les clients créés et créé les marqueurs associés
+        for client in self.donnees.getClients():
+            self.mark_list.append(Marker(self.map_widget, client, self))
+
 
         # Lecture de choix de solutions en cours de construction, pas fonctionnel
         for selected in self.choixSolutions:
