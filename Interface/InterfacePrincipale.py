@@ -12,6 +12,7 @@ import ctypes
 from Interface.Marker import Marker
 from Interface.PopupFiltre import PopupFiltre
 from Interface.PopupImport import PopupImport
+from Metier.acteur import Acteur
 from Modules.FileManager import FileManager
 from Modules.CreerClasses import CreerClasses
 from Modules.DataExtractor import DataExtractor
@@ -129,11 +130,11 @@ class App(customtkinter.CTk):
         self.map_widget.delete_all_marker()
         self.mark_list.clear()
 
-        #TODO Faire une vérification pour éviter une réinstantiation inutile
-
         # Créé une liste contenant toutes les informations du projet (Producteurs et Clients avec leurs informations respectives, pas le fichier solution)
         self.donnees = CreerClasses()
         self.donnees.load_donnees(self.donnees_projet)
+        Acteur.deleteAll()
+        #TODO Faire une vérification pour éviter une ré-instantiation inutile
 
         # Parcourt les producteurs créés
         for producteur in self.donnees.getProducteurs():
@@ -150,6 +151,9 @@ class App(customtkinter.CTk):
             if (selected.get() == 1) :
                 self.donnees.load_solutions(DataExtractor().extraction_solution(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text'))))
 
+        for tournee in self.donnees.getTournees():
+            if tournee.producteur.id == 1:
+                pass
 
 
 
