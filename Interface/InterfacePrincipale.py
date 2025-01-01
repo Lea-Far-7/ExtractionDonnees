@@ -14,6 +14,7 @@ from Interface.MarkerProducteur import MarkerProducteur
 from Interface.PopupFiltre import PopupFiltre
 from Interface.PopupImport import PopupImport
 from Metier.acteur import Acteur
+from Metier.client import Client
 from Modules.FileManager import FileManager
 from Modules.CreerClasses import CreerClasses
 from Modules.DataExtractor import DataExtractor
@@ -125,33 +126,32 @@ class App(customtkinter.CTk):
     # /!\ Attention, ici commence le code métier à bouger /!\
     # Valide le projet sélectionné
     def valider(self):
+        if self.donnees_projet :
+            # Supprime tous les marqueurs présent sur la map
+            self.map_widget.delete_all_marker()
+            self.mark_list.clear()
 
-        # Supprime tous les marqueurs présent sur la map
-        self.map_widget.delete_all_marker()
-        self.mark_list.clear()
+            # Créé une liste contenant toutes les informations du projet (Producteurs et Clients avec leurs informations respectives, pas le fichier solution)
+            self.donnees = CreerClasses()
+            self.donnees.load_donnees(self.donnees_projet)
 
-        # Créé une liste contenant toutes les informations du projet (Producteurs et Clients avec leurs informations respectives, pas le fichier solution)
-        self.donnees = CreerClasses()
-        self.donnees.load_donnees(self.donnees_projet)
-        Acteur.deleteAll()
+            # Parcourt les producteurs créés et créé les marqueurs associés
+            for producteur in self.donnees.getProducteurs():
+                self.mark_list.append(MarkerProducteur(self.map_widget, producteur, self))
 
-        # Parcourt les producteurs créés et créé les marqueurs associés
-        for producteur in self.donnees.getProducteurs():
-            self.mark_list.append(MarkerProducteur(self.map_widget, producteur, self))
-
-        # Parcourt les clients créés et créé les marqueurs associés
-        for client in self.donnees.getClients():
-            self.mark_list.append(MarkerClient(self.map_widget, client, self))
+            # Parcourt les clients créés et créé les marqueurs associés
+            for client in self.donnees.getClients():
+                self.mark_list.append(MarkerClient(self.map_widget, client, self))
 
 
-        # Lecture de choix de solutions en cours de construction, pas fonctionnel
-        for selected in self.choixSolutions:
-            if (selected.get() == 1) :
-                self.donnees.load_solutions(DataExtractor().extraction_solution(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text'))))
+            # Lecture de choix de solutions en cours de construction, pas fonctionnel
+            for selected in self.choixSolutions:
+                if (selected.get() == 1) :
+                    self.donnees.load_solutions(DataExtractor().extraction_solution(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text'))))
 
-        for tournee in self.donnees.getTournees():
-            if tournee.producteur.id == 1:
-                pass
+            for tournee in self.donnees.getTournees():
+                if tournee.producteur.id == 1:
+                    pass
 
 
 
