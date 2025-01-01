@@ -36,3 +36,6 @@ class MarkerClient:
         AffichageClient.hide(AffichageProducteur)
         # Affiche le marqueur sur lequel on a cliqué
         self.popup.afficher()
+
+    def hide(self):
+        AffichageClient.hide(AffichageProducteur)

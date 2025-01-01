@@ -48,6 +48,8 @@ class App(customtkinter.CTk):
         # Mise en arrière définitive de la fenêtre (pour que les pop-ups puissent toujours se situer devant)
         self.attributes('-topmost',False)
 
+        self.donnees_projet = None
+
         self.interfacePrincipale()
 
         self.creationCarte()
@@ -156,6 +158,9 @@ class App(customtkinter.CTk):
 
 
     def assignProjet(self, projet, frame_solutions):
+        if self.mark_list :
+            for mark in self.mark_list:
+                mark.hide()
 
         # Détruit les objets précédemment créés dans la ScrollableFrame où sont contenues les solutions
         for widget in frame_solutions.winfo_children():
@@ -199,16 +204,13 @@ class App(customtkinter.CTk):
 
         tkinter.messagebox.showinfo(title="Information", message="Image enregistrée")
 
-    def showDataLine(self,line):
-        if line.name != "" and line.name is not None:
-            line.name = ""
-        else :
-            line.name = "Infos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \nInfos : \n"
-
     # Evenement permettant d'afficher le tableau tout en cachant la map
     def select_tab(self) :
         self.tableau.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
         self.map_widget.grid_forget()
+        if self.mark_list :
+            for mark in self.mark_list:
+                mark.hide()
 
     # Evenement permettant d'afficher la map tout en cachant le tableau
     def select_map(self) :
