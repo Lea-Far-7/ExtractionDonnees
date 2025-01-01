@@ -42,6 +42,7 @@ class AffichageProducteur:
 
     def afficher(self):
         self.window.deiconify()
-        self.update_popup_position()
+        self.masterwindow.update_idletasks()
+        self.masterwindow.after(100,self.update_popup_position())
         # Dès que la fenêtre est modifiée (taille ou position) la popup est replacée au bon endroit
         self.masterwindow.bind('<Configure>', self.update_popup_position)
