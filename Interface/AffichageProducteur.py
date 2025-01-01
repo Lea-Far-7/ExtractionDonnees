@@ -36,7 +36,7 @@ class AffichageProducteur:
     def ajoutDonnees(self):
         # TODO : Continuer pour afficher les informations correspondantes (maintenant les tournées)
         prod = self.marker.prod
-        label = customtkinter.CTkLabel(self.window, text=prod.affichage(), fg_color="transparent")
+        label = customtkinter.CTkLabel(self.window, text=str(prod), fg_color="transparent")
         label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
 
 

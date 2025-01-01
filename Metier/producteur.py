@@ -45,27 +45,16 @@ class Producteur(Acteur):
         Affiche les informations sur le producteur.
         """
         result = "Producteur " + str(self.id) + " :"
-        result += "\n\tCoordonnées : (" + str(self.latitude) + " ; " + str(self.longitude) + ")"
-        result += "\n\tCapacité : " + str(self.capacity) + "kg"
-        result += "\n\tDispos : "
+        result += "\nCoordonnées : (" + str(round(self.latitude,6)) + " ; " + str(round(self.latitude,6)) + ")"
+        result += "\nCapacité : " + str(self.capacity) + " kg"
+        result += "\nPartenaires : producteurs "
+        for partner in self.partners:
+            result += str(partner.id) + ", "
+        result = result[:-2]
+        result += "\nDispos : "
         for dispo in self.dispos:
-            result += "\n\t\t" + str(dispo)
-        result += "\n\tPartenaires : "
-        for partner in self.partners:
-            result += "\n\t\tProducteur " + str(partner.id)
-        return result
-    
-    def affichage(self)->str:
-        """
-        Affiche les informations sur le producteur.
-        """
-        result = "Producteur " + str(self.id) + " :"
-        result += "\nCoordonnées : (" + str(self.latitude) + " ; " + str(self.longitude) + ")"
-        result += "\nCapacité : " + str(self.capacity) + "kg"
-        result += "\nPartenaires : "
-        for partner in self.partners:
-            result += "\nProducteur " + str(partner.id)
-        return result
+            result += repr(dispo) + ", "
+        return result[:-2]
 
     def __repr__(self)->str:
         """Affichage simple"""
