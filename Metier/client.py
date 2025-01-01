@@ -25,12 +25,20 @@ class Client(Acteur):
         """
         Affiche les informations sur le client.
         """
+        """
         result = "Client " + str(self.id) + " :"
         result += "\n\tCoordonnées : (" + str(self.latitude) + " ; " + str(self.longitude) + ")"
         result += "\n\tDispos : "
         for dispo in self.dispos:
             result += "\n\t\t" + str(dispo)
+        """
+        result = "Client " + str(self.id) + " :"
+        result += "\nCoordonnées : (" + str(self.latitude) + " ; " + str(self.longitude) + ")"
+        result += "\nDispos : "
+        for dispo in self.dispos:
+            result += "\n" + str(dispo)
         return result
+
 
     def __repr__(self)->str:
         """Affichage simple"""

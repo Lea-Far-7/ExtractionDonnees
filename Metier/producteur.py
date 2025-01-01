@@ -54,6 +54,18 @@ class Producteur(Acteur):
         for partner in self.partners:
             result += "\n\t\tProducteur " + str(partner.id)
         return result
+    
+    def affichage(self)->str:
+        """
+        Affiche les informations sur le producteur.
+        """
+        result = "Producteur " + str(self.id) + " :"
+        result += "\nCoordonnées : (" + str(self.latitude) + " ; " + str(self.longitude) + ")"
+        result += "\nCapacité : " + str(self.capacity) + "kg"
+        result += "\nPartenaires : "
+        for partner in self.partners:
+            result += "\nProducteur " + str(partner.id)
+        return result
 
     def __repr__(self)->str:
         """Affichage simple"""
