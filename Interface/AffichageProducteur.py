@@ -26,7 +26,7 @@ class AffichageProducteur:
             i.window.withdraw()
 
     # Garde la popup en bas à droite de l'écran
-    def update_popup_position(self, event):
+    def update_popup_position(self, event=None):
         self.window.geometry(
             "+%d+%d" % (self.masterwindow.winfo_rootx() + self.masterwindow.winfo_width() - self.window.winfo_width(),
                         self.masterwindow.winfo_rooty() + self.masterwindow.winfo_height() - self.window.winfo_height()))
@@ -45,11 +45,7 @@ class AffichageProducteur:
 
 
     def afficher(self):
-        self.window.geometry(
-            "+%d+%d" % (self.masterwindow.winfo_rootx() + self.masterwindow.winfo_width() - self.window.winfo_width(),
-                        self.masterwindow.winfo_rooty() + self.masterwindow.winfo_height() - self.window.winfo_height()))
-        self.window.lift()
-
+        self.window.deiconify()
+        self.update_popup_position()
         # Dès que la fenêtre est modifiée (taille ou position) la popup est replacée au bon endroit
         self.masterwindow.bind('<Configure>', self.update_popup_position)
-        self.window.deiconify()

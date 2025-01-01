@@ -4,7 +4,7 @@ from tkinter import *
 import os
 from  tkinter import ttk
 
-from folium.plugins import MarkerCluster
+#from folium.plugins import MarkerCluster
 from tkintermapview import TkinterMapView
 from PIL import Image, ImageTk, ImageGrab
 import customtkinter
@@ -135,7 +135,7 @@ class App(customtkinter.CTk):
             self.donnees = CreerClasses()
             self.donnees.load_donnees(self.donnees_projet)
 
-            # Parcourt les producteurs créés et créé les marqueurs associés
+            # Parcourt les producteurs créés et crée les marqueurs associés
             for producteur in self.donnees.getProducteurs():
                 self.mark_list.append(MarkerProducteur(self.map_widget, producteur, self))
 
