@@ -34,11 +34,8 @@ class AffichageProducteur:
 
     # Permet d'ajouter les données du producteur (et des tâches associées par la suite) dans la popup
     def ajoutDonnees(self):
-        # TODO : Continuer pour afficher les informations correspondantes
+        # TODO : Continuer pour afficher les informations correspondantes (maintenant les tournées)
         prod = self.marker.prod
-        partenaires = ""
-        for partner in prod.partners:
-            partenaires += partner.__repr__() + " "
         label = customtkinter.CTkLabel(self.window, text=prod.affichage(), fg_color="transparent")
         label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
 
