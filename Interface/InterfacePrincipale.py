@@ -100,6 +100,15 @@ class App(customtkinter.CTk):
         self.map_widget.set_position(47.3565655, 0.7035767)
 
     def creationTableau(self):
+        colonne_message = ("VIDE",)
+        style = ttk.Style()
+        style.configure("Treeview", font=('Arial', 25), rowheight=100)
+        self.tableau = ttk.Treeview(self, columns=colonne_message, show='')
+        self.tableau.heading("VIDE", text="VIDE")
+        self.tableau.column("VIDE", width=400, anchor=CENTER)
+        self.tableau.insert(parent='', index="end", values=("Vide : Veuillez importer des données",))
+        self.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonne_message), sticky="nsew")
+        self.tableau.grid_forget()
 
         """
         # Liste des options pour le menu déroulant
@@ -111,40 +120,6 @@ class App(customtkinter.CTk):
         self.dropdown = ttk.OptionMenu(self, self.selected_option, *self.options, command=self.update_tableau())
         self.dropdown.grid(row=0, column=1, sticky="w", padx=5, pady=5)
         """
-        #liste_producteurs, liste_clients = self.createur.getActeurs(self.donnees, self.createur.projet)
-        colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
-        style.configure("Treeview", font=('Arial', 11), rowheight=25)
-
-        self.tableau = ttk.Treeview(self, columns=colonnes, show='headings')
-
-        self.tableau.heading("ID", text="ID")
-        self.tableau.heading("Coord", text="Coordonnées")
-        self.tableau.heading("Capacite", text="Capacité")
-        self.tableau.heading("Partenaires", text="Partenaires")
-        self.tableau.heading("Dispo", text="Disponibilités")
-        self.tableau.heading("NbTournees", text="Nombre de Tournées")
-        self.tableau.heading("NbCommandes", text="Nombre de Commandes")
-
-        self.tableau.column("ID", width=60)
-        self.tableau.column("Coord", width=130)
-        self.tableau.column("Capacite", width=90)
-        self.tableau.column("Dispo", width=120)
-        self.tableau.column("NbTournees", width=100)
-        self.tableau.column("NbCommandes", width=100)
-
-        for col in colonnes:
-            self.tableau.column(col, anchor=CENTER)
-
-        self.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
-
-        scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.tableau.yview)
-        self.tableau.configure(yscrollcommand=scrollbar.set)
-        scrollbar.grid(row=1, rowspan=8, column=len(colonnes) + 1, sticky="ns")
-
-        self.tableau.grid_forget()
-
 
     def screenshot(self):
         bbox = (self.map_widget.winfo_rootx(), self.map_widget.winfo_rooty(), self.map_widget.winfo_rootx()+self.map_widget.winfo_width(), self.map_widget.winfo_rooty()+self.map_widget.winfo_height())
