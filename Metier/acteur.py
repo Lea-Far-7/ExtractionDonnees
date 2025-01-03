@@ -29,6 +29,7 @@ class Acteur(abc.ABC):
         self.latitude = latitude
         self.longitude = longitude
         self.dispos = dispos if dispos is not None else []
+        self.infosTournees = []     # contient les chaines de données sur les tournées qui impliquent l'acteur
         Acteur.instances.append(self)
         Acteur.nb += 1
 
@@ -52,8 +53,18 @@ class Acteur(abc.ABC):
         """
         self.dispos.remove(dispo)
 
+    def getInfosTournees(self):
+        result = ""
+        for info in self.infosTournees:
+            result += info + "\n"
+        return result[:-1]
+
     @abc.abstractmethod
     def __str__(self)->str:
+        pass
+
+    @abc.abstractmethod
+    def __repr__(self)->str:
         pass
 
     @classmethod

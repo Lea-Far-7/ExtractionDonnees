@@ -17,6 +17,13 @@ class Tournee:
         self.taches = taches
         Tournee.instances.append(self)
         Tournee.nb += 1
+        self.__infosTournee_injection()
+
+    def __infosTournee_injection(self):
+        for tache in self.taches:
+            info = tache.getType() + " " + str(tache.charge) + " " + {"P":"pour","D":"de"}[tache.type] + " " + repr(tache.infoRequete)
+            info += " " + repr(self.demiJour) + " " + tache.horaire
+            tache.lieu.infosTournees.append(info)
 
     def __del__(self):
         """
