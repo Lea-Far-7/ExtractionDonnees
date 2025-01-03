@@ -1,6 +1,7 @@
 import tkinter
 import customtkinter
 
+from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
 from Interface.MarkerActeur import MarkerActeur
 from Interface.PopUp import PopUp
@@ -127,6 +128,10 @@ class PopupImport:
         for cl in clients:
             self.interface.mark_list.append(MarkerActeur(self.interface.map_widget, cl, self.interface))
 
+
+        afficheur = AfficherTableau(self.interface)
+        afficheur.tableau_producteurs(producteurs)
+    """
         for prod in producteurs:
             coord = f"({round(prod.latitude,6)}, {round(prod.longitude,6)})"
             partners = ", ".join([str(partner.id) for partner in prod.partners])
@@ -141,4 +146,4 @@ class PopupImport:
                 dispos,
                 nbTournees,
                 nbCommandes
-            ))
+            ))"""
