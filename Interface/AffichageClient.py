@@ -35,7 +35,7 @@ class AffichageClient:
     def ajoutDonnees(self):
         # TODO : Continuer pour afficher les informations correspondantes (maintenant les tournées)
         client = self.marker.client
-        label = customtkinter.CTkLabel(self.window, text=client.__str__(), fg_color="transparent")
+        label = customtkinter.CTkLabel(self.window, text=str(client), fg_color="transparent")
         label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
 
     def afficher(self):
