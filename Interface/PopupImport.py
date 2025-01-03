@@ -128,6 +128,5 @@ class PopupImport:
         for cl in clients:
             self.interface.mark_list.append(MarkerActeur(self.interface.map_widget, cl, self.interface))
 
-
         afficheur = AfficherTableau(self.interface)
         afficheur.tableau_producteurs(producteurs)
