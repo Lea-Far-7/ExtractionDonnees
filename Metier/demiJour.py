@@ -3,9 +3,8 @@ class DemiJour:
 
     """Classe représentant une demi-journée."""
 
-    defaultLabels = ["Lundi matin", "Lundi après-midi", "Mardi matin", "Mardi après-midi",
-        "Mercredi matin", "Mercredi après-midi", "Jeudi matin", "Jeudi après-midi",
-        "Vendredi matin", "Vendredi après-midi"]
+    defaultLabels = ["Lundi M", "Lundi AM", "Mardi M", "Mardi AM", "Mercredi M", "Mercredi AM",
+                     "Jeudi M", "Jeudi AM", "Vendredi M", "Vendredi AM"]
 
     def __init__(self, num, label=None):
         """
