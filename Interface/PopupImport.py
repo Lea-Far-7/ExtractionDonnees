@@ -7,7 +7,7 @@ from Modules.FileManager import FileManager
 
 # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
 class PopupImport():
-    def __init__(self, interface):
+    def __init__(self, interface): # Ajouter createur en parametre / attribut
 
         #Initialise la popup
         self.popup = PopUp(interface)

@@ -27,7 +27,7 @@ class DataExtractor:
     def extraction_solution(self, chemin_vers_fichier : str) -> list:
         """
         Extraire d'un fichier les lignes qui contiennent des informations utiles
-        > Pour fichiers de solutions
+        > Pour fichiers de solutions spécifiquement
         :param chemin_vers_fichier:
         :return: liste de "listes de listes" (chaque sous-sous-liste étant une ligne du fichier et chaque sous-liste une tournée)
         """

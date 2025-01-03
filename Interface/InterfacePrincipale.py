@@ -4,7 +4,6 @@ from tkinter import *
 import os
 from  tkinter import ttk
 
-#from folium.plugins import MarkerCluster
 from tkintermapview import TkinterMapView
 from PIL import Image, ImageTk, ImageGrab
 import customtkinter
@@ -13,8 +12,6 @@ from Interface.MarkerClient import MarkerClient
 from Interface.MarkerProducteur import MarkerProducteur
 from Interface.PopupFiltre import PopupFiltre
 from Interface.PopupImport import PopupImport
-from Metier.acteur import Acteur
-from Metier.client import Client
 from Modules.FileManager import FileManager
 from Modules.CreerClasses import CreerClasses
 from Modules.DataExtractor import DataExtractor
@@ -28,10 +25,11 @@ class App(customtkinter.CTk):
         super().__init__()
 
         # Définition des composants essentiels
-        self.mark_list = []
+        self.mark_list = [] # liste des marqueurs
         self.donnees = None
         self.person_var_name = {}
         self.tableau = None
+        self.donnees_projet = None
 
         # Permet de mettre un titre et de définir la taille originale de la fenêtre
         self.title("OLOCAP Viewer")
@@ -48,10 +46,7 @@ class App(customtkinter.CTk):
         # Mise en arrière définitive de la fenêtre (pour que les pop-ups puissent toujours se situer devant)
         self.attributes('-topmost',False)
 
-        self.donnees_projet = None
-
         self.interfacePrincipale()
-
         self.creationCarte()
         self.creationTableau()
 
@@ -105,6 +100,75 @@ class App(customtkinter.CTk):
         self.map_widget.set_position(47.3565655, 0.7035767)
 
     def creationTableau(self):
+
+        manager = FileManager()
+        liste = manager.lister_fichiers("..\Projets\Projet_3")
+        fichier = liste[0]
+        extractor = DataExtractor()
+        donnees = extractor.extraction("..\Projets\Projet_3\\" + fichier)
+        createur = CreerClasses()
+        createur.load_donnees(donnees)
+        liste_producteurs = createur.getProducteurs()
+
+        colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
+
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
+        style.configure("Treeview", font=('Arial', 11), rowheight=25)
+
+        self.tableau = ttk.Treeview(self, columns=colonnes, show='headings')
+
+        self.tableau.heading("ID", text="ID")
+        self.tableau.heading("Coord", text="Coordonnées")
+        self.tableau.heading("Capacite", text="Capacité")
+        self.tableau.heading("Partenaires", text="Partenaires")
+        self.tableau.heading("Dispo", text="Disponibilités")
+        self.tableau.heading("NbTournees", text="Nombre de Tournées")
+        self.tableau.heading("NbCommandes", text="Nombre de Commandes")
+
+        self.tableau.column("ID", width=60)
+        self.tableau.column("Coord", width=130)
+        self.tableau.column("Capacite", width=90)
+        self.tableau.column("Dispo", width=120)
+        self.tableau.column("NbTournees", width=100)
+        self.tableau.column("NbCommandes", width=100)
+
+        for col in colonnes:
+            self.tableau.column(col, anchor=CENTER)
+
+        # tableau.bind("<<TreeViewSelected>>", self.case_selectionnee)
+        # tableau.bind("<<TreeViewCellSelected>>", self.case_selectionnee)
+
+        self.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
+
+        scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.tableau.yview)
+        self.tableau.configure(yscrollcommand=scrollbar.set)
+        scrollbar.grid(row=1, rowspan=8, column=len(colonnes) + 1, sticky="ns")
+
+        # scrollbar = ttk.Scrollbar(self.tableau, orient="vertical", command=self.tableau.yview)
+        # self.tableau.configure(yscrollcommand=scrollbar.set)
+        # scrollbar.grid(column=len(colonnes), row=1, sticky="nsew")
+
+        for i in range(15):
+            for prod in liste_producteurs:
+                coord = f"({round(prod.latitude,6)}, {round(prod.longitude,6)})"
+                partners = ", ".join([str(partner.id) for partner in prod.partners])
+                dispos = ", ".join([str(dispo.num) for dispo in prod.dispos])
+                nbTournees = "1"
+                nbCommandes = "2"
+                self.tableau.insert(parent='', index="end", values=(
+                    prod.id,
+                    coord,
+                    prod.capacity,
+                    partners,
+                    dispos,
+                    nbTournees,
+                    nbCommandes
+                ))
+
+        self.tableau.grid_forget()
+
+    """
         # Création du tableau
         self.tableau = ttk.Treeview()
         self.tableau['columns'] = ["Producteur","Client","Poids Maximal","Demi-Jour travaillé ?","Autre"]
@@ -124,6 +188,7 @@ class App(customtkinter.CTk):
 
         # Dissimulation du tableau
         self.tableau.grid_forget()
+        """
 
     # /!\ Attention, ici commence le code métier à bouger /!\
     # Valide le projet sélectionné
@@ -141,7 +206,7 @@ class App(customtkinter.CTk):
             for producteur in self.donnees.getProducteurs():
                 self.mark_list.append(MarkerProducteur(self.map_widget, producteur, self))
 
-            # Parcourt les clients créés et créé les marqueurs associés
+            # Parcourt les clients créés et crée les marqueurs associés
             for client in self.donnees.getClients():
                 self.mark_list.append(MarkerClient(self.map_widget, client, self))
 
