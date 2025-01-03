@@ -1,54 +1,54 @@
 import tkinter.messagebox
 from time import strftime, gmtime
 from tkinter import *
-import os
 from  tkinter import ttk
 
 from tkintermapview import TkinterMapView
-from PIL import Image, ImageTk, ImageGrab
+from PIL import Image, ImageGrab
 import customtkinter
 
-from Interface.MarkerClient import MarkerClient
-from Interface.MarkerProducteur import MarkerProducteur
+from Interface.Createur import Createur
 from Interface.PopupFiltre import PopupFiltre
 from Interface.PopupImport import PopupImport
-from Modules.FileManager import FileManager
-from Modules.CreerClasses import CreerClasses
-from Modules.DataExtractor import DataExtractor
 
 # Modes: "System", "Dark", "Light"
 customtkinter.set_appearance_mode("Dark")
 
-
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+        self.createur = Createur()
 
         # Définition des composants essentiels
-        self.mark_list = [] # liste des marqueurs
-        self.donnees = None
-        self.person_var_name = {}
+        self.map_widget = None
         self.tableau = None
-        self.donnees_projet = None
+        self.mark_list = [] # liste des marqueurs
+        self.donnees = [] # liste des lignes du fichier
+        self.solution = [] # liste des lignes du fichier solution
 
         # Permet de mettre un titre et de définir la taille originale de la fenêtre
         self.title("OLOCAP Viewer")
         self.iconbitmap("../Images/Logo_Olocap_small.ico")
         self.geometry(f"{1100}x{580}")
 
-        # Charge les images pour les icônes des producteurs et clients
-        self.current_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-        self.image_client = ImageTk.PhotoImage(Image.open(os.path.join(self.current_path, "../Images", "client.png")).resize((35, 35)))
-
         # Crée une Image mise dans un Label pour être affichée et contenue dans la sidebar
         self.my_image = customtkinter.CTkImage(light_image=Image.open("../Images/Logo_Olocap.png"), dark_image=Image.open("../Images/Logo_Olocap.png"), size=(192,58))
 
         # Mise en arrière définitive de la fenêtre (pour que les pop-ups puissent toujours se situer devant)
-        self.attributes('-topmost',False)
+        self.attributes('-topmost', False)
 
+        # Insertion des éléments de l'interface
         self.interfacePrincipale()
         self.creationCarte()
         self.creationTableau()
+
+        # Lier l'événement de configuration pour mettre à jour les popups
+        self.bind('<Configure>', self.update_all_popups_position)
+
+    def update_all_popups_position(self, event=None):
+        for marker in self.mark_list:
+            marker.popup.update_popup_position()
+
 
     def interfacePrincipale(self):
         # Permet de configurer la grid,
@@ -59,36 +59,36 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure((1, 2), weight=1)
 
         # Création de la zone contenant les boutons de gestion
-        self.sidebar = customtkinter.CTkFrame(self, width=230, corner_radius=0)
-        self.sidebar.grid(row=0, column=0, rowspan=4, sticky="nsew")
+        sidebar = customtkinter.CTkFrame(self, width=230, corner_radius=0)
+        sidebar.grid(row=0, column=0, rowspan=4, sticky="nsew")
 
         # Création de l'image logo
-        self.image_label = customtkinter.CTkLabel(self.sidebar, image=self.my_image, text=" ")
-        self.image_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        image_label = customtkinter.CTkLabel(sidebar, image=self.my_image, text=" ")
+        image_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         # Utilisation d'une image contenant une seule couleur pour l'appliquer sur les boutons
-        self.couleur_bouton = customtkinter.CTkImage(light_image=Image.open('../Images/Couleur_Boutons.png'),
+        couleur_bouton = customtkinter.CTkImage(light_image=Image.open('../Images/Couleur_Boutons.png'),
                                                      size=(500, 150))
 
         # Création des boutons dans la sidebar
-        self.importer = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
-                                                command=lambda: PopupImport(self), text="Importer")
-        self.importer.grid(row=1, column=0, padx=20, pady=10)
-        self.filtre = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
-                                              command=lambda: PopupFiltre(self), text="Filtres")
-        self.filtre.grid(row=4, column=0, padx=20, pady=10)
-        self.export = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
+        importer = customtkinter.CTkButton(sidebar, fg_color="#1d7c69", hover_color="#275855",
+                                                command=lambda: PopupImport(self, self.createur), text="Importer")
+        importer.grid(row=1, column=0, padx=20, pady=10)
+        filtre_bouton = customtkinter.CTkButton(sidebar, fg_color="#1d7c69", hover_color="#275855",
+                                              command=lambda: PopupFiltre(self, self.createur), text="Filtres")
+        filtre_bouton.grid(row=4, column=0, padx=20, pady=10)
+        export_bouton = customtkinter.CTkButton(sidebar, fg_color="#1d7c69", hover_color="#275855",
                                               command=self.screenshot, text="Export")
-        self.export.grid(row=6, column=0, padx=20, pady=10)
+        export_bouton.grid(row=6, column=0, padx=20, pady=10)
 
         # Création des boutons de navigation entre la map et le tableau
-        self.button_map = customtkinter.CTkButton(self, fg_color="#1d7c69", hover_color="#275855",
+        button_map = customtkinter.CTkButton(self, fg_color="#1d7c69", hover_color="#275855",
                                                   command=self.select_map, text="Carte")
-        self.button_map.grid(row=0, column=2, sticky="e", padx=5, pady=5)
+        button_map.grid(row=0, column=2, sticky="e", padx=5, pady=5)
 
-        self.button_tableau = customtkinter.CTkButton(self, fg_color="#1d7c69", hover_color="#275855",
+        button_tableau = customtkinter.CTkButton(self, fg_color="#1d7c69", hover_color="#275855",
                                                       command=self.select_tab, text="Tableau")
-        self.button_tableau.grid(row=0, column=3, sticky="w", padx=5, pady=5)
+        button_tableau.grid(row=0, column=3, sticky="w", padx=5, pady=5)
 
     def creationCarte(self):
         # Création de la map et mise dans une grid (ligne 1 et colonne 1)
@@ -101,17 +101,18 @@ class App(customtkinter.CTk):
 
     def creationTableau(self):
 
-        manager = FileManager()
-        liste = manager.lister_fichiers("..\Projets\Projet_3")
-        fichier = liste[0]
-        extractor = DataExtractor()
-        donnees = extractor.extraction("..\Projets\Projet_3\\" + fichier)
-        createur = CreerClasses()
-        createur.load_donnees(donnees)
-        liste_producteurs = createur.getProducteurs()
+        """
+        # Liste des options pour le menu déroulant
+        self.options = ['', 'producteurs', 'clients', 'commandes', 'tournees']
+        self.selected_option = tkinter.StringVar(self)
+        self.selected_option.set(self.options[0])
 
+        # Création du menu déroulant
+        self.dropdown = ttk.OptionMenu(self, self.selected_option, *self.options, command=self.update_tableau())
+        self.dropdown.grid(row=0, column=1, sticky="w", padx=5, pady=5)
+        """
+        #liste_producteurs, liste_clients = self.createur.getActeurs(self.donnees, self.createur.projet)
         colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
-
         style = ttk.Style()
         style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
         style.configure("Treeview", font=('Arial', 11), rowheight=25)
@@ -136,127 +137,14 @@ class App(customtkinter.CTk):
         for col in colonnes:
             self.tableau.column(col, anchor=CENTER)
 
-        # tableau.bind("<<TreeViewSelected>>", self.case_selectionnee)
-        # tableau.bind("<<TreeViewCellSelected>>", self.case_selectionnee)
-
         self.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
 
         scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.tableau.yview)
         self.tableau.configure(yscrollcommand=scrollbar.set)
         scrollbar.grid(row=1, rowspan=8, column=len(colonnes) + 1, sticky="ns")
 
-        # scrollbar = ttk.Scrollbar(self.tableau, orient="vertical", command=self.tableau.yview)
-        # self.tableau.configure(yscrollcommand=scrollbar.set)
-        # scrollbar.grid(column=len(colonnes), row=1, sticky="nsew")
-
-        for i in range(15):
-            for prod in liste_producteurs:
-                coord = f"({round(prod.latitude,6)}, {round(prod.longitude,6)})"
-                partners = ", ".join([str(partner.id) for partner in prod.partners])
-                dispos = ", ".join([str(dispo.num) for dispo in prod.dispos])
-                nbTournees = "1"
-                nbCommandes = "2"
-                self.tableau.insert(parent='', index="end", values=(
-                    prod.id,
-                    coord,
-                    prod.capacity,
-                    partners,
-                    dispos,
-                    nbTournees,
-                    nbCommandes
-                ))
-
         self.tableau.grid_forget()
 
-    """
-        # Création du tableau
-        self.tableau = ttk.Treeview()
-        self.tableau['columns'] = ["Producteur","Client","Poids Maximal","Demi-Jour travaillé ?","Autre"]
-
-        self.tableau.column("#0",width=0, stretch=NO)
-        self.tableau.column("Producteur", width=80, anchor = CENTER)
-        self.tableau.column("Client", width=80, anchor = CENTER)
-        self.tableau.column("Poids Maximal", width=80, anchor = CENTER)
-        self.tableau.column("Demi-Jour travaillé ?", width=80, anchor = CENTER)
-        self.tableau.column("Autre", width=80, anchor = CENTER)
-
-        self.tableau.heading("Producteur", text="Producteur")
-        self.tableau.heading("Client", text="Client")
-        self.tableau.heading("Poids Maximal", text="Poids Maximal")
-        self.tableau.heading("Demi-Jour travaillé ?", text="Demi-Jour travaillé ?")
-        self.tableau.heading("Autre", text="Autre")
-
-        # Dissimulation du tableau
-        self.tableau.grid_forget()
-        """
-
-    # /!\ Attention, ici commence le code métier à bouger /!\
-    # Valide le projet sélectionné
-    def valider(self):
-        if self.donnees_projet :
-            # Supprime tous les marqueurs présent sur la map
-            self.map_widget.delete_all_marker()
-            self.mark_list.clear()
-
-            # Créé une liste contenant toutes les informations du projet (Producteurs et Clients avec leurs informations respectives, pas le fichier solution)
-            self.donnees = CreerClasses()
-            self.donnees.load_donnees(self.donnees_projet)
-
-            # Parcourt les producteurs créés et crée les marqueurs associés
-            for producteur in self.donnees.getProducteurs():
-                self.mark_list.append(MarkerProducteur(self.map_widget, producteur, self))
-
-            # Parcourt les clients créés et crée les marqueurs associés
-            for client in self.donnees.getClients():
-                self.mark_list.append(MarkerClient(self.map_widget, client, self))
-
-
-            # Lecture de choix de solutions en cours de construction, pas fonctionnel
-            for selected in self.choixSolutions:
-                if (selected.get() == 1) :
-                    self.donnees.load_solutions(DataExtractor().extraction_solution(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text'))))
-
-            for tournee in self.donnees.getTournees():
-                if tournee.producteur.id == 1:
-                    pass
-
-
-
-    def assignProjet(self, projet, frame_solutions):
-        if self.mark_list :
-            for mark in self.mark_list:
-                mark.hide()
-
-        # Détruit les objets précédemment créés dans la ScrollableFrame où sont contenues les solutions
-        for widget in frame_solutions.winfo_children():
-            widget.destroy()
-
-        # Remets la liste des solutions à vide
-        self.choixSolutions = []
-
-        # Récupère la liste des fichiers solutions dans le projet sélectionné
-        self.liste_fichiers_solutions = FileManager().lister_fichiers(
-            os.path.join(self.current_path, "../Projets/" + projet + "/Solutions"))
-
-        # Récupère le fichier données dans le projet sélectionné
-        fichier_donnees = FileManager().lister_fichiers(
-            os.path.join(self.current_path, "../Projets/" + projet))
-
-        # Extrait les données du fichier de données du projet
-        self.donnees_projet = DataExtractor().extraction(os.path.join(self.current_path, "../Projets/" + projet +"/"+ fichier_donnees[0]))
-
-        self.projet_selected = projet
-
-        # Créé les différents Switchs permettant de selectionner les boutons et les ajoute dans
-        # l'attribut contenant les différents noms des fichiers solution
-        liste_solutions = {}
-        j = 0
-        for solutions in self.liste_fichiers_solutions:
-            liste_solutions[solutions] = customtkinter.CTkSwitch(master=frame_solutions, progress_color="#1d7c69",
-                                                                     text=f"{solutions}")
-            liste_solutions[solutions].grid(row=j, column=0, padx=10, pady=(0, 20))
-            self.choixSolutions.append(liste_solutions[solutions])
-            j = j + 1
 
     def screenshot(self):
         bbox = (self.map_widget.winfo_rootx(), self.map_widget.winfo_rooty(), self.map_widget.winfo_rootx()+self.map_widget.winfo_width(), self.map_widget.winfo_rooty()+self.map_widget.winfo_height())
@@ -277,12 +165,13 @@ class App(customtkinter.CTk):
             for mark in self.mark_list:
                 mark.hide()
 
+
     # Evenement permettant d'afficher la map tout en cachant le tableau
     def select_map(self) :
         self.map_widget.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
         self.tableau.grid_forget()
 
+
 if __name__ == "__main__":
     app = App()
     app.mainloop()
-

@@ -1,4 +1,6 @@
 import customtkinter
+
+from Interface.Createur import Createur
 from Interface.PopUp import PopUp
 from Modules.ListeDemiJours import ListeDemiJours
 from Modules.extractRange import extractRange
@@ -8,9 +10,10 @@ from Modules.filtres import filtreTournees
 class PopupFiltre:
     """Pop-up pour la gestion des filtres"""
 
-    def __init__(self, interface):
+    def __init__(self, interface, createur : Createur):
 
         self.interface = interface
+        self.createur = createur
         self.switch_prod = {}
         self.switch_cl = {}
         self.switch_dj = {}
@@ -30,7 +33,6 @@ class PopupFiltre:
         frame_dj = customtkinter.CTkScrollableFrame(self.popup.window, label_text="Date")
         frame_dj.grid(row=0, column=2, padx=10, pady=20, sticky="nsew")
 
-
         # Champ textuel de filtrage pour les Producteurs
         self.entry_prod = customtkinter.CTkEntry(self.popup.window, placeholder_text="par exemple : 1-5, 8, 11-13")
         self.entry_prod.grid(row=1, column=0, padx=20, pady=(0,10), sticky="nsew")
@@ -39,19 +41,19 @@ class PopupFiltre:
         self.entry_cl = customtkinter.CTkEntry(self.popup.window, placeholder_text="par exemple : 1-5, 8, 11-13")
         self.entry_cl.grid(row=1, column=1, padx=20, pady=(0,10), sticky="nsew")
 
-
         # Récupération des données s'il y en a et ajouts dans les Frame
-        if interface.donnees:
+        if self.createur.projet:
 
+            producteurs, clients = self.createur.getActeurs(self.interface.donnees, self.createur.projet)
             i = 0
-            for prod in interface.donnees.getProducteurs():
+            for prod in producteurs:
                 switch = customtkinter.CTkSwitch(master=frame_prod, progress_color="#1d7c69", text=repr(prod))
                 switch.grid(row=i, column=0, padx=10, pady=(0, 20))
                 self.switch_prod[prod.id] = switch
                 i+=1
 
             i = 0
-            for cl in interface.donnees.getClients():
+            for cl in clients:
                 switch = customtkinter.CTkSwitch(master=frame_cl, progress_color="#1d7c69", text=repr(cl))
                 switch.grid(row=i, column=0, padx=10, pady=(0, 20))
                 self.switch_cl[cl.id] = switch
@@ -76,7 +78,6 @@ class PopupFiltre:
         (self.popup.masterwindow.winfo_rooty() + self.popup.masterwindow.winfo_height() / 2) - (
                     self.popup.window.winfo_height() * 1.25)))
         interface.wait_window(self.popup.window)
-
 
 
     def validate(self):
@@ -127,8 +128,8 @@ class PopupFiltre:
 
         # Filtrage des tournées
         tournees_filtered = []
-        if self.interface.donnees:
-            tournees_filtered = filtreTournees(self.interface.donnees.getTournees(), producteurs_id, clients_id, demi_jours_num)
+        if self.createur.projet:
+            tournees_filtered = filtreTournees(self.createur.getTournees(self.interface.solution), producteurs_id, clients_id, demi_jours_num)
 
         # Sélection des producteurs et clients à afficher (tous ceux parcourus par les tournées filtrées)
         act_to_display = []
