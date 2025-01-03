@@ -18,8 +18,6 @@ class AfficherActeur:
         self.window.withdraw()
         self.window.overrideredirect(True)
 
-        self.window.attributes("-topmost", True)
-
         self.ajoutDonnees()
 
 
@@ -36,7 +34,6 @@ class AfficherActeur:
                 "+%d+%d" % (self.masterwindow.winfo_rootx() + self.masterwindow.winfo_width() - self.window.winfo_width(),
                             self.masterwindow.winfo_rooty() + self.masterwindow.winfo_height() - self.window.winfo_height()))
             self.window.lift()
-            self.window.attributes('-topmost', True)
 
 
     # Permet d'ajouter les données du producteur (et des tâches associées par la suite) dans la popup
