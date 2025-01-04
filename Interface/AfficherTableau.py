@@ -142,15 +142,17 @@ class AfficherTableau:
         self.interface.tableau.heading("Producteur", text="Producteur")
         self.interface.tableau.heading("DemiJ", text="Demi-jour")
         self.interface.tableau.heading("Horaire", text="Horaire")
+        self.interface.tableau.heading("DureeTotale", text="Durée Totale")
         self.interface.tableau.heading("NbTaches", text="Nombre de tâches")
         self.interface.tableau.heading("DistanceTotale", text="Distance Totale")
-        self.interface.tableau.heading("DureeTotale", text="Durée Totale")
-        self.interface.tableau.heading("ChargementTotal", text="Chargement Total")
         self.interface.tableau.heading("ChargeMax", text="Charge Maximale")
+        self.interface.tableau.heading("ChargementTotal", text="Chargement Total")
 
-        """
         self.interface.tableau.column("ID", width=60)
-        """
+        self.interface.tableau.column("Producteur", width=100)
+        self.interface.tableau.column("DemiJ", width=120)
+        self.interface.tableau.column("Horaire", width=140)
+
         for col in colonnes:
             self.interface.tableau.column(col, anchor=CENTER)
 
@@ -166,13 +168,13 @@ class AfficherTableau:
             _, chargeMax,chargeTotale = t.chargement()
             self.interface.tableau.insert(parent='', index="end", values=(
                 t.idTournee,
-                t.demiJour,
                 t.producteur.id,
+                t.demiJour.__repr__(),
                 horaireDebut + ' - ' + horaireFin,
+                dureeTotale,
                 nbTaches,
                 str(distTotale) + " km",
-                dureeTotale,
-                chargeTotale,
+                chargeMax,
                 chargeTotale
             ))
 

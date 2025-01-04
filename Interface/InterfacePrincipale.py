@@ -24,7 +24,7 @@ class App(customtkinter.CTk):
         self.tableau = None
         self.mark_list = [] # liste des marqueurs
         self.donnees = [] # liste des lignes du fichier
-        self.solution = [] # liste des lignes du fichier solution
+        self.solution = [] # liste de liste des lignes de chaque fichier solution (si plusieurs sont sélectionnés)
 
         # Permet de mettre un titre et de définir la taille originale de la fenêtre
         self.title("OLOCAP Viewer")

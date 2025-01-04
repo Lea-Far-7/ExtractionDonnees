@@ -16,10 +16,11 @@ class PopupImport:
 
         self.projet_en_cours = ""
         self.nom_fichier_donnees = ""
-        self.liste_fichiers_solutions = [] # Liste des fichiers solution du projet en cours
+        self.liste_noms_fichiers_solutions = [] # Liste des fichiers solution du projet en cours
         self.liste_boutons_solutions = {} # Dictionnaire {nom_solution : switch}
         self.choixSolutions = [] # Liste des solutions sélectionnées pour le projet en cours
         self.fichier_donnees = [] # Liste des lignes du fichier de données du projet en cours
+        self.fichiers_solutions = [] # liste de liste des lignes de chaque fichier solution (si plusieurs sont sélectionnés)
 
         # Initialisation du popup
         self.popup = PopUp(self.interface)
@@ -75,7 +76,7 @@ class PopupImport:
         self.nom_fichier_donnees = self.createur.getFichiers(self.projet_en_cours)[0]
 
         # Récupère la liste des fichiers solutions dans le projet sélectionné
-        self.liste_fichiers_solutions = self.createur.getFichiers(self.projet_en_cours + "\Solutions")
+        self.liste_noms_fichiers_solutions = self.createur.getFichiers(self.projet_en_cours + "\Solutions")
 
         # Extrait les données du fichier de données du projet
         self.fichier_donnees = self.createur.getContenuFichierDonnees(self.projet_en_cours + "\\" + self.nom_fichier_donnees)
@@ -83,7 +84,7 @@ class PopupImport:
         # Crée les différents Switchs permettant de sélectionner les boutons
         self.liste_boutons_solutions = {}
         j = 0
-        for solutions in self.liste_fichiers_solutions:
+        for solutions in self.liste_noms_fichiers_solutions:
             self.liste_boutons_solutions[solutions] = customtkinter.CTkSwitch(master=frame_solutions, progress_color="#1d7c69", text=f"{solutions}")
             self.liste_boutons_solutions[solutions].grid(row=j, column=0, padx=10, pady=(0, 20))
             j = j + 1
@@ -98,18 +99,8 @@ class PopupImport:
             self.interface.donnees = self.fichier_donnees
 
             # /!\ Temporaire pour les filtres : à replacer lors de l'implémentation de l'affichage des solutions
-            self.interface.solution = self.createur.getContenuFichierSolution(self.liste_fichiers_solutions[0])
+            self.interface.solution = self.createur.getContenuFichierSolution(self.liste_noms_fichiers_solutions[0])
 
-            """ J'ai rien capté à ce qui se passe là haha
-            # Lecture de choix de solutions en cours de construction, pas fonctionnel
-            for selected in self.choixSolutions:
-                if (selected.get() == 1) :
-                    self.interface.donnees.load_solutions(DataExtractor().extraction_solution(os.path.join(self.current_path, "../Projets/" + self.projet_selected +"/Solutions/"+ selected.cget('text'))))       
-
-            for tournee in self.interface.donnees.getTournees():
-                if tournee.producteur.id == 1:
-                    pass
-            """
 
     def __synchronisation_carte_tableau(self):
         # Supprime tous les marqueurs présents sur la map
@@ -129,10 +120,17 @@ class PopupImport:
 
         # On récupère la liste des noms de fichiers sélectionnés (état switch = 1)
         self.choixSolutions = (c for c,b in self.liste_boutons_solutions.items() if b.get() == 1)
+        # On récupère le contenu de chaque fichier solution sélectionné
+        liste_tournees = []
+        for index, fichier in enumerate(self.choixSolutions):
+            self.fichiers_solutions.append(self.createur.getContenuFichierSolution(fichier))
+            liste_tournees.append(self.createur.getTournees(self.fichiers_solutions[index])) # Ajout de la liste de tournées de chaque fichier
+
+        self.interface.solution = self.fichiers_solutions
 
         for c in self.choixSolutions:
             print("solution : " + c)
         if self.choixSolutions:
-            afficheurTab.tableau_clients(clients)
+            afficheurTab.tableau_tournees(liste_tournees[0])
         else:
             afficheurTab.tableau_producteurs(producteurs)
