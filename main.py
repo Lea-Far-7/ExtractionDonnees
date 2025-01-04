@@ -70,3 +70,6 @@ tournees = createur.getTournees()
 print(tournees[0])
 print("---------------")
 print(tournees[5])
+
+l, Dmax, t= tournees[5].duree()
+print(l, Dmax, t)

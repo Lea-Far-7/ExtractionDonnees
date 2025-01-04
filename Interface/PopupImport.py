@@ -1,6 +1,7 @@
 import tkinter
 import customtkinter
 
+from Interface.AfficherCarte import AfficherCarte
 from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
 from Interface.MarkerActeur import MarkerActeur
@@ -16,6 +17,7 @@ class PopupImport:
         self.projet_en_cours = ""
         self.nom_fichier_donnees = ""
         self.liste_fichiers_solutions = [] # Liste des fichiers solution du projet en cours
+        self.liste_boutons_solutions = {} # Dictionnaire {nom_solution : switch}
         self.choixSolutions = [] # Liste des solutions sélectionnées pour le projet en cours
         self.fichier_donnees = [] # Liste des lignes du fichier de données du projet en cours
 
@@ -79,12 +81,11 @@ class PopupImport:
         self.fichier_donnees = self.createur.getContenuFichierDonnees(self.projet_en_cours + "\\" + self.nom_fichier_donnees)
 
         # Crée les différents Switchs permettant de sélectionner les boutons
-        liste_solutions = {}
+        self.liste_boutons_solutions = {}
         j = 0
         for solutions in self.liste_fichiers_solutions:
-            liste_solutions[solutions] = customtkinter.CTkSwitch(master=frame_solutions, progress_color="#1d7c69", text=f"{solutions}")
-            liste_solutions[solutions].grid(row=j, column=0, padx=10, pady=(0, 20))
-            self.choixSolutions.append(liste_solutions[solutions])
+            self.liste_boutons_solutions[solutions] = customtkinter.CTkSwitch(master=frame_solutions, progress_color="#1d7c69", text=f"{solutions}")
+            self.liste_boutons_solutions[solutions].grid(row=j, column=0, padx=10, pady=(0, 20))
             j = j + 1
 
 
@@ -121,12 +122,17 @@ class PopupImport:
 
         producteurs, clients = self.createur.getActeurs(self.fichier_donnees, self.projet_en_cours)
 
-        # Parcourt les producteurs créés et crée les marqueurs associés
-        for prod in producteurs:
-            self.interface.mark_list.append(MarkerActeur(self.interface.map_widget, prod, self.interface))
-        # Parcourt les clients créés et crée les marqueurs associés
-        for cl in clients:
-            self.interface.mark_list.append(MarkerActeur(self.interface.map_widget, cl, self.interface))
+        afficheurCarte = AfficherCarte(self.interface)
+        afficheurCarte.markers_producteurs(producteurs)
+        afficheurCarte.markers_clients(clients)
+        afficheurTab = AfficherTableau(self.interface)
 
-        afficheur = AfficherTableau(self.interface)
-        afficheur.tableau_producteurs(producteurs)
+        # On récupère la liste des noms de fichiers sélectionnés (état switch = 1)
+        self.choixSolutions = (c for c,b in self.liste_boutons_solutions.items() if b.get() == 1)
+
+        for c in self.choixSolutions:
+            print("solution : " + c)
+        if self.choixSolutions:
+            afficheurTab.tableau_clients(clients)
+        else:
+            afficheurTab.tableau_producteurs(producteurs)

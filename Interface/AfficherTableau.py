@@ -72,9 +72,7 @@ class AfficherTableau:
         """
         self.interface.tableau.column("ID", width=60)
         self.interface.tableau.column("Coord", width=130)
-        self.interface.tableau.column("Capacite", width=90)
         self.interface.tableau.column("Dispo", width=120)
-        self.interface.tableau.column("NbTournees", width=100)
         self.interface.tableau.column("NbCommandes", width=100)
         """
         for col in colonnes:
@@ -156,20 +154,26 @@ class AfficherTableau:
         for col in colonnes:
             self.interface.tableau.column(col, anchor=CENTER)
 
-        for prod in infos_tournees:
-            coord = f"({round(prod.latitude, 6)}, {round(prod.longitude, 6)})"
-            partners = ", ".join([str(partner.id) for partner in prod.partners])
-            dispos = ", ".join([str(dispo.num) for dispo in prod.dispos])
-            nbTournees = "1"
-            nbCommandes = "2"
+        for t in infos_tournees:
+            nbTaches = len(t.taches)
+            horaireDebut = t.taches[0].horaire
+            horaireFin = t.taches[nbTaches-1].horaire
+            _, _, distTotale = t.distance()
+            liste_durees, _, dureeT = t.duree()
+            nbH = dureeT // 60
+            nbM = dureeT % 60
+            dureeTotale = str(nbH) + "h" + str(nbM) + "m"
+            _, chargeMax,chargeTotale = t.chargement()
             self.interface.tableau.insert(parent='', index="end", values=(
-                prod.id,
-                coord,
-                prod.capacity,
-                partners,
-                dispos,
-                nbTournees,
-                nbCommandes
+                t.idTournee,
+                t.demiJour,
+                t.producteur.id,
+                horaireDebut + ' - ' + horaireFin,
+                nbTaches,
+                str(distTotale) + " km",
+                dureeTotale,
+                chargeTotale,
+                chargeTotale
             ))
 
         self.interface.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
