@@ -2,6 +2,7 @@ import customtkinter
 
 from Interface.Createur import Createur
 from Interface.PopUp import PopUp
+from Metier.acteur import Acteur
 from Modules.ListeDemiJours import ListeDemiJours
 from Modules.extractRange import extractRange
 from Modules.filtres import filtreTournees, filtreActeurs
@@ -129,10 +130,13 @@ class PopupFiltre:
         # Filtrage des tournées
         tournees_filtered = []
         if self.createur.projet:
-            print(self.createur.getTournees(self.interface.solution))
+            # TODO: changer la liste des tournées en param pour liste de listes de tournées et appel à filtreListesTournees
             tournees_filtered = filtreTournees(self.createur.getTournees(self.interface.solution), producteurs_id, clients_id, demi_jours_num)
 
         acteurs_filtered = filtreActeurs(tournees_filtered, producteurs_id+clients_id)
+
+        # Mise à jour des infosTournees des acteurs
+        Acteur.updateInfosTournees([tournees_filtered])
 
         #tests
         print(tournees_filtered)
