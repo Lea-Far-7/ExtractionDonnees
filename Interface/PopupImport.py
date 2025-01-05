@@ -6,6 +6,8 @@ from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
 from Interface.MarkerActeur import MarkerActeur
 from Interface.PopUp import PopUp
+from Metier.acteur import Acteur
+
 
 # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
 class PopupImport:
@@ -125,6 +127,9 @@ class PopupImport:
         for index, fichier in enumerate(self.choixSolutions):
             self.fichiers_solutions.append(self.createur.getContenuFichierSolution(fichier))
             liste_tournees.append(self.createur.getTournees(self.fichiers_solutions[index])) # Ajout de la liste de tournées de chaque fichier
+
+        # Mise à jour des infosTournees des acteurs (à sans doute déplacer)
+        Acteur.updateInfosTournees(liste_tournees)
 
         self.interface.solution = self.fichiers_solutions
         for c in self.choixSolutions:

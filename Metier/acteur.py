@@ -16,7 +16,7 @@ class Acteur(abc.ABC):
     """
 
     nb = 0 # nombre d'instances créées d'Acteur
-    instances = [] # instances créées d'Acteur
+    instances = {} # instances créées d'Acteur
 
     def __init__(self, latitude:float, longitude:float, dispos=None):
         """
@@ -29,8 +29,9 @@ class Acteur(abc.ABC):
         self.latitude = latitude
         self.longitude = longitude
         self.dispos = dispos if dispos is not None else []
-        self.infosTournees = []     # contient les chaines de données sur les tournées qui impliquent l'acteur
-        Acteur.instances.append(self)
+        self.infosTournees = [[],[]]     # contient les chaines de données sur les tournées qui impliquent l'acteur
+                                        # 1è sous-liste : conduite de tournée, 2è sous-liste : passage de tournée
+        Acteur.instances[Acteur.nb] = self
         Acteur.nb += 1
 
     def __del__(self):
@@ -53,10 +54,11 @@ class Acteur(abc.ABC):
         """
         self.dispos.remove(dispo)
 
-    def getInfosTournees(self):
+    def getInfosTournees(self)->str:
         result = ""
-        for info in self.infosTournees:
-            result += info + "\n"
+        for part in self.infosTournees:
+            for info in part:
+                result += info + "\n"
         return result[:-1]
 
     @abc.abstractmethod
@@ -71,3 +73,20 @@ class Acteur(abc.ABC):
     def deleteAll(cls):
         cls.instances.clear()
         cls.nb = 0
+
+    @classmethod
+    def updateInfosTournees(cls, listSolutions:list):   # listSolutions = liste de liste de tournées
+        for instance in cls.instances.values():
+            instance.infosTournees = [[],[]]    #initialisation
+        for listTournees in listSolutions:
+            for tournee in listTournees:
+                cls.instances[tournee.producteur.id].infosTournees[0].append("Conduite de la tournée "+str(tournee.idTournee))
+                for tache in tournee.taches:
+                    info = (tache.getType() + " " + str(tache.charge) + " " + {"P": "pour", "D": "de"}[
+                        tache.type] + " " + repr(tache.infoRequete) + " " + repr(tournee.demiJour) + " " + tache.horaire +
+                        " par " + repr(tournee.producteur))
+                    cls.instances[tache.lieu.id].infosTournees[1].append(info)
+        # Tests
+        for instance in cls.instances.values():
+            print("\n-- InfosTournees "+repr(instance)+" --")
+            print(instance.getInfosTournees())
