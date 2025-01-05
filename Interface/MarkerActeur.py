@@ -16,6 +16,8 @@ class MarkerActeur:
         # On instancie l'objet qui permettra d'afficher les données
         self.popup = AfficherActeur(self.masterwindow, self, self.acteur)
 
+        self.color = color_palette[acteur.id % colors_nb]
+
         # Charge l'image pour l'icône des clients
         if isinstance(acteur, Client):
             image_client = ImageTk.PhotoImage(Image.open("..\Images\\client.png").resize((35, 35)))
@@ -24,7 +26,7 @@ class MarkerActeur:
         else:
             # Crée un marker sur la carte basé sur l'identifiant du producteur
             self.marker = map.set_marker(self.acteur.latitude, self.acteur.longitude, marker_color_outside="#000000",
-                                         marker_color_circle=color_palette[acteur.id % colors_nb], command=self.affichage)
+                                         marker_color_circle=self.color, command=self.affichage)
 
 
     # Ajout de taches à l'objet pour les afficher par la suite
