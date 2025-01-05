@@ -126,8 +126,16 @@ class PopupImport:
             self.fichiers_solutions.append(self.createur.getContenuFichierSolution(fichier))
             liste_tournees.append(self.createur.getTournees(self.fichiers_solutions[index])) # Ajout de la liste de tournées de chaque fichier
 
-        self.interface.solution = self.fichiers_solutions
+        # liste_de liste_de_tournees = liste de liste
+        # liste 1, liste des tournées de chaque fichier
+        # liste 2, liste de tournées d'un fichier
 
+        """
+        for index, t in enumerate(liste_tournees):
+            if t[index].producteur.id ==
+        """
+
+        self.interface.solution = self.fichiers_solutions
         for c in self.choixSolutions:
             print("solution : " + c)
         if self.choixSolutions:

@@ -131,7 +131,7 @@ class AfficherTableau:
         self.interface.tableau.grid_forget()
 
     def tableau_tournees(self, infos_tournees : list):
-        colonnes = ("ID", "Producteur", "DemiJ", "Horaire", "NbTaches", "DistanceTotale", "DureeTotale", "ChargementTotal", "ChargeMax") # Max = max(tous les chargements)
+        colonnes = ("ID", "Producteur", "DemiJ", "Horaire", "DureeTotale", "NbTaches", "DistanceTotale", "ChargeMax", "ChargementTotal") # Max = max(tous les chargements)
         style = ttk.Style()
         style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
         style.configure("Treeview", font=('Arial', 11), rowheight=25)
@@ -165,7 +165,8 @@ class AfficherTableau:
             nbH = dureeT // 60
             nbM = dureeT % 60
             dureeTotale = str(nbH) + "h" + str(nbM) + "m"
-            _, chargeMax,chargeTotale = t.chargement()
+            _, chargeMax,chargeT = t.chargement()
+            chargeTotale = str(round(chargeT, 2)) + " kg"
             self.interface.tableau.insert(parent='', index="end", values=(
                 t.idTournee,
                 t.producteur.id,
@@ -174,7 +175,7 @@ class AfficherTableau:
                 dureeTotale,
                 nbTaches,
                 str(distTotale) + " km",
-                chargeMax,
+                str(chargeMax) + " kg",
                 chargeTotale
             ))
 
