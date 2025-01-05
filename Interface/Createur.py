@@ -1,4 +1,5 @@
 from Metier.client import Client
+from Metier.demande import Demande
 from Metier.producteur import Producteur
 from Metier.tournee import Tournee
 from Modules.CreerClasses import CreerClasses
@@ -36,6 +37,11 @@ class Createur:
             self.createur_classes.load_donnees(lignes)
             return self.createur_classes.getProducteurs(), self.createur_classes.getClients()
         return self.createur_classes.getProducteurs(), self.createur_classes.getClients()
+
+    def getCommandes(self) -> list[Demande] :
+        if self.projet :
+            return self.createur_classes.getDemandes()
+        return []
 
     def getContenuFichierSolution(self, nom_fichier : str) -> list:
         # On précisera en paramètre le nom du fichier voulu

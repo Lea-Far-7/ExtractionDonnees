@@ -22,7 +22,8 @@ class App(customtkinter.CTk):
         # Définition des composants essentiels
         self.map_widget = None
         self.tableau = None
-        self.mark_list = [] # liste des marqueurs
+        self.mark_list = {} # dictionnaire des marqueurs
+        self.path_list = {} # dictionnaire des trajets
         self.donnees = [] # liste des lignes du fichier
         self.solution = [] # liste de liste des lignes de chaque fichier solution (si plusieurs sont sélectionnés)
 
@@ -46,7 +47,7 @@ class App(customtkinter.CTk):
         self.bind('<Configure>', self.update_all_popups_position)
 
     def update_all_popups_position(self, event=None):
-        for marker in self.mark_list:
+        for marker in self.mark_list.values():
             marker.popup.update_popup_position()
 
 
@@ -110,17 +111,6 @@ class App(customtkinter.CTk):
         self.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonne_message), sticky="nsew")
         self.tableau.grid_forget()
 
-        """
-        # Liste des options pour le menu déroulant
-        self.options = ['', 'producteurs', 'clients', 'commandes', 'tournees']
-        self.selected_option = tkinter.StringVar(self)
-        self.selected_option.set(self.options[0])
-
-        # Création du menu déroulant
-        self.dropdown = ttk.OptionMenu(self, self.selected_option, *self.options, command=self.update_tableau())
-        self.dropdown.grid(row=0, column=1, sticky="w", padx=5, pady=5)
-        """
-
     def screenshot(self):
         bbox = (self.map_widget.winfo_rootx(), self.map_widget.winfo_rooty(), self.map_widget.winfo_rootx()+self.map_widget.winfo_width(), self.map_widget.winfo_rooty()+self.map_widget.winfo_height())
 
@@ -137,7 +127,7 @@ class App(customtkinter.CTk):
         self.tableau.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
         self.map_widget.grid_forget()
         if self.mark_list :
-            for mark in self.mark_list:
+            for mark in self.mark_list.values():
                 mark.hide()
 
 

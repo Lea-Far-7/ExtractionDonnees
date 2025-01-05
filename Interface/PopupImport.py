@@ -6,8 +6,6 @@ from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
 from Interface.MarkerActeur import MarkerActeur
 from Interface.PopUp import PopUp
-from Metier.acteur import Acteur
-
 
 # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
 class PopupImport:
@@ -63,7 +61,7 @@ class PopupImport:
         self.projet_en_cours = projet
         # Si des marqueurs sont déjà présents, on les cache pour éviter une surcharge visuelle
         if self.interface.mark_list :
-            for mark in self.interface.mark_list:
+            for mark in self.interface.mark_list.values():
                 mark.hide()
 
         # Détruit les objets précédemment créés dans la ScrollableFrame où sont contenues les solutions
@@ -107,6 +105,7 @@ class PopupImport:
     def __synchronisation_carte_tableau(self):
         # Supprime tous les marqueurs présents sur la map
         self.interface.map_widget.delete_all_marker()
+        self.interface.map_widget.delete_all_path()
         self.interface.mark_list.clear()
 
         # Supprime toutes les lignes du tableau
@@ -128,10 +127,34 @@ class PopupImport:
             self.fichiers_solutions.append(self.createur.getContenuFichierSolution(fichier))
             liste_tournees.append(self.createur.getTournees(self.fichiers_solutions[index])) # Ajout de la liste de tournées de chaque fichier
 
-        # Mise à jour des infosTournees des acteurs (à sans doute déplacer)
-        Acteur.updateInfosTournees(liste_tournees)
+        for tournee_list in liste_tournees:
+            for tournee in tournee_list:
+                color = self.interface.mark_list[tournee.producteur.id].color
+                temp = 0
+                for tache in tournee.taches:
+                    print(tache)
+                    if temp == 0 :
+                        self.interface.path_list[tache] = self.interface.map_widget.set_path(
+                            [(self.interface.mark_list[tournee.producteur.id].acteur.latitude, self.interface.mark_list[tournee.producteur.id].acteur.longitude),
+                             (tache.lieu.latitude, tache.lieu.longitude)], width=4,
+                            command="", color=color)
+                        temp = 1
+                        lieu2lat = tache.lieu.latitude
+                        lieu2long = tache.lieu.longitude
+                    else :
+                        self.interface.path_list[tache] = self.interface.map_widget.set_path(
+                            [(lieu2lat, lieu2long),
+                             (tache.lieu.latitude, tache.lieu.longitude)], width=4,
+                            command="", color=color)
+                        lieu2lat = tache.lieu.latitude
+                        lieu2long = tache.lieu.longitude
+
 
         self.interface.solution = self.fichiers_solutions
+
+        # Mise à jour des infosTournees des acteurs (à sans doute déplacer)
+        # Acteur.updateInfosTournees(dico_fichier_tournees[v])
+
         for c in self.choixSolutions:
             print("solution : " + c)
         if self.choixSolutions:

@@ -1,9 +1,103 @@
+import tkinter
 from tkinter import ttk, CENTER
+import customtkinter
 
 class AfficherTableau:
 
     def __init__(self, interface):
         self.interface = interface
+        self.options = ['producteurs', 'clients', 'commandes', 'tournees']
+        self.selected_option = None
+        self.selected_solution = None
+
+    """
+    def afficher_menu_deroulant(self, liste_clients, liste_producteurs, liste_commandes, dico_tournees):
+        self.selected_option = customtkinter.StringVar(self.interface)
+        self.selected_option.set(self.options[0])
+        menu = customtkinter.CTkOptionMenu(self.interface.tableau, self.selected_option, *self.options, command=self.update_tableau(liste_clients, liste_producteurs, liste_commandes, dico_tournees))
+        menu.grid(row=0, column=0, sticky="ew", padx=5, pady=5, columnspan=len(self.options))
+    """
+
+    def update_tableau(self, liste_clients, liste_producteurs, liste_commandes, dico_tournees):
+        selected = self.selected_option.get()
+        if selected == 'producteurs':
+            self.tableau_producteurs(liste_producteurs)
+        elif selected == 'clients':
+            self.tableau_clients(liste_clients)
+        elif selected == 'commandes':
+            self.tableau_commandes(liste_commandes)
+        elif selected == 'tournees':
+            self.tableau_tournees(dico_tournees)
+
+
+    def update_tableau_solutions(self, colonnes, infos_tournees, titre_colonnes):
+        selected_solution = self.selected_solution.get()
+        infos_tournees = self.createur.getTournees(selected_solution)
+        self.creer_tableau(colonnes, infos_tournees, titre_colonnes)
+
+
+    def creer_tableau(self, colonnes, infos, titre_colonnes):
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
+        style.configure("Treeview", font=('Arial', 11), rowheight=25)
+
+        self.interface.tableau = ttk.Treeview(self.interface, columns=colonnes, show='headings')
+
+        for col, titre in zip(colonnes, titre_colonnes):
+            self.interface.tableau.heading(col, text=titre)
+            self.interface.tableau.column(col, anchor=CENTER)
+
+        for item in infos:
+            self.interface.tableau.insert(parent='', index="end", values=item)
+
+        self.interface.tableau.grid(row=2, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
+
+        scrollbar = ttk.Scrollbar(self.interface, orient="vertical", command=self.interface.tableau.yview)
+        self.interface.tableau.configure(yscrollcommand=scrollbar.set)
+        scrollbar.grid(row=2, rowspan=8, column=len(colonnes) + 1, sticky="ns")
+
+        self.interface.tableau.grid_forget()
+        
+    def afficher_tableau_producteurs(self, infos_producteurs):
+        colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
+        titre_colonnes = ("ID", "Coordonnées", "Capacité", "Partenaires", "Disponibilités", "Nombre de Tournées", "Nombre de Commandes")
+        self.creer_tableau(colonnes, infos_producteurs, titre_colonnes)
+        
+    def afficher_tableau_clients(self, infos_clients):
+        colonnes = ("ID", "Coord", "Dispo", "NbCommandes")
+        titre_colonnes = ("ID", "Coordonnées", "Disponibilités", "Nombre de Commandes")
+        self.creer_tableau(colonnes, infos_clients, titre_colonnes)
+        
+    def afficher_tableau_commandes(self, infos_commandes):
+        colonnes = ("ID", "IDClient", "IDProducteur", "Masse")
+        titre_colonnes = ("ID", "IDClient", "IDProducteur", "Masse")
+        self.creer_tableau(colonnes, infos_commandes, titre_colonnes)
+
+    def afficher_tableau_tournees(self, dico_tournees):
+        colonnes = ("ID", "Producteur", "DemiJ", "Horaire", "DureeTotale", "NbTaches", "DistanceTotale", "ChargeMax", "ChargementTotal")
+        titre_colonnes = ("ID", "Producteur", "Demi-jour", "Horaire", "Durée Totale", "Nombre de tâches", "Distance Totale", "Charge Maximale", "Chargement Total")
+        liste_noms, infos_tournees = [], []
+        for nom_fichier, fichier in dico_tournees.items():
+            liste_noms.append(nom_fichier)
+            infos_tournees.append(fichier)
+        self.creer_tableau(colonnes, infos_tournees[0], titre_colonnes)
+
+        self.selected_solution = tkinter.StringVar(self.interface)
+        self.selected_solution.set(liste_noms[0])
+
+        menu_solution = ttk.OptionMenu(self.interface, self.selected_solution, *liste_noms, command=self.update_tableau_solutions(colonnes, infos_tournees, titre_colonnes))
+        menu_solution.grid(row=1, column=1, sticky="w", padx=5, pady=5)
+    
+
+        
+
+
+
+
+
+
+
+
 
     def tableau_producteurs(self, infos_producteurs : list):
         colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
