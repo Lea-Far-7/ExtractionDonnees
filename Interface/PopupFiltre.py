@@ -4,7 +4,7 @@ from Interface.Createur import Createur
 from Interface.PopUp import PopUp
 from Modules.ListeDemiJours import ListeDemiJours
 from Modules.extractRange import extractRange
-from Modules.filtres import filtreTournees
+from Modules.filtres import filtreTournees, filtreActeurs
 
 
 class PopupFiltre:
@@ -117,7 +117,7 @@ class PopupFiltre:
                     switch.deselect()
         else:
             # Sélection par les switch
-            for key, switch in self.switch_prod.items():
+            for key, switch in self.switch_cl.items():
                 if switch.get():
                     clients_id.append(key)
 
@@ -129,15 +129,11 @@ class PopupFiltre:
         # Filtrage des tournées
         tournees_filtered = []
         if self.createur.projet:
+            print(self.createur.getTournees(self.interface.solution))
             tournees_filtered = filtreTournees(self.createur.getTournees(self.interface.solution), producteurs_id, clients_id, demi_jours_num)
 
-        # Sélection des producteurs et clients à afficher (tous ceux parcourus par les tournées filtrées)
-        act_to_display = []
-        for tournee in tournees_filtered:
-            prod_leader = tournee.producteur
-            if not prod_leader in act_to_display:
-                act_to_display.append(prod_leader)
-            for tache in tournee.taches:
-                act = tache.lieu
-                if not act in act_to_display:
-                    act_to_display.append(act)
+        acteurs_filtered = filtreActeurs(tournees_filtered, producteurs_id+clients_id)
+
+        #tests
+        print(tournees_filtered)
+        print(acteurs_filtered)
