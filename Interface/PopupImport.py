@@ -4,7 +4,6 @@ import customtkinter
 from Interface.AfficherCarte import AfficherCarte
 from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
-from Interface.MarkerActeur import MarkerActeur
 from Interface.PopUp import PopUp
 from Metier.acteur import Acteur
 
@@ -101,6 +100,8 @@ class PopupImport:
             self.interface.donnees = self.fichier_donnees
 
             # /!\ Temporaire pour les filtres : à replacer lors de l'implémentation de l'affichage des solutions
+            # Transformer self.interface.soltution de liste en dico ?
+            # Pareil pour liste_tournees ?
             self.interface.solution = self.createur.getContenuFichierSolution(self.liste_noms_fichiers_solutions[0])
 
 
@@ -120,49 +121,48 @@ class PopupImport:
         afficheurCarte = AfficherCarte(self.interface)
         afficheurCarte.markers_producteurs(producteurs)
         afficheurCarte.markers_clients(clients)
-        afficheurTab = AfficherTableau(self.interface)
 
         # On récupère la liste des noms de fichiers sélectionnés (état switch = 1)
-        self.choixSolutions = list(c for c,b in self.liste_boutons_solutions.items() if b.get() == 1)
+        self.choixSolutions = list(c for c,b in self.liste_boutons_solutions.items() if b.get() == 1) # Conversion en liste sinon attribut devient un générator
         # On récupère le contenu de chaque fichier solution sélectionné
         liste_tournees = []
-        if self.choixSolutions:
-            for index, fichier in enumerate(self.choixSolutions):
-                self.fichiers_solutions.append(self.createur.getContenuFichierSolution(fichier))
-                liste_tournees.append(self.createur.getTournees(self.fichiers_solutions[index])) # Ajout de la liste de tournées de chaque fichier
+        for index, fichier in enumerate(self.choixSolutions):
+            self.fichiers_solutions.append(self.createur.getContenuFichierSolution(fichier))
+            liste_tournees.append(self.createur.getTournees(self.fichiers_solutions[index])) # Ajout de la liste de tournées de chaque fichier
 
-            for tournee_list in liste_tournees:
-                for tournee in tournee_list:
-                    color = self.interface.mark_list[tournee.producteur.id].color
-                    temp = 0
-                    for tache in tournee.taches:
-                        print(tache)
-                        if temp == 0 :
-                            self.interface.path_list[tache] = self.interface.map_widget.set_path(
-                                [(self.interface.mark_list[tournee.producteur.id].acteur.latitude, self.interface.mark_list[tournee.producteur.id].acteur.longitude),
-                                 (tache.lieu.latitude, tache.lieu.longitude)], width=4,
-                                command="", color=color)
-                            temp = 1
-                            lieu2lat = tache.lieu.latitude
-                            lieu2long = tache.lieu.longitude
-                        else :
-                            self.interface.path_list[tache] = self.interface.map_widget.set_path(
-                                [(lieu2lat, lieu2long),
-                                 (tache.lieu.latitude, tache.lieu.longitude)], width=4,
-                                command="", color=color)
-                            lieu2lat = tache.lieu.latitude
-                            lieu2long = tache.lieu.longitude
-
+        for tournee_list in liste_tournees:
+            for tournee in tournee_list:
+                color = self.interface.mark_list[tournee.producteur.id].color
+                temp = 0
+                for tache in tournee.taches:
+                    print(tache)
+                    if temp == 0 :
+                        self.interface.path_list[tache] = self.interface.map_widget.set_path(
+                            [(self.interface.mark_list[tournee.producteur.id].acteur.latitude, self.interface.mark_list[tournee.producteur.id].acteur.longitude),
+                             (tache.lieu.latitude, tache.lieu.longitude)], width=4,
+                            command="", color=color)
+                        temp = 1
+                        lieu2lat = tache.lieu.latitude
+                        lieu2long = tache.lieu.longitude
+                    else :
+                        self.interface.path_list[tache] = self.interface.map_widget.set_path(
+                            [(lieu2lat, lieu2long),
+                             (tache.lieu.latitude, tache.lieu.longitude)], width=4,
+                            command="", color=color)
+                        lieu2lat = tache.lieu.latitude
+                        lieu2long = tache.lieu.longitude
 
         self.interface.solution = self.fichiers_solutions
 
         # Mise à jour des infosTournees des acteurs (à sans doute déplacer)
         Acteur.updateInfosTournees(liste_tournees)
 
-        if self.choixSolutions == []:
-            print("producteur")
-            afficheurTab.tableau_producteurs(producteurs)
-        else:
-            print("passe")
+        afficheurTab = AfficherTableau(self.interface)
+        if self.choixSolutions:
             afficheurTab.tableau_tournees(liste_tournees[0])
             print("tournee")
+
+        else:
+            print("producteur")
+            afficheurTab.tableau_producteurs(producteurs)
+

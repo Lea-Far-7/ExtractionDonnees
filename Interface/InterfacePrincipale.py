@@ -27,6 +27,8 @@ class App(customtkinter.CTk):
         self.donnees = [] # liste des lignes du fichier
         self.solution = [] # liste de liste des lignes de chaque fichier solution (si plusieurs sont sélectionnés)
 
+        self.scrollbar = ttk.Scrollbar(self, orient=VERTICAL)
+
         # Permet de mettre un titre et de définir la taille originale de la fenêtre
         self.title("OLOCAP Viewer")
         self.iconbitmap("../Images/Logo_Olocap_small.ico")
@@ -129,13 +131,16 @@ class App(customtkinter.CTk):
         if self.mark_list :
             for mark in self.mark_list.values():
                 mark.hide()
+        # On affiche la scrollbar pour le tableau
+        self.scrollbar.grid(row=1, rowspan=8, column=5, sticky="ns")
 
 
     # Evenement permettant d'afficher la map tout en cachant le tableau
     def select_map(self) :
         self.map_widget.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
         self.tableau.grid_forget()
-
+        # On cache la scrollbar du tableau
+        self.scrollbar.grid_forget()
 
 if __name__ == "__main__":
     app = App()
