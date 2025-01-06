@@ -250,6 +250,8 @@ class AfficherTableau:
         for col in colonnes:
             self.interface.tableau.column(col, anchor=CENTER)
 
+        print(infos_tournees)
+
         for t in infos_tournees:
             nbTaches = len(t.taches)
             horaireDebut = t.taches[0].horaire
