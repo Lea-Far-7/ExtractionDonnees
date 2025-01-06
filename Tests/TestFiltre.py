@@ -1,5 +1,6 @@
 import unittest
 
+from Modules import filtres
 from Modules.filtres import filtreTournees
 from Metier.demiJour import DemiJour
 from Metier.client import Client
@@ -50,16 +51,15 @@ class TestFiltre(unittest.TestCase):
     # TODO : Pour la suite il faut au moins avoir lu la documentation de la fonction filtreTournees dans Modules/filtres.py
 
 
-    @unittest.skip # TO DELETE
-    def test_filtre_client(self):
+    def test_filtre_client(self,):
 
         # Test du filtrage selon des clients
 
         # TODO : Faire appel à la fonction filtreTournees() avec en paramètres la liste des tournées créées et une liste de plusieurs ID de Client
         # result = filtreTournees(listeTournees, None, listeIdClient, None)
 
-        resultA = filtres.filtreTournees([tournee1, tournee2, tournee3], None, [1, 2], None)
-        resultB = filttre.filtreTournees([tournee1, tournee2, tournee3], None, [0, 2], None)
+        resultA = filtres.filtreTournees([TestFiltre.tournee1, TestFiltre.tournee2, TestFiltre.tournee3], None, [1, 2], None)
+        resultB = filtres.filtreTournees([TestFiltre.tournee1, TestFiltre.tournee2, TestFiltre.tournee3], None, [0, 2], None)
 
         # TODO : Effectuer une assertion pour vérifier si le résultat de l'appel à la fonction est conforme à ce qui devrait être obtenu
         #  Il faut donc déterminer les tournées qui correspondent aux critères de filtrage (ici les ID des Clients choisis)
@@ -67,47 +67,47 @@ class TestFiltre(unittest.TestCase):
         #  Mais ici on veut comparer 2 listes d'objets indépendamment de l'ordre, on utilise donc assertCountEqual(list1,list2)
         # self.assertCountEqual(result, listeTourneesAttendues)
 
-        self.assertCountEqual(resultA, [tournee1, tournee3])
-        self.assertCountEqual(resultB, [tournee2])
+        self.assertCountEqual(resultA, [TestFiltre.tournee1, TestFiltre.tournee3])
+        self.assertCountEqual(resultB, [TestFiltre.tournee2])
 
         # TODO : On peut éventuellement faire plusieurs tests avec des filtrages différents sur les Clients
 
         pass # TO DELETE
 
 
-    @unittest.skip # TO DELETE
+
     def test_filtre_producteur(self):
 
         # Test du filtrage selon des producteurs
 
         # TODO : Adapter ce qui a été fait avant pour tester cette fois-ci le filtrage par producteur
 
-        resultA = filtre.filtreTournees([tournee1, tournee2, tournee3], [3,5], None, None)
-        resultB = filtre.filtreTournees([tournee1, tournee2, tournee3], [3,4], None, None)
+        resultA = filtres.filtreTournees([TestFiltre.tournee1, TestFiltre.tournee2, TestFiltre.tournee3], [3,5], None, None)
+        resultB = filtres.filtreTournees([TestFiltre.tournee1, TestFiltre.tournee2, TestFiltre.tournee3], [3,4], None, None)
 
-        self.assertCountEqual(resultA, [tournee1, tournee2])
-        self.assertCountEqual(resultB, [tournee2, tournee3])
+        self.assertCountEqual(resultA, [TestFiltre.tournee1, TestFiltre.tournee2])
+        self.assertCountEqual(resultB, [TestFiltre.tournee2, TestFiltre.tournee3])
 
         pass  # TO DELETE
 
 
-    @unittest.skip # TO DELETE
+
     def test_filtre_demiJour(self):
 
         # Test du filtrage selon des demi-journées
 
         # TODO : Adapter ce qui a été fait avant pour tester cette fois-ci le filtrage par demi-jours
 
-        resultA = filtre.filtreTournees([tournee1, tournee2, tournee3], None, None, [1,3])
-        resultB = filtre.filtreTournees([tournee1, tournee2, tournee3], None, None, [2,4,5])
+        resultA = filtres.filtreTournees([TestFiltre.tournee1, TestFiltre.tournee2, TestFiltre.tournee3], None, None, [1,3])
+        resultB = filtres.filtreTournees([TestFiltre.tournee1, TestFiltre.tournee2, TestFiltre.tournee3], None, None, [2,4,5])
 
-        self.assertCountEqual(resultA, [tournee1, tournee2])
-        self.assertCountEqual(resultB, [tournee3])
+        self.assertCountEqual(resultA, [TestFiltre.tournee1, TestFiltre.tournee2])
+        self.assertCountEqual(resultB, [TestFiltre.tournee3])
 
         pass  # TO DELETE
 
 
-    @unittest.skip # TO DELETE
+
     def test_filtre_all(self):
 
         # Test du filtrage selon des clients, producteurs et demi-journées
@@ -115,25 +115,25 @@ class TestFiltre(unittest.TestCase):
         # TODO : Adapter ce qui a été fait avant pour tester cette fois-ci le filtrage sur tout
         #  Les tournées doivent maintenant respecter 3 contraintes (sur Clients, Producteurs, demiJour) pour être prise en compte
 
-        resultA = filtre.filtreTournees([tournee1, tournee2, tournee3], [3,4], [0,2], [1,3])
-        resultB = filtre.filtreTournees([tournee1, tournee2, tournee3], [3,5], [1,2], [2,4,5])
+        resultA = filtres.filtreTournees([TestFiltre.tournee1, TestFiltre.tournee2, TestFiltre.tournee3], [3,4], [0,2], [1,3])
+        resultB = filtres.filtreTournees([TestFiltre.tournee1, TestFiltre.tournee2, TestFiltre.tournee3], [3,5], [1,2], [2,4,5])
 
-        self.assertCountEqual(resultA, [tournee2])
-        self.assertCountEqual(resultB, [tournee1])
+        self.assertCountEqual(resultA, [TestFiltre.tournee2])
+        self.assertCountEqual(resultB, [TestFiltre.tournee1])
 
         pass  # TO DELETE
 
 
-    @unittest.skip # TO DELETE
+
     def test_filtre_nothing(self):
 
         # Test du filtrage sans
 
         # TODO : On doit vérifier qu'on obtient bien la même liste de Tournee avant et après filtrage
 
-        result = filtre.filtreTournees([tournee1, tournee2, tournee3], [None, None, None])
+        result = filtres.filtreTournees([TestFiltre.tournee1, TestFiltre.tournee2, TestFiltre.tournee3], [None, None, None])
 
-        self.assertCountEqual(result, [tournee1, tournee2, tournee3])
+        self.assertCountEqual(result, [TestFiltre.tournee1, TestFiltre.tournee2, TestFiltre.tournee3])
 
         pass  # TO DELETE
 
