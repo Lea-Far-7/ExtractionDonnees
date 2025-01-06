@@ -109,6 +109,7 @@ class PopupImport:
         self.interface.map_widget.delete_all_marker()
         self.interface.map_widget.delete_all_path()
         self.interface.mark_list.clear()
+        self.interface.path_list.clear()
 
         # Supprime toutes les lignes du tableau
         for item in self.interface.tableau.get_children():

@@ -208,6 +208,9 @@ class CreerClasses:
             # Indice premier client = numClient - nbProducteurs
             info_requete = self.clients[int(ligne[3])-nbProducteurs]
         else:
+            acteurs = self.clients
+            acteurs.extend(self.producteurs)
+            lieu = acteurs[int(ligne[2])-nbProducteurs]
             lieu = self.clients[int(ligne[2]) - nbProducteurs]
             info_requete = self.producteurs[int(ligne[3])]
         horaire = ligne[4]
