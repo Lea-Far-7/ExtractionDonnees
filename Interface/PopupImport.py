@@ -104,6 +104,10 @@ class PopupImport:
             # Pareil pour liste_tournees ?
             self.interface.solution = self.createur.getContenuFichierSolution(self.liste_noms_fichiers_solutions[0])
 
+            # Mise à jour des options du menu déroulant pour les fichiers solutions
+            self.interface.solutions_selectionnees = self.choixSolutions
+            self.interface.update_options_menu()
+
 
     def __synchronisation_carte_tableau(self):
         # Supprime tous les marqueurs présents sur la map
@@ -157,12 +161,14 @@ class PopupImport:
         # Mise à jour des infosTournees des acteurs (à sans doute déplacer)
         Acteur.updateInfosTournees(liste_tournees)
 
-        afficheurTab = AfficherTableau(self.interface)
-        if self.choixSolutions:
-            afficheurTab.tableau_tournees(liste_tournees[0])
-            print("tournee")
+        self.interface.update_options_menu()
 
-        else:
-            print("producteur")
-            afficheurTab.tableau_producteurs(producteurs)
+        # afficheurTab = AfficherTableau(self.interface)
+        # if self.choixSolutions:
+        #     afficheurTab.tableau_tournees(liste_tournees[0])
+        #     print("tournee")
+        #
+        # else:
+        #     print("producteur")
+        #     afficheurTab.tableau_producteurs(producteurs)
 

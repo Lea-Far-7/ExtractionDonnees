@@ -57,6 +57,7 @@ class AfficherTableau:
         self.interface.scrollbar.configure(command=self.interface.tableau.yview)
         self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
         self.interface.tableau.grid_forget()
+        print("Affichage Tableau Producteurs")
 
 
     def tableau_clients(self, infos_clients: list):
@@ -99,6 +100,7 @@ class AfficherTableau:
         scrollbar.grid(row=1, rowspan=8, column=len(colonnes) + 1, sticky="ns")
 
         self.interface.tableau.grid_forget()
+        print("Affichage Tableau Clients")
 
 
     def tableau_commandes(self, infos_commandes : list):
@@ -122,7 +124,7 @@ class AfficherTableau:
                 c.idDemande,
                 c.client.id,
                 c.producteur.id,
-                c.masse + "kg"
+                str(c.masse) + "kg"
             ))
 
         self.interface.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
@@ -130,6 +132,7 @@ class AfficherTableau:
         self.interface.scrollbar.configure(command=self.interface.tableau.yview)
         self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
         self.interface.tableau.grid_forget()
+        print("Affichage Tableau Commandes")
 
 
     def tableau_tournees(self, infos_tournees : list):
@@ -188,3 +191,4 @@ class AfficherTableau:
         self.interface.scrollbar.configure(command=self.interface.tableau.yview)
         self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
         self.interface.tableau.grid_forget()
+        print("Affichage Tableau Tournées")
