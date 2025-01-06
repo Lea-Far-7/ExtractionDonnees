@@ -1,14 +1,9 @@
-import tkinter
 from tkinter import ttk, CENTER
-import customtkinter
 
 class AfficherTableau:
 
     def __init__(self, interface):
         self.interface = interface
-        self.options = ['producteurs', 'clients', 'commandes', 'tournees']
-        self.selected_option = None
-        self.selected_solution = None
 
     def tableau_producteurs(self, infos_producteurs : list):
         colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")

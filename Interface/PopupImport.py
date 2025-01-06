@@ -5,7 +5,6 @@ from Interface.AfficherCarte import AfficherCarte
 from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
 from Interface.PopUp import PopUp
-from Metier.acteur import Acteur
 
 
 # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
@@ -159,16 +158,16 @@ class PopupImport:
         self.interface.solution = self.fichiers_solutions
 
         # Mise à jour des infosTournees des acteurs (à sans doute déplacer)
-        Acteur.updateInfosTournees(liste_tournees)
+        #Acteur.updateInfosTournees(liste_tournees)
 
         self.interface.update_options_menu()
+        """
+        afficheurTab = AfficherTableau(self.interface)
+        if self.choixSolutions:
+            afficheurTab.tableau_tournees(liste_tournees[0])
+            print("tournee")
 
-        # afficheurTab = AfficherTableau(self.interface)
-        # if self.choixSolutions:
-        #     afficheurTab.tableau_tournees(liste_tournees[0])
-        #     print("tournee")
-        #
-        # else:
-        #     print("producteur")
-        #     afficheurTab.tableau_producteurs(producteurs)
-
+        else:
+            print("producteur")
+            afficheurTab.tableau_producteurs(producteurs)
+        """

@@ -50,7 +50,7 @@ class App(customtkinter.CTk):
 
         # Ajout du menu déroulant permettant de choisir le tableau
         self.options = ["Producteurs, Clients, Commandes"]
-        self.option_selectionnee = tkinter.StringVar(value=self.options[0])
+        self.option_selectionnee = tkinter.StringVar()#value=self.options[0]
         self.menu_donnees = customtkinter.CTkOptionMenu(self.sidebar, variable=self.option_selectionnee, values=self.options, command=self.update_menu)
         self.menu_donnees.grid(row=8, column=0, sticky="e", padx=10, pady=10)
         self.menu_donnees.grid_forget() # On est sur la carte par défaut donc on masque le menu initialement

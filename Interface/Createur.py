@@ -49,4 +49,6 @@ class Createur:
 
     def getTournees(self, lignes : list) -> list[Tournee] :
         self.createur_classes.load_solutions(lignes)
+        for i in self.createur_classes.getTournees():
+            print("id : " + str(i.idTournee) + " prod : " + str(i.producteur))
         return self.createur_classes.getTournees()

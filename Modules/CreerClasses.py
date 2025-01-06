@@ -44,14 +44,12 @@ class CreerClasses:
         """
         Création des instances de Tournee avec la méthode privée
         `__creerTournees`
-        Booléen self.solutions_loaded garantit l'unique instanciation des tournées
         :param fichier:
         :return: void
         """
-        if not self.solutions_loaded:
-            Tournee.deleteAll()
-            self.__creerTournees(fichier)
-            self.solutions_loaded = True
+        Tournee.deleteAll()
+        self.__creerTournees(fichier)
+        #self.solutions_loaded = True
 
 
     def getProducteurs(self) -> "list" :
