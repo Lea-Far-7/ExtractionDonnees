@@ -2,7 +2,6 @@ import tkinter
 import customtkinter
 
 from Interface.AfficherCarte import AfficherCarte
-from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
 from Interface.PopUp import PopUp
 
@@ -165,8 +164,6 @@ class PopupImport:
                         lieu2long = tache.lieu.longitude
 
         self.interface.solution = self.fichiers_solutions
-
+        self.interface.update_options_menu()
         # Mise à jour des infosTournees des acteurs (à sans doute déplacer)
         # Acteur.updateInfosTournees(liste_tournees)
-
-        self.interface.update_options_menu()
