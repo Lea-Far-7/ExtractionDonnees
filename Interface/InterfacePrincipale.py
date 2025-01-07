@@ -18,6 +18,7 @@ customtkinter.set_appearance_mode("Dark")
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+        self.tableau_frame = None
         self.sidebar = None
         self.createur = Createur()
 
@@ -123,12 +124,16 @@ class App(customtkinter.CTk):
         colonne_message = ("VIDE",)
         style = ttk.Style()
         style.configure("Treeview", font=('Arial', 25), rowheight=100)
-        self.tableau = ttk.Treeview(self, columns=colonne_message, show='')
+        # Créer un frame conteneur pour le tableau
+        self.tableau_frame = customtkinter.CTkFrame(self)
+        self.tableau_frame.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
+
+        self.tableau = ttk.Treeview(self.tableau_frame, columns=colonne_message, show='')
         self.tableau.heading("VIDE", text="VIDE")
         self.tableau.column("VIDE", width=400, anchor=CENTER)
         self.tableau.insert(parent='', index="end", values=("Vide : Veuillez importer des données",))
-        self.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonne_message), sticky="nsew")
-        self.tableau.grid_forget()
+        self.tableau.pack(fill="both", expand=True)
+        self.tableau_frame.grid_forget()
 
     def screenshot(self):
         bbox = (self.map_widget.winfo_rootx(), self.map_widget.winfo_rooty(), self.map_widget.winfo_rootx()+self.map_widget.winfo_width(), self.map_widget.winfo_rooty()+self.map_widget.winfo_height())
@@ -143,8 +148,9 @@ class App(customtkinter.CTk):
 
     # Evenement permettant d'afficher le tableau tout en cachant la map
     def select_tab(self) :
-        self.tableau.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
         self.map_widget.grid_forget()
+        self.tableau_frame.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
+
         if self.mark_list :
             for mark in self.mark_list.values():
                 mark.hide()
@@ -158,8 +164,8 @@ class App(customtkinter.CTk):
 
     # Evenement permettant d'afficher la map tout en cachant le tableau
     def select_map(self) :
+        self.tableau_frame.grid_forget()
         self.map_widget.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
-        self.tableau.grid_forget()
 
         # On cache la scrollbar du tableau
         self.scrollbar.grid_forget()
@@ -179,6 +185,11 @@ class App(customtkinter.CTk):
         self.menu_solutions.configure(values=self.options_solution)
 
     def update_menu(self, choix):
+
+        # On s'assure que la carte reste en place dans l'onglet carte
+        #self.map_widget.grid_forget()
+        #self.tableau.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
+
         afficheurTab = AfficherTableau(self)
         producteurs, clients = self.createur.getActeurs(self.donnees, self.createur.projet)
         commandes = self.createur.getCommandes()

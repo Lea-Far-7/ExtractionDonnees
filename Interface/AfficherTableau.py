@@ -5,32 +5,26 @@ class AfficherTableau:
     def __init__(self, interface):
         self.interface = interface
 
-    def tableau_producteurs(self, infos_producteurs : list):
+    def tableau_producteurs(self, infos_producteurs: list):
         colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
+
+        # Supprimer les anciennes colonnes et données
+        for item in self.interface.tableau.get_children():
+            self.interface.tableau.delete(item)
+
+        # Configurer les nouvelles colonnes
+        self.interface.tableau.configure(columns=colonnes, show='headings')
+
         style = ttk.Style()
         style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
         style.configure("Treeview", font=('Arial', 11), rowheight=25)
 
-        self.interface.tableau = ttk.Treeview(self.interface, columns=colonnes, show='headings')
-
-        self.interface.tableau.heading("ID", text="ID")
-        self.interface.tableau.heading("Coord", text="Coordonnées")
-        self.interface.tableau.heading("Capacite", text="Capacité")
-        self.interface.tableau.heading("Partenaires", text="Partenaires")
-        self.interface.tableau.heading("Dispo", text="Disponibilités")
-        self.interface.tableau.heading("NbTournees", text="Nombre de Tournées")
-        self.interface.tableau.heading("NbCommandes", text="Nombre de Commandes")
-
-        self.interface.tableau.column("ID", width=50)
-        self.interface.tableau.column("Coord", width=130)
-        self.interface.tableau.column("Capacite", width=70)
-        self.interface.tableau.column("Dispo", width=120)
-        self.interface.tableau.column("NbTournees", width=100)
-        self.interface.tableau.column("NbCommandes", width=100)
-
+        # Configuration des en-têtes et colonnes
         for col in colonnes:
+            self.interface.tableau.heading(col, text=col)
             self.interface.tableau.column(col, anchor=CENTER)
 
+        # Ajout des données
         for prod in infos_producteurs:
             coord = f"({round(prod.latitude, 6)}, {round(prod.longitude, 6)})"
             partners = ", ".join([str(partner.id) for partner in prod.partners])
@@ -47,26 +41,30 @@ class AfficherTableau:
                 nbCommandes
             ))
 
-        self.interface.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
-
+        # Configuration de la scrollbar
         self.interface.scrollbar.configure(command=self.interface.tableau.yview)
         self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-        self.interface.tableau.grid_forget()
         print("Affichage Tableau Producteurs")
 
 
     def tableau_clients(self, infos_clients: list):
         colonnes = ("ID", "Coord", "Dispo", "NbCommandes")
+
+        # Supprimer les anciennes colonnes et données
+        for item in self.interface.tableau.get_children():
+            self.interface.tableau.delete(item)
+
+        # Configurer les nouvelles colonnes
+        self.interface.tableau.configure(columns=colonnes, show='headings')
+
         style = ttk.Style()
         style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
         style.configure("Treeview", font=('Arial', 11), rowheight=25)
 
-        self.interface.tableau = ttk.Treeview(self.interface, columns=colonnes, show='headings')
-
-        self.interface.tableau.heading("ID", text="ID")
-        self.interface.tableau.heading("Coord", text="Coordonnées")
-        self.interface.tableau.heading("Dispo", text="Disponibilités")
-        self.interface.tableau.heading("NbCommandes", text="Nombre de Commandes")
+        # Configuration des en-têtes et colonnes
+        for col in colonnes:
+            self.interface.tableau.heading(col, text=col)
+            self.interface.tableau.column(col, anchor=CENTER)
 
         """
         self.interface.tableau.column("ID", width=60)
@@ -74,8 +72,6 @@ class AfficherTableau:
         self.interface.tableau.column("Dispo", width=120)
         self.interface.tableau.column("NbCommandes", width=100)
         """
-        for col in colonnes:
-            self.interface.tableau.column(col, anchor=CENTER)
 
         for cl in infos_clients:
             coord = f"({round(cl.latitude, 6)}, {round(cl.longitude, 6)})"
@@ -88,31 +84,35 @@ class AfficherTableau:
                 nbCommandes
             ))
 
-        self.interface.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
+        # Configuration de la scrollbar
+        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
+        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
 
-        scrollbar = ttk.Scrollbar(self.interface, orient="vertical", command=self.interface.tableau.yview)
-        self.interface.tableau.configure(yscrollcommand=scrollbar.set)
-        scrollbar.grid(row=1, rowspan=8, column=len(colonnes) + 1, sticky="ns")
-
-        self.interface.tableau.grid_forget()
         print("Affichage Tableau Clients")
 
 
     def tableau_commandes(self, infos_commandes : list):
         colonnes = ("ID", "IDClient", "IDProducteur", "Masse")
+
+        # Supprimer les anciennes colonnes et données
+        for item in self.interface.tableau.get_children():
+            self.interface.tableau.delete(item)
+
+        # Configurer les nouvelles colonnes
+        self.interface.tableau.configure(columns=colonnes, show='headings')
+
         style = ttk.Style()
         style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
         style.configure("Treeview", font=('Arial', 11), rowheight=25)
 
-        self.interface.tableau = ttk.Treeview(self.interface, columns=colonnes, show='headings')
-
-        self.interface.tableau.heading("ID", text="ID")
-        self.interface.tableau.heading("IDClient", text="IDClient")
-        self.interface.tableau.heading("IDProducteur", text="IDProducteur")
-        self.interface.tableau.heading("Masse", text="Masse")
-
+        # Configuration des en-têtes et colonnes
         for col in colonnes:
+            self.interface.tableau.heading(col, text=col)
             self.interface.tableau.column(col, anchor=CENTER)
+
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
+        style.configure("Treeview", font=('Arial', 11), rowheight=25)
 
         for c in infos_commandes:
             self.interface.tableau.insert(parent='', index="end", values=(
@@ -122,11 +122,8 @@ class AfficherTableau:
                 str(c.masse) + "kg"
             ))
 
-        self.interface.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
-
         self.interface.scrollbar.configure(command=self.interface.tableau.yview)
         self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-        self.interface.tableau.grid_forget()
         print("Affichage Tableau Commandes")
 
 
@@ -185,5 +182,5 @@ class AfficherTableau:
 
         self.interface.scrollbar.configure(command=self.interface.tableau.yview)
         self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-        self.interface.tableau.grid_forget()
+        #self.interface.tableau.grid_forget()
         print("Affichage Tableau Tournées")
