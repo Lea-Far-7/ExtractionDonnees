@@ -5,9 +5,7 @@ class AfficherTableau:
     def __init__(self, interface):
         self.interface = interface
 
-    def tableau_producteurs(self, infos_producteurs: list):
-        colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
-
+    def __set_tableau(self, colonnes, proportions):
         # Supprimer les anciennes colonnes et données
         for item in self.interface.tableau.get_children():
             self.interface.tableau.delete(item)
@@ -19,10 +17,34 @@ class AfficherTableau:
         style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
         style.configure("Treeview", font=('Arial', 11), rowheight=25)
 
-        # Configuration des en-têtes et colonnes
+        # Largeur du tableau
+        width_totale = self.interface.tableau.winfo_width()
+
         for col in colonnes:
             self.interface.tableau.heading(col, text=col)
-            self.interface.tableau.column(col, anchor=CENTER)
+            width = int( (width_totale * proportions[col]) / 100) # Calcul de la largeur
+            self.interface.tableau.column(col, width=width, anchor=CENTER)
+
+        # Configuration de la scrollbar
+        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
+        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
+
+
+    def tableau_producteurs(self, infos_producteurs: list):
+        colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
+
+        # Calcul des proportions pour chaque colonne (total = 100)
+        proportions = {
+            "ID": 5,
+            "Coord": 20,
+            "Capacite": 10,
+            "Partenaires": 20,
+            "Dispo": 20,
+            "NbTournees": 12.5,
+            "NbCommandes": 12.5,
+        }
+
+        self.__set_tableau(colonnes, proportions)
 
         # Ajout des données
         for prod in infos_producteurs:
@@ -41,37 +63,28 @@ class AfficherTableau:
                 nbCommandes
             ))
 
-        # Configuration de la scrollbar
-        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
-        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-        print("Affichage Tableau Producteurs")
+        def redimensionnement(event):
+            # Recalculer les largeurs quand la fenêtre est redimensionnée
+            new_width = event.width
+            for col in colonnes:
+                width = int((new_width * proportions[col]) / 100)
+                self.interface.tableau.column(col, width=width)
+
+        self.interface.tableau.bind("<Configure>", redimensionnement)
 
 
     def tableau_clients(self, infos_clients: list):
         colonnes = ("ID", "Coord", "Dispo", "NbCommandes")
 
-        # Supprimer les anciennes colonnes et données
-        for item in self.interface.tableau.get_children():
-            self.interface.tableau.delete(item)
+        # Calcul des proportions pour chaque colonne (total = 100)
+        proportions = {
+            "ID":20,
+            "Coord":35,
+            "Dispo":25,
+            "NbCommandes":20,
+        }
 
-        # Configurer les nouvelles colonnes
-        self.interface.tableau.configure(columns=colonnes, show='headings')
-
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
-        style.configure("Treeview", font=('Arial', 11), rowheight=25)
-
-        # Configuration des en-têtes et colonnes
-        for col in colonnes:
-            self.interface.tableau.heading(col, text=col)
-            self.interface.tableau.column(col, anchor=CENTER)
-
-        """
-        self.interface.tableau.column("ID", width=60)
-        self.interface.tableau.column("Coord", width=130)
-        self.interface.tableau.column("Dispo", width=120)
-        self.interface.tableau.column("NbCommandes", width=100)
-        """
+        self.__set_tableau(colonnes, proportions)
 
         for cl in infos_clients:
             coord = f"({round(cl.latitude, 6)}, {round(cl.longitude, 6)})"
@@ -84,35 +97,28 @@ class AfficherTableau:
                 nbCommandes
             ))
 
-        # Configuration de la scrollbar
-        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
-        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
+        def redimensionnement(event):
+            # Recalculer les largeurs quand la fenêtre est redimensionnée
+            new_width = event.width
+            for col in colonnes:
+                width = int((new_width * proportions[col]) / 100)
+                self.interface.tableau.column(col, width=width)
 
-        print("Affichage Tableau Clients")
+        self.interface.tableau.bind("<Configure>", redimensionnement)
 
 
     def tableau_commandes(self, infos_commandes : list):
         colonnes = ("ID", "IDClient", "IDProducteur", "Masse")
 
-        # Supprimer les anciennes colonnes et données
-        for item in self.interface.tableau.get_children():
-            self.interface.tableau.delete(item)
+        # Calcul des proportions pour chaque colonne (total = 100)
+        proportions = {
+            "ID": 25,
+            "IDClient": 25,
+            "IDProducteur": 25,
+            "Masse": 25,
+        }
 
-        # Configurer les nouvelles colonnes
-        self.interface.tableau.configure(columns=colonnes, show='headings')
-
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
-        style.configure("Treeview", font=('Arial', 11), rowheight=25)
-
-        # Configuration des en-têtes et colonnes
-        for col in colonnes:
-            self.interface.tableau.heading(col, text=col)
-            self.interface.tableau.column(col, anchor=CENTER)
-
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
-        style.configure("Treeview", font=('Arial', 11), rowheight=25)
+        self.__set_tableau(colonnes, proportions)
 
         for c in infos_commandes:
             self.interface.tableau.insert(parent='', index="end", values=(
@@ -122,36 +128,33 @@ class AfficherTableau:
                 str(c.masse) + "kg"
             ))
 
-        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
-        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-        print("Affichage Tableau Commandes")
+        def redimensionnement(event):
+            # Recalculer les largeurs quand la fenêtre est redimensionnée
+            new_width = event.width
+            for col in colonnes:
+                width = int((new_width * proportions[col]) / 100)
+                self.interface.tableau.column(col, width=width)
+
+        self.interface.tableau.bind("<Configure>", redimensionnement)
 
 
     def tableau_tournees(self, infos_tournees : list):
         colonnes = ("ID", "Producteur", "DemiJ", "Horaire", "DureeTotale", "NbTaches", "DistanceTotale", "ChargeMax", "ChargementTotal")
 
-        # Supprimer les anciennes colonnes et données
-        for item in self.interface.tableau.get_children():
-            self.interface.tableau.delete(item)
+        # Calcul des proportions pour chaque colonne (total = 100)
+        proportions = {
+            "ID": 5,
+            "Producteur": 10,
+            "DemiJ": 10,
+            "Horaire": 10,
+            "DureeTotale": 10,
+            "NbTaches": 10,
+            "DistanceTotale": 15,
+            "ChargeMax": 15,
+            "ChargementTotal": 15
+        }
 
-        # Configurer les nouvelles colonnes
-        self.interface.tableau.configure(columns=colonnes, show='headings')
-
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
-        style.configure("Treeview", font=('Arial', 11), rowheight=25)
-
-        # Configuration des en-têtes et colonnes
-        for col in colonnes:
-            self.interface.tableau.heading(col, text=col)
-            self.interface.tableau.column(col, anchor=CENTER)
-
-        """
-        self.interface.tableau.column("ID", width=60)
-        self.interface.tableau.column("Producteur", width=100)
-        self.interface.tableau.column("DemiJ", width=120)
-        self.interface.tableau.column("Horaire", width=140)
-        """
+        self.__set_tableau(colonnes, proportions)
 
         for t in infos_tournees:
             nbTaches = len(t.taches)
@@ -161,7 +164,7 @@ class AfficherTableau:
             liste_durees, _, dureeT = t.duree()
             nbH = dureeT // 60
             nbM = dureeT % 60
-            dureeTotale = str(nbH) + "h" + str(nbM) + "m"
+            dureeTotale = str(nbH) + "h " + str(nbM) + "m"
             _, chargeMax,chargeT = t.chargement()
             chargeTotale = str(round(chargeT, 2)) + " kg"
             self.interface.tableau.insert(parent='', index="end", values=(
@@ -176,6 +179,11 @@ class AfficherTableau:
                 chargeTotale
             ))
 
-        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
-        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-        print("Affichage Tableau Tournées")
+        def redimensionnement(event):
+            # Recalculer les largeurs quand la fenêtre est redimensionnée
+            new_width = event.width
+            for col in colonnes:
+                width = int((new_width * proportions[col]) / 100)
+                self.interface.tableau.column(col, width=width)
+
+        self.interface.tableau.bind("<Configure>", redimensionnement)

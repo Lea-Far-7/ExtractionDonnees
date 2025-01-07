@@ -69,13 +69,13 @@ class Tournee:
         c = 0
         for tache in self.taches:
             if tache.type == 'P':
+                ctot += tache.charge
                 c += tache.charge
                 if c > cmax:
                     cmax = c
             else:
                 c -= tache.charge
             chargements.append(c)
-            ctot += c
         return chargements, cmax, ctot
 
     def duree(self)->tuple[list,float,float]:

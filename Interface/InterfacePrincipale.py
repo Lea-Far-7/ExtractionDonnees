@@ -51,15 +51,21 @@ class App(customtkinter.CTk):
 
         # Ajout du menu déroulant permettant de choisir le tableau
         self.options = ["Producteurs, Clients, Commandes"]
-        self.option_selectionnee = tkinter.StringVar()#value=self.options[0]
-        self.menu_donnees = customtkinter.CTkOptionMenu(self.sidebar, variable=self.option_selectionnee, values=self.options, command=self.update_menu)
+        self.option_selectionnee = tkinter.StringVar()
+        self.menu_donnees = customtkinter.CTkOptionMenu(self.sidebar, fg_color="#1d7c69",
+                                                        variable=self.option_selectionnee,
+                                                        values=self.options,
+                                                        command=self.update_menu)
         self.menu_donnees.grid(row=10, column=0, sticky="e", padx=20, pady=10)
         self.menu_donnees.grid_forget() # On est sur la carte par défaut donc on masque le menu initialement
 
         # Ajout du menu déroulant permettant de choisir le fichier solution à visualiser dans le tableau
         self.options_solution = [] # Au début aucun fichier sélectionné donc aucune option
         self.option_solution_selectionnee = tkinter.StringVar()
-        self.menu_solutions = customtkinter.CTkOptionMenu(self.sidebar, variable=self.option_solution_selectionnee, values=self.options_solution, command=self.update_menu_solutions)
+        self.menu_solutions = customtkinter.CTkOptionMenu(self.sidebar, fg_color="#1d7c69",
+                                                          variable=self.option_solution_selectionnee,
+                                                          values=self.options_solution,
+                                                          command=self.update_menu_solutions)
         self.menu_solutions.grid(row=12, column=0, sticky="e", padx=20, pady=10)
         self.menu_solutions.grid_forget()
 
@@ -127,6 +133,10 @@ class App(customtkinter.CTk):
         # Créer un frame conteneur pour le tableau
         self.tableau_frame = customtkinter.CTkFrame(self)
         self.tableau_frame.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
+
+        # Permet l'extension du tableau sur toute la longueur du frame
+        self.tableau_frame.grid_columnconfigure(0, weight=1)
+        self.tableau_frame.grid_rowconfigure(0, weight=1)
 
         self.tableau = ttk.Treeview(self.tableau_frame, columns=colonne_message, show='')
         self.tableau.heading("VIDE", text="VIDE")
