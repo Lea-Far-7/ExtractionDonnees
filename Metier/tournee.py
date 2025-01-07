@@ -33,7 +33,7 @@ class Tournee:
         self.taches.remove(tache)
         del(tache)
 
-    def distance(self)->tuple[list,float,float]:
+    def distance(self)->tuple[list[float], float, float]:
         """
         Calcule les distances parcourues pour effectuer chaque tâche, le maximum et le total.
         :return:
@@ -41,21 +41,18 @@ class Tournee:
             - Distance maximale parcourue pour une tâche.
             - Distance totale parcourue pour la tournée.
         """
+        if not self.taches:
+            return [], 0.0, 0.0
         distances = []
-        dmax = 0
-        dtot = 0
         p0 = self.producteur # point départ
         for tache in self.taches:
             p1 = tache.lieu # point suivant
             d = distance([p0.latitude,p0.longitude],[p1.latitude,p1.longitude])
             distances.append(d)
-            if d > dmax:
-                dmax = d
-            dtot += d
             p0 = p1 # décalage pour le prochain point
-        return distances, dmax, dtot
+        return distances, max(distances), sum(distances)
 
-    def chargement(self)->tuple[list,float,float]:
+    def chargement(self)->tuple[list[float], float, float]:
         """
         Calcule les chargements transportés entre chaque tâche, le maximum et le total.
         :return:
@@ -70,15 +67,14 @@ class Tournee:
         for tache in self.taches:
             if tache.type == 'P':
                 c += tache.charge
-                if c > cmax:
-                    cmax = c
+                ctot += tache.charge
+                cmax = max(cmax, c)
             else:
                 c -= tache.charge
             chargements.append(c)
-            ctot += c
         return chargements, cmax, ctot
 
-    def duree(self)->tuple[list,float,float]:
+    def duree(self)->tuple[list[int], int, int]:
         """
         Calcule les durées entre chaque tâche, le maximum et le total.
         :return:
@@ -86,9 +82,9 @@ class Tournee:
             - Durée maximale entre deux tâches.
             - Durée totale pour la tournée.
         """
+        if not self.taches:
+            return [], 0, 0
         durees = []
-        dmax = 0
-        dtot = 0
         t0 = self.taches[0].horaire
         for tache in self.taches:
             t1 = tache.horaire
@@ -96,11 +92,8 @@ class Tournee:
             [t1h, t1m] = t1.split(':')
             t = (int(t1h)-int(t0h))*60 + (int(t1m)-int(t0m))
             durees.append(t)
-            if t > dmax:
-                dmax = t
-            dtot += t
             t0 = t1
-        return durees, dmax, dtot
+        return durees, max(durees), sum(durees)
 
     def __str__(self)->str:
         result = ("Tournée " + str(self.idTournee) + " : "
