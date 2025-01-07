@@ -35,6 +35,7 @@ class CreerClasses:
             Acteur.deleteAll()
             Client.nb = 0
             Producteur.nb = 0
+            Demande.deleteAll()
             self.__creerProducteurs(fichier)
             self.__creerClients(fichier)
             self.donnees_loaded = True

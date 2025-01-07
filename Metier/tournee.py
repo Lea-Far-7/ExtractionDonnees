@@ -116,3 +116,18 @@ class Tournee:
     def deleteAll(cls):
         cls.instances.clear()
         cls.nb = 0
+
+    @classmethod
+    def nbTourneesProd(cls)->dict:
+        """
+        Calcule le nombre de tournées effectuées pour chaque producteur.
+        Si un producteur est absent du dictionnaire renvoyé, aucune tournée n'est effectuée par lui.
+        :return: Dictionnaire avec pour clés des Producteurs et pour valeurs les nombres de tournées effectuées.
+        """
+        result = {}
+        for tournee in cls.instances:
+            if tournee.producteur in result:
+                result[tournee.producteur] += 1
+            else:
+                result[tournee.producteur] = 1
+        return result
