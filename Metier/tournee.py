@@ -66,6 +66,7 @@ class Tournee:
         c = 0
         for tache in self.taches:
             if tache.type == 'P':
+                ctot += tache.charge
                 c += tache.charge
                 ctot += tache.charge
                 cmax = max(cmax, c)

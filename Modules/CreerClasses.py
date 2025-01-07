@@ -45,7 +45,6 @@ class CreerClasses:
         """
         Création des instances de Tournee avec la méthode privée
         `__creerTournees`
-        Booléen self.solutions_loaded garantit l'unique instanciation des tournées
         :param fichier:
         :return: void
         """
@@ -209,10 +208,10 @@ class CreerClasses:
             # Indice premier client = numClient - nbProducteurs
             info_requete = self.clients[int(ligne[3])-nbProducteurs]
         else:
-            acteurs = self.clients
+            acteurs = []
             acteurs.extend(self.producteurs)
-            lieu = acteurs[int(ligne[2])-nbProducteurs]
-            lieu = self.clients[int(ligne[2]) - nbProducteurs]
+            acteurs.extend(self.clients)
+            lieu = acteurs[int(ligne[2])]
             info_requete = self.producteurs[int(ligne[3])]
         horaire = ligne[4]
 

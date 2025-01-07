@@ -1,41 +1,52 @@
-import tkinter
 from tkinter import ttk, CENTER
-import customtkinter
 
 class AfficherTableau:
 
     def __init__(self, interface):
         self.interface = interface
-        self.options = ['producteurs', 'clients', 'commandes', 'tournees']
-        self.selected_option = None
-        self.selected_solution = None
 
-    def tableau_producteurs(self, infos_producteurs : list):
-        colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
+    def __set_tableau(self, colonnes, proportions):
+        # Supprimer les anciennes colonnes et données
+        for item in self.interface.tableau.get_children():
+            self.interface.tableau.delete(item)
+
+        # Configurer les nouvelles colonnes
+        self.interface.tableau.configure(columns=colonnes, show='headings')
+
         style = ttk.Style()
         style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
         style.configure("Treeview", font=('Arial', 11), rowheight=25)
 
-        self.interface.tableau = ttk.Treeview(self.interface, columns=colonnes, show='headings')
-
-        self.interface.tableau.heading("ID", text="ID")
-        self.interface.tableau.heading("Coord", text="Coordonnées")
-        self.interface.tableau.heading("Capacite", text="Capacité")
-        self.interface.tableau.heading("Partenaires", text="Partenaires")
-        self.interface.tableau.heading("Dispo", text="Disponibilités")
-        self.interface.tableau.heading("NbTournees", text="Nombre de Tournées")
-        self.interface.tableau.heading("NbCommandes", text="Nombre de Commandes")
-
-        self.interface.tableau.column("ID", width=50)
-        self.interface.tableau.column("Coord", width=130)
-        self.interface.tableau.column("Capacite", width=70)
-        self.interface.tableau.column("Dispo", width=120)
-        self.interface.tableau.column("NbTournees", width=100)
-        self.interface.tableau.column("NbCommandes", width=100)
+        # Largeur du tableau
+        width_totale = self.interface.tableau.winfo_width()
 
         for col in colonnes:
-            self.interface.tableau.column(col, anchor=CENTER)
+            self.interface.tableau.heading(col, text=col)
+            width = int( (width_totale * proportions[col]) / 100) # Calcul de la largeur
+            self.interface.tableau.column(col, width=width, anchor=CENTER)
 
+        # Configuration de la scrollbar
+        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
+        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
+
+
+    def tableau_producteurs(self, infos_producteurs: list):
+        colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
+
+        # Calcul des proportions pour chaque colonne (total = 100)
+        proportions = {
+            "ID": 5,
+            "Coord": 20,
+            "Capacite": 10,
+            "Partenaires": 20,
+            "Dispo": 20,
+            "NbTournees": 12.5,
+            "NbCommandes": 12.5,
+        }
+
+        self.__set_tableau(colonnes, proportions)
+
+        # Ajout des données
         for prod in infos_producteurs:
             coord = f"({round(prod.latitude, 6)}, {round(prod.longitude, 6)})"
             partners = ", ".join([str(partner.id) for partner in prod.partners])
@@ -52,34 +63,28 @@ class AfficherTableau:
                 nbCommandes
             ))
 
-        self.interface.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
+        def redimensionnement(event):
+            # Recalculer les largeurs quand la fenêtre est redimensionnée
+            new_width = event.width
+            for col in colonnes:
+                width = int((new_width * proportions[col]) / 100)
+                self.interface.tableau.column(col, width=width)
 
-        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
-        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-        self.interface.tableau.grid_forget()
+        self.interface.tableau.bind("<Configure>", redimensionnement)
 
 
     def tableau_clients(self, infos_clients: list):
         colonnes = ("ID", "Coord", "Dispo", "NbCommandes")
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
-        style.configure("Treeview", font=('Arial', 11), rowheight=25)
 
-        self.interface.tableau = ttk.Treeview(self.interface, columns=colonnes, show='headings')
+        # Calcul des proportions pour chaque colonne (total = 100)
+        proportions = {
+            "ID":20,
+            "Coord":35,
+            "Dispo":25,
+            "NbCommandes":20,
+        }
 
-        self.interface.tableau.heading("ID", text="ID")
-        self.interface.tableau.heading("Coord", text="Coordonnées")
-        self.interface.tableau.heading("Dispo", text="Disponibilités")
-        self.interface.tableau.heading("NbCommandes", text="Nombre de Commandes")
-
-        """
-        self.interface.tableau.column("ID", width=60)
-        self.interface.tableau.column("Coord", width=130)
-        self.interface.tableau.column("Dispo", width=120)
-        self.interface.tableau.column("NbCommandes", width=100)
-        """
-        for col in colonnes:
-            self.interface.tableau.column(col, anchor=CENTER)
+        self.__set_tableau(colonnes, proportions)
 
         for cl in infos_clients:
             coord = f"({round(cl.latitude, 6)}, {round(cl.longitude, 6)})"
@@ -92,73 +97,64 @@ class AfficherTableau:
                 nbCommandes
             ))
 
-        self.interface.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
+        def redimensionnement(event):
+            # Recalculer les largeurs quand la fenêtre est redimensionnée
+            new_width = event.width
+            for col in colonnes:
+                width = int((new_width * proportions[col]) / 100)
+                self.interface.tableau.column(col, width=width)
 
-        scrollbar = ttk.Scrollbar(self.interface, orient="vertical", command=self.interface.tableau.yview)
-        self.interface.tableau.configure(yscrollcommand=scrollbar.set)
-        scrollbar.grid(row=1, rowspan=8, column=len(colonnes) + 1, sticky="ns")
-
-        self.interface.tableau.grid_forget()
+        self.interface.tableau.bind("<Configure>", redimensionnement)
 
 
     def tableau_commandes(self, infos_commandes : list):
         colonnes = ("ID", "IDClient", "IDProducteur", "Masse")
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
-        style.configure("Treeview", font=('Arial', 11), rowheight=25)
 
-        self.interface.tableau = ttk.Treeview(self.interface, columns=colonnes, show='headings')
+        # Calcul des proportions pour chaque colonne (total = 100)
+        proportions = {
+            "ID": 25,
+            "IDClient": 25,
+            "IDProducteur": 25,
+            "Masse": 25,
+        }
 
-        self.interface.tableau.heading("ID", text="ID")
-        self.interface.tableau.heading("IDClient", text="IDClient")
-        self.interface.tableau.heading("IDProducteur", text="IDProducteur")
-        self.interface.tableau.heading("Masse", text="Masse")
-
-        for col in colonnes:
-            self.interface.tableau.column(col, anchor=CENTER)
+        self.__set_tableau(colonnes, proportions)
 
         for c in infos_commandes:
             self.interface.tableau.insert(parent='', index="end", values=(
                 c.idDemande,
                 c.client.id,
                 c.producteur.id,
-                c.masse + "kg"
+                str(c.masse) + "kg"
             ))
 
-        self.interface.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
+        def redimensionnement(event):
+            # Recalculer les largeurs quand la fenêtre est redimensionnée
+            new_width = event.width
+            for col in colonnes:
+                width = int((new_width * proportions[col]) / 100)
+                self.interface.tableau.column(col, width=width)
 
-        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
-        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-        self.interface.tableau.grid_forget()
+        self.interface.tableau.bind("<Configure>", redimensionnement)
 
 
     def tableau_tournees(self, infos_tournees : list):
         colonnes = ("ID", "Producteur", "DemiJ", "Horaire", "DureeTotale", "NbTaches", "DistanceTotale", "ChargeMax", "ChargementTotal")
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
-        style.configure("Treeview", font=('Arial', 11), rowheight=25)
 
-        self.interface.tableau = ttk.Treeview(self.interface, columns=colonnes, show='headings')
+        # Calcul des proportions pour chaque colonne (total = 100)
+        proportions = {
+            "ID": 5,
+            "Producteur": 10,
+            "DemiJ": 10,
+            "Horaire": 10,
+            "DureeTotale": 10,
+            "NbTaches": 10,
+            "DistanceTotale": 15,
+            "ChargeMax": 15,
+            "ChargementTotal": 15
+        }
 
-        self.interface.tableau.heading("ID", text="ID")
-        self.interface.tableau.heading("Producteur", text="Producteur")
-        self.interface.tableau.heading("DemiJ", text="Demi-jour")
-        self.interface.tableau.heading("Horaire", text="Horaire")
-        self.interface.tableau.heading("DureeTotale", text="Durée Totale")
-        self.interface.tableau.heading("NbTaches", text="Nombre de tâches")
-        self.interface.tableau.heading("DistanceTotale", text="Distance Totale")
-        self.interface.tableau.heading("ChargeMax", text="Charge Maximale")
-        self.interface.tableau.heading("ChargementTotal", text="Chargement Total")
-
-        self.interface.tableau.column("ID", width=60)
-        self.interface.tableau.column("Producteur", width=100)
-        self.interface.tableau.column("DemiJ", width=120)
-        self.interface.tableau.column("Horaire", width=140)
-
-        for col in colonnes:
-            self.interface.tableau.column(col, anchor=CENTER)
-
-        print(infos_tournees)
+        self.__set_tableau(colonnes, proportions)
 
         for t in infos_tournees:
             nbTaches = len(t.taches)
@@ -168,7 +164,7 @@ class AfficherTableau:
             liste_durees, _, dureeT = t.duree()
             nbH = dureeT // 60
             nbM = dureeT % 60
-            dureeTotale = str(nbH) + "h" + str(nbM) + "m"
+            dureeTotale = str(nbH) + "h " + str(nbM) + "m"
             _, chargeMax,chargeT = t.chargement()
             chargeTotale = str(round(chargeT, 2)) + " kg"
             self.interface.tableau.insert(parent='', index="end", values=(
@@ -183,8 +179,11 @@ class AfficherTableau:
                 chargeTotale
             ))
 
-        self.interface.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
+        def redimensionnement(event):
+            # Recalculer les largeurs quand la fenêtre est redimensionnée
+            new_width = event.width
+            for col in colonnes:
+                width = int((new_width * proportions[col]) / 100)
+                self.interface.tableau.column(col, width=width)
 
-        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
-        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-        self.interface.tableau.grid_forget()
+        self.interface.tableau.bind("<Configure>", redimensionnement)
