@@ -1,5 +1,6 @@
 import abc # pour classe abstraite
 
+from Metier.ObserverActeur import ObserverActeur
 from Metier.demiJour import DemiJour
 
 
@@ -31,6 +32,7 @@ class Acteur(abc.ABC):
         self.dispos = dispos if dispos is not None else []
         self.infosTournees = [[],[]]     # contient les chaines de données sur les tournées qui impliquent l'acteur
                                         # 1è sous-liste : conduite de tournée, 2è sous-liste : passage de tournée
+        self.observers = [] # liste des objets qui doivent réagir à la modification de infosTournees (MarkerActeur)
         Acteur.instances[Acteur.nb] = self
         Acteur.nb += 1
 
@@ -61,6 +63,14 @@ class Acteur(abc.ABC):
                 result += info + "\n"
         return result[:-1]
 
+    def attachObserver(self, observer:ObserverActeur):
+        if observer not in self.observers:
+            self.observers.append(observer)
+
+    def detachObserver(self, observer:ObserverActeur):
+        if observer in self.observers:
+            self.observers.remove(observer)
+
     @abc.abstractmethod
     def __str__(self)->str:
         pass
@@ -86,7 +96,9 @@ class Acteur(abc.ABC):
                         tache.type] + " " + repr(tache.infoRequete) + " " + repr(tournee.demiJour) + " " + tache.horaire +
                         " par " + repr(tournee.producteur))
                     cls.instances[tache.lieu.id].infosTournees[1].append(info)
-        # Tests
         for instance in cls.instances.values():
-            print("\n-- InfosTournees "+repr(instance)+" --")
-            print(instance.getInfosTournees())
+            for observer in instance.observers:
+                observer.update()
+            # Tests
+            # print("\n-- InfosTournees "+repr(instance)+" --")
+            # print(instance.getInfosTournees())

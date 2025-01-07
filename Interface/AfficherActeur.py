@@ -1,10 +1,11 @@
 import customtkinter
 
+from Metier.ObserverActeur import ObserverActeur
 from Metier.acteur import Acteur
 from Metier.client import Client
 from Metier.producteur import Producteur
 
-class AfficherActeur:
+class AfficherActeur(ObserverActeur):
 
     instances = []
 
@@ -14,11 +15,16 @@ class AfficherActeur:
         self.marker = marker
         self.acteur = acteur
 
+        self.acteur.attachObserver(self)
+
         self.window = customtkinter.CTkToplevel()
         self.window.withdraw()
         self.window.overrideredirect(True)
 
-        self.ajoutDonnees()
+        self.label = customtkinter.CTkLabel(self.window, text=str(acteur), fg_color="transparent")
+        self.label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
+
+        #self.ajoutDonnees()
 
 
     @classmethod
@@ -35,19 +41,29 @@ class AfficherActeur:
                             self.masterwindow.winfo_rooty() + self.masterwindow.winfo_height() - self.window.winfo_height()))
             self.window.lift()
 
-
     # Permet d'ajouter les données du producteur (et des tâches associées par la suite) dans la popup
-    def ajoutDonnees(self):
-        if isinstance(self.acteur, Producteur):
-            prod = self.acteur
-            label = customtkinter.CTkLabel(self.window, text=str(prod), fg_color="transparent")
-        elif isinstance(self.acteur, Client):
-            client = self.acteur
-            label = customtkinter.CTkLabel(self.window, text=str(client), fg_color="transparent")
-        else:
-            label = customtkinter.CTkLabel(self.window, text="Acteur inconnu", fg_color="transparent")
+    # def ajoutDonnees(self):
+    #     if isinstance(self.acteur, Producteur):
+    #         prod = self.acteur
+    #         label = customtkinter.CTkLabel(self.window, text=str(prod), fg_color="transparent")
+    #     elif isinstance(self.acteur, Client):
+    #         client = self.acteur
+    #         label = customtkinter.CTkLabel(self.window, text=str(client), fg_color="transparent")
+    #     else:
+    #         label = customtkinter.CTkLabel(self.window, text="Acteur inconnu", fg_color="transparent")
+    #
+    #     label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
 
-        label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
+
+    # Appel effectué à chaque fois que infoTournees de l'acteur change
+    def update(self):
+        newtext = str(self.acteur)
+        infosTournees = self.acteur.getInfosTournees()
+        if infosTournees != "":
+            newtext += "\n\n" + infosTournees
+        self.label.configure(text = newtext)
+        self.label.update()
+
 
     def afficher(self):
         self.window.deiconify()
