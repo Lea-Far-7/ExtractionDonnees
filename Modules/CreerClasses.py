@@ -47,9 +47,10 @@ class CreerClasses:
         :param fichier:
         :return: void
         """
-        Tournee.deleteAll()
-        self.__creerTournees(fichier)
-        #self.solutions_loaded = True
+        if not self.solutions_loaded:
+            Tournee.deleteAll()
+            self.__creerTournees(fichier)
+            self.solutions_loaded = True
 
 
     def getProducteurs(self) -> "list" :

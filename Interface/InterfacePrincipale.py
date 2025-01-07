@@ -53,14 +53,14 @@ class App(customtkinter.CTk):
         self.options = ["Producteurs, Clients, Commandes"]
         self.option_selectionnee = tkinter.StringVar()#value=self.options[0]
         self.menu_donnees = customtkinter.CTkOptionMenu(self.sidebar, variable=self.option_selectionnee, values=self.options, command=self.update_menu)
-        self.menu_donnees.grid(row=8, column=0, sticky="e", padx=10, pady=10)
+        self.menu_donnees.grid(row=10, column=0, sticky="e", padx=20, pady=10)
         self.menu_donnees.grid_forget() # On est sur la carte par défaut donc on masque le menu initialement
 
         # Ajout du menu déroulant permettant de choisir le fichier solution à visualiser dans le tableau
         self.options_solution = [] # Au début aucun fichier sélectionné donc aucune option
         self.option_solution_selectionnee = tkinter.StringVar()
         self.menu_solutions = customtkinter.CTkOptionMenu(self.sidebar, variable=self.option_solution_selectionnee, values=self.options_solution, command=self.update_menu_solutions)
-        self.menu_solutions.grid(row=12, column=0, sticky="e", padx=5, pady=5)
+        self.menu_solutions.grid(row=12, column=0, sticky="e", padx=20, pady=10)
         self.menu_solutions.grid_forget()
 
         # Lier l'événement de configuration pour mettre à jour les popups
@@ -181,32 +181,40 @@ class App(customtkinter.CTk):
         self.menu_donnees.configure(values=self.options)
 
     def update_options_menu_solutions(self):
-        self.options_solution = self.solutions_selectionnees
-        self.menu_solutions.configure(values=self.options_solution)
+        if self.solutions_selectionnees:
+            self.options_solution = self.solutions_selectionnees
+            self.menu_solutions.configure(values=self.options_solution)
+            # self.menu_solutions.set(self.options_solution[0])
+            # Affiche première solution par défaut
+        else :
+            print("Pas de solution sélectionnées")
 
     def update_menu(self, choix):
-
-        # On s'assure que la carte reste en place dans l'onglet carte
-        #self.map_widget.grid_forget()
-        #self.tableau.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
-
         afficheurTab = AfficherTableau(self)
         producteurs, clients = self.createur.getActeurs(self.donnees, self.createur.projet)
         commandes = self.createur.getCommandes()
+
+        # On cache le menu solutions par défaut
+        self.menu_solutions.grid_forget()
+
         if choix == "Producteurs" :
             afficheurTab.tableau_producteurs(producteurs)
         elif choix == "Clients" :
             afficheurTab.tableau_clients(clients)
         elif choix == "Commandes" :
             afficheurTab.tableau_commandes(commandes)
-        elif choix == "Tournees" :
-            self.menu_solutions.grid()
+        elif choix == "Tournées" :
+            # On affiche le menu solution
             self.update_options_menu_solutions()
+            self.menu_solutions.grid()
 
     def update_menu_solutions(self, choix):
-        afficheurTab = AfficherTableau(self)
-        liste_tournees = self.createur.getTournees(self.solution[self.options_solution.index(choix)])
-        afficheurTab.tableau_tournees(liste_tournees)
+        if choix:   # Si une solution est sélectionnée
+            afficheurTab = AfficherTableau(self)
+            index = self.solutions_selectionnees.index(choix)
+            if 0 <= index < len(self.solution):
+                liste_tournees = self.createur.getTournees(self.solution[index])
+                afficheurTab.tableau_tournees(liste_tournees)
 
 
 if __name__ == "__main__":

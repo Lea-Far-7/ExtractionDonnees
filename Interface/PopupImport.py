@@ -107,6 +107,10 @@ class PopupImport:
             self.interface.solutions_selectionnees = self.choixSolutions
             self.interface.update_options_menu()
 
+            if self.choixSolutions:
+                self.interface.menu_solutions.configure(values=self.choixSolutions)
+                self.interface.menu_solutions.set(self.choixSolutions[0])
+
 
     def __synchronisation_carte_tableau(self):
         # Supprime tous les marqueurs présents sur la map
@@ -118,6 +122,11 @@ class PopupImport:
         # Supprime toutes les lignes du tableau
         for item in self.interface.tableau.get_children():
             self.interface.tableau.delete(item)
+
+        self.interface.tableau.config(columns=("",))
+        self.interface.tableau.heading("", text="")
+        self.interface.tableau.column("", width=400, anchor="center")
+        self.interface.tableau.insert(parent="", index="end", values=("Veuillez sélectionner une option dans le menu",))
 
         producteurs, clients = self.createur.getActeurs(self.fichier_donnees, self.projet_en_cours)
 
@@ -158,16 +167,6 @@ class PopupImport:
         self.interface.solution = self.fichiers_solutions
 
         # Mise à jour des infosTournees des acteurs (à sans doute déplacer)
-        #Acteur.updateInfosTournees(liste_tournees)
+        # Acteur.updateInfosTournees(liste_tournees)
 
         self.interface.update_options_menu()
-        """
-        afficheurTab = AfficherTableau(self.interface)
-        if self.choixSolutions:
-            afficheurTab.tableau_tournees(liste_tournees[0])
-            print("tournee")
-
-        else:
-            print("producteur")
-            afficheurTab.tableau_producteurs(producteurs)
-        """

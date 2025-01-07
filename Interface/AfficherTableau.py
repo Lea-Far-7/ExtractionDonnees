@@ -129,31 +129,29 @@ class AfficherTableau:
 
     def tableau_tournees(self, infos_tournees : list):
         colonnes = ("ID", "Producteur", "DemiJ", "Horaire", "DureeTotale", "NbTaches", "DistanceTotale", "ChargeMax", "ChargementTotal")
+
+        # Supprimer les anciennes colonnes et données
+        for item in self.interface.tableau.get_children():
+            self.interface.tableau.delete(item)
+
+        # Configurer les nouvelles colonnes
+        self.interface.tableau.configure(columns=colonnes, show='headings')
+
         style = ttk.Style()
         style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
         style.configure("Treeview", font=('Arial', 11), rowheight=25)
 
-        self.interface.tableau = ttk.Treeview(self.interface, columns=colonnes, show='headings')
+        # Configuration des en-têtes et colonnes
+        for col in colonnes:
+            self.interface.tableau.heading(col, text=col)
+            self.interface.tableau.column(col, anchor=CENTER)
 
-        self.interface.tableau.heading("ID", text="ID")
-        self.interface.tableau.heading("Producteur", text="Producteur")
-        self.interface.tableau.heading("DemiJ", text="Demi-jour")
-        self.interface.tableau.heading("Horaire", text="Horaire")
-        self.interface.tableau.heading("DureeTotale", text="Durée Totale")
-        self.interface.tableau.heading("NbTaches", text="Nombre de tâches")
-        self.interface.tableau.heading("DistanceTotale", text="Distance Totale")
-        self.interface.tableau.heading("ChargeMax", text="Charge Maximale")
-        self.interface.tableau.heading("ChargementTotal", text="Chargement Total")
-
+        """
         self.interface.tableau.column("ID", width=60)
         self.interface.tableau.column("Producteur", width=100)
         self.interface.tableau.column("DemiJ", width=120)
         self.interface.tableau.column("Horaire", width=140)
-
-        for col in colonnes:
-            self.interface.tableau.column(col, anchor=CENTER)
-
-        print(infos_tournees)
+        """
 
         for t in infos_tournees:
             nbTaches = len(t.taches)
@@ -178,9 +176,6 @@ class AfficherTableau:
                 chargeTotale
             ))
 
-        self.interface.tableau.grid(row=1, rowspan=8, column=1, columnspan=len(colonnes), sticky="nsew")
-
         self.interface.scrollbar.configure(command=self.interface.tableau.yview)
         self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-        #self.interface.tableau.grid_forget()
         print("Affichage Tableau Tournées")
