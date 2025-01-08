@@ -85,7 +85,7 @@ class Acteur(abc.ABC):
         cls.nb = 0
 
     @classmethod
-    def updateInfosTournees(cls, listSolutions:list):   # listSolutions = liste de liste de tournées
+    def updateInfosTournees(cls, listSolutions:list):   # listSolutions = liste de listes de tournées
         for instance in cls.instances.values():
             instance.infosTournees = [[],[]]    #initialisation
         for listTournees in listSolutions:
