@@ -4,6 +4,7 @@ from Metier.acteur import Acteur
 class Tache:
 
     nb = 0 # nombre d'instances créées de Tache
+    instances = []  # instances créées de Tache
     types = {'P':"Pick-Up", 'D':"Drop-Off"}
 
     def __init__(self, t:chr, charge:float, lieu:Acteur, infoRequete:Acteur, horaire:str):
@@ -13,7 +14,14 @@ class Tache:
         self.lieu = lieu
         self.infoRequete = infoRequete
         self.horaire = horaire
+        Tache.instances.append(self)
         Tache.nb += 1
+
+    def __del__(self):
+        """
+        Détruit la tournée.
+        """
+        Tache.nb -= 1
 
     def getType(self)->str:
         return Tache.types[self.type]
@@ -34,4 +42,5 @@ class Tache:
 
     @classmethod
     def deleteAll(cls):
+        cls.instances.clear()
         cls.nb = 0
