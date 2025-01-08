@@ -15,11 +15,11 @@ class PopupImport:
         self.interface = interface
         self.createur = createur
 
-        self.projet_en_cours = ""
-        self.nom_fichier_donnees = ""
+        self.projet_en_cours = "" # Non du projet sélectionné par l'utilisateur
+        self.nom_fichier_donnees = "" # Fichier de données associé au projet
         self.liste_noms_fichiers_solutions = [] # Liste des fichiers solution du projet en cours
         self.liste_boutons_solutions = {} # Dictionnaire {nom_solution : switch}
-        self.choixSolutions = [] # Liste des solutions sélectionnées pour le projet en cours
+        self.choixSolutions = [] # Liste des solutions sélectionnées par l'utilisateur
         self.fichier_donnees = [] # Liste des lignes du fichier de données du projet en cours
         self.fichiers_solutions = [] # liste de liste des lignes de chaque fichier solution (si plusieurs sont sélectionnés)
 
@@ -96,13 +96,9 @@ class PopupImport:
         if self.fichier_donnees:
             self.__synchronisation_carte_tableau()
 
-            # On met à jour l'attribut "données" de l'interface principale pour les filtres
+            # On met à jour les attributs "données" et "solution" de l'interface principale pour les filtres
             self.interface.donnees = self.fichier_donnees
-
-            # /!\ Temporaire pour les filtres : à replacer lors de l'implémentation de l'affichage des solutions
-            # Transformer self.interface.soltution de liste en dico ?
-            # Pareil pour liste_tournees ?
-            self.interface.solution = self.createur.getContenuFichierSolution(self.liste_noms_fichiers_solutions[0])
+            self.interface.solution = self.fichiers_solutions
 
             # Mise à jour des options du menu déroulant pour les fichiers solutions
             self.interface.solutions_selectionnees = self.choixSolutions
@@ -140,6 +136,7 @@ class PopupImport:
             self.fichiers_solutions.append(self.createur.getContenuFichierSolution(fichier))
             liste_tournees.append(self.createur.getTournees(self.fichiers_solutions[index])) # Ajout de la liste de tournées de chaque fichier
 
+
         for tournee_list in liste_tournees:
             for tournee in tournee_list:
                 color = self.interface.mark_list[tournee.producteur.id].color
@@ -162,7 +159,6 @@ class PopupImport:
                         lieu2lat = tache.lieu.latitude
                         lieu2long = tache.lieu.longitude
 
-        self.interface.solution = self.fichiers_solutions
-        self.interface.update_options_menu()
+
         # Mise à jour des infosTournees des acteurs (à sans doute déplacer)
         # Acteur.updateInfosTournees(liste_tournees)

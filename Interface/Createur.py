@@ -15,6 +15,7 @@ class Createur:
         self.createur_classes = CreerClasses()
 
         self.projet = "" # Permet de créer une instance CreerClasses pour chaque projet
+        self.solutions_loaded = {}
 
     def getDossiers(self) -> list:
         # On utilisera cette fonction seulement pour récupérer les noms de dossiers du dossier Projets
@@ -33,6 +34,7 @@ class Createur:
         # On doit détecter lorsque le projet sélectionné a changé et créer une nouvelle instance.
         if self.projet != projet :
             self.projet = projet
+            self.solutions_loaded = {}
             self.createur_classes = CreerClasses()
             self.createur_classes.load_donnees(lignes)
             return self.createur_classes.getProducteurs(), self.createur_classes.getClients()
@@ -48,5 +50,32 @@ class Createur:
         return self.extracteur.extraction_solution("..\Projets\\" + self.projet + "\Solutions\\" + nom_fichier)
 
     def getTournees(self, lignes : list) -> list[Tournee] :
-        self.createur_classes.load_solutions(lignes)
-        return self.createur_classes.getTournees()
+        return self.createur_classes.getTournees(lignes)
+        # Avec dictionnaire, si on remplace par un dictionnaire self.solution de interface alors on peut mémoriser les fichiers déjà loaded
+        # Param : nom_fichier
+        # if nom_fichier in self.solutions_loaded :
+        # return self.solutions_loaded[nom_fichier]
+        # else:
+        # tournees = self.createur_classes.getTournees(lignes)
+        # self.solutions_loaded[nom_fichier] = tournees
+        # return self.solutions_loaded[nom_fichier]
+
+        # Une fois cela fait, on ne recrée pas les tournées systématiquement
+
+        # Pour modification de self.interface.solution en dictionnaire :
+
+        # Faire modifications nécessaires dans PopupImport : self.fichiers_solutions devient à son tour un dictionnaire
+        # Code affecté : boucle choixSolution dans __synchronisation_carte_tableau
+        # self.fichiers_solutions[fichier] = (self.createur.getContenuFichierSolution(fichier))
+        # liste_dico_fichier_tournees.append(self.createur.getTournees(self.fichiers_solutions[fichier])) -> ancien liste_tournees
+
+        # Dans InterfacePrincipale : lecture dans update_menu_solutions
+        # if choix in self.solution:
+        # liste_tournees = self.createur.getTournees(self.solution[choix])
+
+        # Dans PopupFiltre :
+        # tournees_filtered = filtreTournees(self.createur.getTournees(self.interface.solution[nom_fichier], nom_fichier), producteurs_id, clients_id, demi_jours_num)
+        # TODO : comment récupère t-on le nom du fichier dans la classe popupFiltre ? Parce que il peut y avoir plusieurs fichiers sélectionnés et choisis d'être affichés en même temps ?
+        # Donc comment savoir sur quel fichier on applique le filtre ?
+        # Ou est-ce qu'on l'applique sur tous, auquel cas, on parcours juste le dictionnaire ?
+

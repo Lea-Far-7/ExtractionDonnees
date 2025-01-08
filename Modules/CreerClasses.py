@@ -20,7 +20,6 @@ class CreerClasses:
         self.demandes = []
         self.tournees = []
         self.donnees_loaded = False
-        self.solutions_loaded = False
 
 
     def load_donnees(self, fichier : list):
@@ -39,19 +38,6 @@ class CreerClasses:
             self.__creerProducteurs(fichier)
             self.__creerClients(fichier)
             self.donnees_loaded = True
-
-
-    def load_solutions(self, fichier : list):
-        """
-        Création des instances de Tournee avec la méthode privée
-        `__creerTournees`
-        :param fichier:
-        :return: void
-        """
-        if not self.solutions_loaded:
-            Tournee.deleteAll()
-            self.__creerTournees(fichier)
-            self.solutions_loaded = True
 
 
     def getProducteurs(self) -> "list" :
@@ -75,10 +61,15 @@ class CreerClasses:
         return self.demandes
 
 
-    def getTournees(self) -> list:
+    def getTournees(self, fichier : list) -> list:
         """
-        :return: la liste des Tournees
+        Pas d'unique instanciation comme pour le fichier de données,
+        car plusieurs fichiers solution sont sélectionnables pour un projet
+        :param fichier: list
+        :return: la liste des Tournees du fichier donné.
         """
+        Tournee.deleteAll()
+        self.__creerTournees(fichier)
         return self.tournees
 
 
