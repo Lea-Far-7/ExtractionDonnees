@@ -21,6 +21,7 @@ class App(customtkinter.CTk):
         self.tableau_frame = None
         self.sidebar = None
         self.createur = Createur()
+        self.afficheurTableau = AfficherTableau(self)
 
         # Définition des composants essentiels
         self.map_widget = None
@@ -52,21 +53,21 @@ class App(customtkinter.CTk):
         # Ajout du menu déroulant permettant de choisir le tableau
         self.options = ["Producteurs, Clients, Commandes"]
         self.option_selectionnee = tkinter.StringVar()
-        self.menu_donnees = customtkinter.CTkOptionMenu(self.sidebar, fg_color="#1d7c69",
+        self.menu_donnees = customtkinter.CTkOptionMenu(self.sidebar, fg_color="#1d7c69", button_hover_color="#275855",
                                                         variable=self.option_selectionnee,
                                                         values=self.options,
                                                         command=self.update_menu)
-        self.menu_donnees.grid(row=10, column=0, sticky="e", padx=20, pady=10)
+        self.menu_donnees.grid(row=10, column=0, sticky="w", padx=20, pady=10)
         self.menu_donnees.grid_forget() # On est sur la carte par défaut donc on masque le menu initialement
 
         # Ajout du menu déroulant permettant de choisir le fichier solution à visualiser dans le tableau
         self.options_solution = [] # Au début aucun fichier sélectionné donc aucune option
         self.option_solution_selectionnee = tkinter.StringVar()
-        self.menu_solutions = customtkinter.CTkOptionMenu(self.sidebar, fg_color="#1d7c69",
+        self.menu_solutions = customtkinter.CTkOptionMenu(self.sidebar, fg_color="#1d7c69", button_hover_color="#275855",
                                                           variable=self.option_solution_selectionnee,
                                                           values=self.options_solution,
                                                           command=self.update_menu_solutions)
-        self.menu_solutions.grid(row=12, column=0, sticky="e", padx=20, pady=10)
+        self.menu_solutions.grid(row=12, column=0, sticky="w", padx=20, pady=10)
         self.menu_solutions.grid_forget()
 
         # Lier l'événement de configuration pour mettre à jour les popups
@@ -127,9 +128,6 @@ class App(customtkinter.CTk):
         self.map_widget.set_position(47.3565655, 0.7035767)
 
     def creationTableau(self):
-        colonne_message = ("VIDE",)
-        style = ttk.Style()
-        style.configure("Treeview", font=('Arial', 25), rowheight=100)
         # Créer un frame conteneur pour le tableau
         self.tableau_frame = customtkinter.CTkFrame(self)
         self.tableau_frame.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
@@ -138,11 +136,8 @@ class App(customtkinter.CTk):
         self.tableau_frame.grid_columnconfigure(0, weight=1)
         self.tableau_frame.grid_rowconfigure(0, weight=1)
 
-        self.tableau = ttk.Treeview(self.tableau_frame, columns=colonne_message, show='')
-        self.tableau.heading("VIDE", text="VIDE")
-        self.tableau.column("VIDE", width=400, anchor=CENTER)
-        self.tableau.insert(parent='', index="end", values=("Vide : Veuillez importer des données",))
-        self.tableau.pack(fill="both", expand=True)
+        self.afficheurTableau.tableau_vide()
+
         self.tableau_frame.grid_forget()
 
     def screenshot(self):
@@ -194,13 +189,8 @@ class App(customtkinter.CTk):
         if self.solutions_selectionnees:
             self.options_solution = self.solutions_selectionnees
             self.menu_solutions.configure(values=self.options_solution)
-            # self.menu_solutions.set(self.options_solution[0])
-            # Affiche première solution par défaut
-        else :
-            print("Pas de solution sélectionnées")
 
     def update_menu(self, choix):
-        afficheurTab = AfficherTableau(self)
         producteurs, clients = self.createur.getActeurs(self.donnees, self.createur.projet)
         commandes = self.createur.getCommandes()
 
@@ -208,11 +198,11 @@ class App(customtkinter.CTk):
         self.menu_solutions.grid_forget()
 
         if choix == "Producteurs" :
-            afficheurTab.tableau_producteurs(producteurs)
+            self.afficheurTableau.tableau_producteurs(producteurs)
         elif choix == "Clients" :
-            afficheurTab.tableau_clients(clients)
+            self.afficheurTableau.tableau_clients(clients)
         elif choix == "Commandes" :
-            afficheurTab.tableau_commandes(commandes)
+            self.afficheurTableau.tableau_commandes(commandes)
         elif choix == "Tournées" :
             # On affiche le menu solution
             self.update_options_menu_solutions()
@@ -220,11 +210,10 @@ class App(customtkinter.CTk):
 
     def update_menu_solutions(self, choix):
         if choix:   # Si une solution est sélectionnée
-            afficheurTab = AfficherTableau(self)
             index = self.solutions_selectionnees.index(choix)
             if 0 <= index < len(self.solution):
                 liste_tournees = self.createur.getTournees(self.solution[index])
-                afficheurTab.tableau_tournees(liste_tournees)
+                self.afficheurTableau.tableau_tournees(liste_tournees)
 
 
 if __name__ == "__main__":

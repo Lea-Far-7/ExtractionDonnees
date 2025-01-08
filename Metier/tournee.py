@@ -112,7 +112,7 @@ class Tournee:
         cls.nb = 0
 
     @classmethod
-    def nbTourneesProd(cls)->dict:
+    def getNbTourneesProd(cls)->dict:
         """
         Calcule le nombre de tournées effectuées pour chaque producteur.
         Si un producteur est absent du dictionnaire renvoyé, aucune tournée n'est effectuée par lui.

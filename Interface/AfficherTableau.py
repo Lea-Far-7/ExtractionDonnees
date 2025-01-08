@@ -1,9 +1,14 @@
-from tkinter import ttk, CENTER
+from tkinter import ttk, CENTER, NO
+
+from Metier.demande import Demande
+from Metier.tournee import Tournee
+
 
 class AfficherTableau:
 
     def __init__(self, interface):
         self.interface = interface
+        self.nb_commandes_par_acteur = Demande.getNbDemandesActeurs()
 
     def __set_tableau(self, colonnes, proportions):
         # Supprimer les anciennes colonnes et données
@@ -47,12 +52,13 @@ class AfficherTableau:
         self.__set_tableau(colonnes, proportions)
 
         # Ajout des données
+        nb_tournees_par_prod = Tournee.getNbTourneesProd()
         for prod in infos_producteurs:
             coord = f"({round(prod.latitude, 6)}, {round(prod.longitude, 6)})"
             partners = ", ".join([str(partner.id) for partner in prod.partners])
             dispos = ", ".join([str(dispo.num) for dispo in prod.dispos])
-            nbTournees = "1"
-            nbCommandes = "2"
+            nbTournees = (nb_tournees_par_prod[prod] if prod in nb_tournees_par_prod else 0)
+            nbCommandes = (self.nb_commandes_par_acteur[prod] if prod in self.nb_commandes_par_acteur else 0)
             self.interface.tableau.insert(parent='', index="end", values=(
                 prod.id,
                 coord,
@@ -89,7 +95,7 @@ class AfficherTableau:
         for cl in infos_clients:
             coord = f"({round(cl.latitude, 6)}, {round(cl.longitude, 6)})"
             dispos = ", ".join([str(dispo.num) for dispo in cl.dispos])
-            nbCommandes = "10"
+            nbCommandes = (self.nb_commandes_par_acteur[cl] if cl in self.nb_commandes_par_acteur else 0)
             self.interface.tableau.insert(parent='', index="end", values=(
                 cl.id,
                 coord,
@@ -187,3 +193,24 @@ class AfficherTableau:
                 self.interface.tableau.column(col, width=width)
 
         self.interface.tableau.bind("<Configure>", redimensionnement)
+
+
+    def tableau_vide(self):
+        colonne_message = ("VIDE",)
+        style = ttk.Style()
+        style.configure("Treeview", font=('Arial', 25), rowheight=100)
+        self.interface.tableau = ttk.Treeview(self.interface.tableau_frame, columns=colonne_message, show='')
+        self.interface.tableau.heading("VIDE", text="VIDE")
+        self.interface.tableau.column("VIDE", width=400, anchor=CENTER)
+        self.interface.tableau.insert(parent='', index="end", values=("Vide : Veuillez importer des données",))
+        self.interface.tableau.pack(fill="both", expand=True)
+
+    def tableau_post_import(self):
+        style = ttk.Style()
+        style.configure("Treeview", font=('Arial', 25), rowheight=100)
+
+        self.interface.tableau.config(columns=("",))
+        self.interface.tableau.heading("", text="")
+        self.interface.tableau.column("", width=self.interface.tableau.winfo_width(), anchor=CENTER)
+        self.interface.tableau.insert(parent="", index="end", values=("Veuillez sélectionner une option dans le menu",))
+        self.interface.tableau.pack(fill="both", expand=True)

@@ -1,10 +1,12 @@
 import tkinter
+from tkinter import ttk, CENTER
+
 import customtkinter
 
 from Interface.AfficherCarte import AfficherCarte
+from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
 from Interface.PopUp import PopUp
-
 
 # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
 class PopupImport:
@@ -118,14 +120,11 @@ class PopupImport:
         self.interface.mark_list.clear()
         self.interface.path_list.clear()
 
+        afficheurTableau = AfficherTableau(self.interface)
         # Supprime toutes les lignes du tableau
         for item in self.interface.tableau.get_children():
             self.interface.tableau.delete(item)
-
-        self.interface.tableau.config(columns=("",))
-        self.interface.tableau.heading("", text="")
-        self.interface.tableau.column("", width=400, anchor="center")
-        self.interface.tableau.insert(parent="", index="end", values=("Veuillez sélectionner une option dans le menu",))
+        afficheurTableau.tableau_post_import()
 
         producteurs, clients = self.createur.getActeurs(self.fichier_donnees, self.projet_en_cours)
 

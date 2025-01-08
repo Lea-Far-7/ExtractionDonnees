@@ -32,7 +32,7 @@ class Demande:
         cls.nb = 0
 
     @classmethod
-    def nbDemandesActeurs(cls)->dict:
+    def getNbDemandesActeurs(cls)->dict:
         """
         Calcule le nombre de demandes pour chaque acteur (client et producteur).
         Si un acteur est absent du dictionnaire renvoyé, aucune demande n'est liée à lui.
