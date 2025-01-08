@@ -29,8 +29,8 @@ class App(customtkinter.CTk):
         self.mark_list = {} # dictionnaire des marqueurs
         self.path_list = {} # dictionnaire des trajets
         self.donnees = [] # liste des lignes du fichier
-        self.solution = [] # liste de liste des lignes de chaque fichier solution (si plusieurs sont sélectionnés)
-        self.solutions_selectionnees = []
+        self.solutions = {} # {nom_fichier : liste de listes de lignes par tournées} pour chaque fichier solution sélectionné
+        self.solutions_selectionnees = [] # liste des noms des fichiers solution sélectionnés
 
         self.scrollbar = ttk.Scrollbar(self, orient=VERTICAL)
 
@@ -210,9 +210,8 @@ class App(customtkinter.CTk):
 
     def update_menu_solutions(self, choix):
         if choix:   # Si une solution est sélectionnée
-            index = self.solutions_selectionnees.index(choix)
-            if 0 <= index < len(self.solution):
-                liste_tournees = self.createur.getTournees(self.solution[index])
+            if choix in self.solutions:
+                liste_tournees = self.createur.getTournees(self.solutions[choix], choix)
                 self.afficheurTableau.tableau_tournees(liste_tournees)
 
 

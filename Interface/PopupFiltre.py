@@ -131,12 +131,20 @@ class PopupFiltre:
         tournees_filtered = []
         if self.createur.projet:
             # TODO: changer la liste des tournées en param pour liste de listes de tournées et appel à filtreListesTournees
-            tournees_filtered = filtreTournees(self.createur.getTournees(self.interface.solution), producteurs_id, clients_id, demi_jours_num)
+            # Juste pour que tu es la logique j'ai transformé tes listes en liste de listes mais du coup tous les fichiers solution sont flitrés d'un coup.
+            # Je ne sais pas si c'est ce qu'on veut ou si on ne veut qu'un fichier de filtré à la fois.
+            # Auquel cas, il va falloir récupérer son nom du manière ou d'une autre
+            # Ainsi fait, tu n'auras peut-être pas grand chose (voire rien) à modifier dans tes fonctions de filtre, je te laisse gérer
+            for nom_fichier in self.interface.solutions_selectionnees:
+                fichier = self.interface.solutions[nom_fichier]
+                tournees_filtered.append(filtreTournees(self.createur.getTournees(fichier, nom_fichier), producteurs_id, clients_id, demi_jours_num))
 
-        acteurs_filtered = filtreActeurs(tournees_filtered, producteurs_id+clients_id)
+        acteurs_filtered = []
+        for liste_tournees in tournees_filtered:
+            acteurs_filtered.append(filtreActeurs(tournees_filtered, producteurs_id+clients_id))
 
         # Mise à jour des infosTournees des acteurs
-        Acteur.updateInfosTournees([tournees_filtered])
+        #Acteur.updateInfosTournees([tournees_filtered])
 
         #tests
         print(tournees_filtered)

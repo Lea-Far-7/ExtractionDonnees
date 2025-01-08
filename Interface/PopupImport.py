@@ -24,7 +24,7 @@ class PopupImport:
         self.liste_boutons_solutions = {} # Dictionnaire {nom_solution : switch}
         self.choixSolutions = [] # Liste des solutions sélectionnées par l'utilisateur
         self.fichier_donnees = [] # Liste des lignes du fichier de données du projet en cours
-        self.fichiers_solutions = [] # liste de liste des lignes de chaque fichier solution (si plusieurs sont sélectionnés)
+        self.fichiers_solutions = {} # {nom_fichier : liste de lignes} pour chaque fichier solution
 
         # Initialisation du popup
         self.popup = PopUp(self.interface)
@@ -74,6 +74,7 @@ class PopupImport:
 
         # Remets la liste des solutions sélectionnées à vide
         self.choixSolutions = []
+        self.fichiers_solutions = {}
 
         # Récupère le fichier de données dans le projet sélectionné
         # indice 0, car il ne peut y avoir qu'un seul fichier de données par projet
@@ -101,15 +102,23 @@ class PopupImport:
 
             # On met à jour les attributs "données" et "solution" de l'interface principale pour les filtres
             self.interface.donnees = self.fichier_donnees
-            self.interface.solution = self.fichiers_solutions
+            self.interface.solutions = self.fichiers_solutions
+            #print(self.fichiers_solutions)
+            for nom, fi in self.fichiers_solutions.items():
+                print(nom, " : ", fi)
 
-            # Mise à jour des options du menu déroulant pour les fichiers solutions
+            # Mise à jour des options du menu déroulant du tableau pour les fichiers solutions
             self.interface.solutions_selectionnees = self.choixSolutions
             self.interface.update_options_menu()
 
+            print("--------------------------------------------")
+            for nom, fi in self.interface.solutions.items():
+                print(nom, " : ", fi)
+            print("____________________________________________")
+
             if self.choixSolutions:
                 self.interface.menu_solutions.configure(values=self.choixSolutions)
-                self.interface.menu_solutions.set(self.choixSolutions[0])
+                #self.interface.menu_solutions.set(self.choixSolutions[0])
 
 
     def __synchronisation_carte_tableau(self):
@@ -134,18 +143,19 @@ class PopupImport:
         # On récupère la liste des noms de fichiers sélectionnés (état switch = 1)
         self.choixSolutions = list(c for c,b in self.liste_boutons_solutions.items() if b.get() == 1) # Conversion en liste sinon attribut devient un générator
         # On récupère le contenu de chaque fichier solution sélectionné
-        liste_tournees = []
+        liste_de_listes_de_tournees = []
         Tache.deleteAll()
-        for index, fichier in enumerate(self.choixSolutions):
-            self.fichiers_solutions.append(self.createur.getContenuFichierSolution(fichier)) # Jusqu'ici tout va bien
-            liste_tournees.append(self.createur.getTournees(self.fichiers_solutions[index])) # Ajout de la liste de tournées de chaque fichier
-            print(self.createur.getTournees(self.fichiers_solutions[index]))
-        for tournee_list in liste_tournees:
-            for tournee in tournee_list:
+        for fichier in self.choixSolutions:
+            self.fichiers_solutions[fichier] = (self.createur.getContenuFichierSolution(fichier)) # Jusqu'ici tout va bien
+            liste_de_listes_de_tournees.append(self.createur.getTournees(self.fichiers_solutions[fichier], fichier)) # Ajout de la liste de tournées de chaque fichier
+
+        lieu2lat, lieu2long = "", ""
+        for liste_tournees in liste_de_listes_de_tournees:
+            for tournee in liste_tournees:
                 color = self.interface.mark_list[tournee.producteur.id].color
                 temp = 0
                 for tache in tournee.taches:
-                    print(tache)
+                    #print(tache)
                     if temp == 0 :
                         self.interface.path_list[tache] = self.interface.map_widget.set_path(
                             [(self.interface.mark_list[tournee.producteur.id].acteur.latitude, self.interface.mark_list[tournee.producteur.id].acteur.longitude),

@@ -69,6 +69,7 @@ class CreerClasses:
         :return: la liste des Tournees du fichier donné.
         """
         Tournee.deleteAll()
+        self.tournees = []
         self.__creerTournees(fichier)
         return self.tournees
 
