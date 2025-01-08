@@ -87,7 +87,7 @@ class PopupImport:
         j = 0
         for solutions in self.liste_noms_fichiers_solutions:
             self.liste_boutons_solutions[solutions] = customtkinter.CTkSwitch(master=frame_solutions, progress_color="#1d7c69", text=f"{solutions}")
-            self.liste_boutons_solutions[solutions].grid(row=j, column=0, padx=10, pady=(0, 20))
+            self.liste_boutons_solutions[solutions].grid(row=j, column=0, padx=10, sticky="nsew", pady=(0, 20))
             j = j + 1
 
 
