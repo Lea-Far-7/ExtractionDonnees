@@ -97,7 +97,6 @@ class App(customtkinter.CTk):
         # Utilisation d'une image contenant une seule couleur pour l'appliquer sur les boutons
         couleur_bouton = customtkinter.CTkImage(light_image=Image.open('../Images/Couleur_Boutons.png'),
                                                      size=(500, 150))
-
         # Création des boutons dans la sidebar
         importer = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
                                                 command=lambda: PopupImport(self, self.createur), text="Importer")
@@ -198,9 +197,9 @@ class App(customtkinter.CTk):
         self.menu_solutions.grid_forget()
 
         if choix == "Producteurs" :
-            self.afficheurTableau.tableau_producteurs(producteurs)
+            self.afficheurTableau.tableau_producteurs(producteurs, self.createur.projet)
         elif choix == "Clients" :
-            self.afficheurTableau.tableau_clients(clients)
+            self.afficheurTableau.tableau_clients(clients, self.createur.projet)
         elif choix == "Commandes" :
             self.afficheurTableau.tableau_commandes(commandes)
         elif choix == "Tournées" :

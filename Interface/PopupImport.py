@@ -1,5 +1,4 @@
 import tkinter
-from tkinter import ttk, CENTER
 
 import customtkinter
 
@@ -9,8 +8,6 @@ from Interface.Createur import Createur
 from Interface.PopUp import PopUp
 from Metier.acteur import Acteur
 from Metier.tache import Tache
-from Metier.tournee import Tournee
-
 
 # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
 class PopupImport:
@@ -104,18 +101,10 @@ class PopupImport:
             # On met à jour les attributs "données" et "solution" de l'interface principale pour les filtres
             self.interface.donnees = self.fichier_donnees
             self.interface.solutions = self.fichiers_solutions
-            #print(self.fichiers_solutions)
-            for nom, fi in self.fichiers_solutions.items():
-                print(nom, " : ", fi)
 
             # Mise à jour des options du menu déroulant du tableau pour les fichiers solutions
             self.interface.solutions_selectionnees = self.choixSolutions
             self.interface.update_options_menu()
-
-            print("--------------------------------------------")
-            for nom, fi in self.interface.solutions.items():
-                print(nom, " : ", fi)
-            print("____________________________________________")
 
             if self.choixSolutions:
                 self.interface.menu_solutions.configure(values=self.choixSolutions)

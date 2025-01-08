@@ -1,14 +1,14 @@
-from tkinter import ttk, CENTER, NO
+from tkinter import ttk, CENTER
 
 from Metier.demande import Demande
 from Metier.tournee import Tournee
-
 
 class AfficherTableau:
 
     def __init__(self, interface):
         self.interface = interface
-        self.nb_commandes_par_acteur = Demande.getNbDemandesActeurs()
+        self.nb_commandes_par_acteur = None
+        self.projet_en_cours = ""
 
     def __set_tableau(self, colonnes, proportions):
         # Supprimer les anciennes colonnes et données
@@ -34,8 +34,18 @@ class AfficherTableau:
         self.interface.scrollbar.configure(command=self.interface.tableau.yview)
         self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
 
+        # Liaison avec l'évènement de redimensionnement
+        self.interface.tableau.bind('<Configure>', lambda event : self.__redimensionnement(event, colonnes, proportions))
 
-    def tableau_producteurs(self, infos_producteurs: list):
+    def __redimensionnement(self, event, colonnes, proportions):
+        # Recalculer les largeurs quand la fenêtre est redimensionnée
+        new_width = event.width
+        for col in colonnes:
+            width = int((new_width * proportions[col]) / 100)
+            self.interface.tableau.column(col, width=width)
+
+
+    def tableau_producteurs(self, infos_producteurs: list, projet: str):
         colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
 
         # Calcul des proportions pour chaque colonne (total = 100)
@@ -54,11 +64,18 @@ class AfficherTableau:
         # Ajout des données
         nb_tournees_par_prod = Tournee.getNbTourneesProd()
         for prod in infos_producteurs:
+
             coord = f"({round(prod.latitude, 6)}, {round(prod.longitude, 6)})"
             partners = ", ".join([str(partner.id) for partner in prod.partners])
             dispos = ", ".join([str(dispo.num) for dispo in prod.dispos])
+
             nbTournees = (nb_tournees_par_prod[prod] if prod in nb_tournees_par_prod else 0)
+
+            if not self.nb_commandes_par_acteur or self.projet_en_cours != projet:
+                self.projet_en_cours = projet
+                self.nb_commandes_par_acteur = Demande.getNbDemandesActeurs()
             nbCommandes = (self.nb_commandes_par_acteur[prod] if prod in self.nb_commandes_par_acteur else 0)
+
             self.interface.tableau.insert(parent='', index="end", values=(
                 prod.id,
                 coord,
@@ -69,17 +86,8 @@ class AfficherTableau:
                 nbCommandes
             ))
 
-        def redimensionnement(event):
-            # Recalculer les largeurs quand la fenêtre est redimensionnée
-            new_width = event.width
-            for col in colonnes:
-                width = int((new_width * proportions[col]) / 100)
-                self.interface.tableau.column(col, width=width)
 
-        self.interface.tableau.bind("<Configure>", redimensionnement)
-
-
-    def tableau_clients(self, infos_clients: list):
+    def tableau_clients(self, infos_clients: list, projet: str):
         colonnes = ("ID", "Coord", "Dispo", "NbCommandes")
 
         # Calcul des proportions pour chaque colonne (total = 100)
@@ -93,24 +101,21 @@ class AfficherTableau:
         self.__set_tableau(colonnes, proportions)
 
         for cl in infos_clients:
+
             coord = f"({round(cl.latitude, 6)}, {round(cl.longitude, 6)})"
             dispos = ", ".join([str(dispo.num) for dispo in cl.dispos])
+
+            if not self.nb_commandes_par_acteur or self.projet_en_cours != projet:
+                self.projet_en_cours = projet
+                self.nb_commandes_par_acteur = Demande.getNbDemandesActeurs()
             nbCommandes = (self.nb_commandes_par_acteur[cl] if cl in self.nb_commandes_par_acteur else 0)
+
             self.interface.tableau.insert(parent='', index="end", values=(
                 cl.id,
                 coord,
                 dispos,
                 nbCommandes
             ))
-
-        def redimensionnement(event):
-            # Recalculer les largeurs quand la fenêtre est redimensionnée
-            new_width = event.width
-            for col in colonnes:
-                width = int((new_width * proportions[col]) / 100)
-                self.interface.tableau.column(col, width=width)
-
-        self.interface.tableau.bind("<Configure>", redimensionnement)
 
 
     def tableau_commandes(self, infos_commandes : list):
@@ -134,15 +139,6 @@ class AfficherTableau:
                 str(c.masse) + "kg"
             ))
 
-        def redimensionnement(event):
-            # Recalculer les largeurs quand la fenêtre est redimensionnée
-            new_width = event.width
-            for col in colonnes:
-                width = int((new_width * proportions[col]) / 100)
-                self.interface.tableau.column(col, width=width)
-
-        self.interface.tableau.bind("<Configure>", redimensionnement)
-
 
     def tableau_tournees(self, infos_tournees : list):
         colonnes = ("ID", "Producteur", "DemiJ", "Horaire", "DureeTotale", "NbTaches", "DistanceTotale", "ChargeMax", "ChargementTotal")
@@ -163,16 +159,21 @@ class AfficherTableau:
         self.__set_tableau(colonnes, proportions)
 
         for t in infos_tournees:
+
             nbTaches = len(t.taches)
             horaireDebut = t.taches[0].horaire
             horaireFin = t.taches[nbTaches-1].horaire
+
             _, _, distTotale = t.distance()
+
             liste_durees, _, dureeT = t.duree()
             nbH = dureeT // 60
             nbM = dureeT % 60
             dureeTotale = str(nbH) + "h " + str(nbM) + "m"
+
             _, chargeMax,chargeT = t.chargement()
             chargeTotale = str(round(chargeT, 2)) + " kg"
+
             self.interface.tableau.insert(parent='', index="end", values=(
                 t.idTournee,
                 t.producteur.id,
@@ -185,21 +186,11 @@ class AfficherTableau:
                 chargeTotale
             ))
 
-        def redimensionnement(event):
-            # Recalculer les largeurs quand la fenêtre est redimensionnée
-            new_width = event.width
-            for col in colonnes:
-                width = int((new_width * proportions[col]) / 100)
-                self.interface.tableau.column(col, width=width)
-
-        self.interface.tableau.bind("<Configure>", redimensionnement)
-
 
     def tableau_vide(self):
-        colonne_message = ("VIDE",)
         style = ttk.Style()
         style.configure("Treeview", font=('Arial', 25), rowheight=100)
-        self.interface.tableau = ttk.Treeview(self.interface.tableau_frame, columns=colonne_message, show='')
+        self.interface.tableau = ttk.Treeview(self.interface.tableau_frame, columns=("VIDE",), show='')
         self.interface.tableau.heading("VIDE", text="VIDE")
         self.interface.tableau.column("VIDE", width=400, anchor=CENTER)
         self.interface.tableau.insert(parent='', index="end", values=("Vide : Veuillez importer des données",))
@@ -208,7 +199,6 @@ class AfficherTableau:
     def tableau_post_import(self):
         style = ttk.Style()
         style.configure("Treeview", font=('Arial', 25), rowheight=100)
-
         self.interface.tableau.config(columns=("",))
         self.interface.tableau.heading("", text="")
         self.interface.tableau.column("", width=self.interface.tableau.winfo_width(), anchor=CENTER)
