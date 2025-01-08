@@ -28,6 +28,8 @@ class MarkerActeur:
             self.marker = map.set_marker(self.acteur.latitude, self.acteur.longitude, marker_color_outside="#000000",
                                          marker_color_circle=self.color, command=self.affichage)
 
+        self.marker_hide = False
+
 
     # Ajout de taches à l'objet pour les afficher par la suite
     def ajoutTaches(self, tache:Tache):

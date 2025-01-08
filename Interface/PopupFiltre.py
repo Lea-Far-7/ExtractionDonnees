@@ -127,25 +127,38 @@ class PopupFiltre:
             if switch.get():
                 demi_jours_num.append(key)
 
-        # Filtrage des tournées
-        tournees_filtered = []
+        # Récupération des tournées
+        tournees = []
         if self.createur.projet:
-            # TODO: changer la liste des tournées en param pour liste de listes de tournées et appel à filtreListesTournees
-            # Juste pour que tu es la logique j'ai transformé tes listes en liste de listes mais du coup tous les fichiers solution sont flitrés d'un coup.
-            # Je ne sais pas si c'est ce qu'on veut ou si on ne veut qu'un fichier de filtré à la fois.
-            # Auquel cas, il va falloir récupérer son nom du manière ou d'une autre
-            # Ainsi fait, tu n'auras peut-être pas grand chose (voire rien) à modifier dans tes fonctions de filtre, je te laisse gérer
             for nom_fichier in self.interface.solutions_selectionnees:
                 fichier = self.interface.solutions[nom_fichier]
-                tournees_filtered.append(filtreTournees(self.createur.getTournees(fichier, nom_fichier), producteurs_id, clients_id, demi_jours_num))
+                tournees.extend(self.createur.getTournees(fichier, nom_fichier))
 
-        acteurs_filtered = []
-        for liste_tournees in tournees_filtered:
-            acteurs_filtered.append(filtreActeurs(tournees_filtered, producteurs_id+clients_id))
+        # Filtrage des tournées
+        tournees_filtrees = filtreTournees(tournees, producteurs_id, clients_id, demi_jours_num)
+
+        # Filtrage des acteurs
+        acteurs_filtres = filtreActeurs(tournees_filtrees, producteurs_id+clients_id)
+
+        # Mise à jour de l'affichage des acteurs sur la carte
+        # Pour faire disparaître le marqueur, on a rien trouvé de mieux pour l'instant que de l'envoyer à l'autre bout du monde
+        # (-89;-179) se situe en Antarctique sur le bord de carte du logiciel donc impossible à voir
+        for id, acteur_marker in self.interface.mark_list.items():
+            if id in acteurs_filtres:
+                # montrer
+                if acteur_marker.marker_hide:
+                    acteur_marker.marker.set_position(acteur_marker.acteur.latitude, acteur_marker.acteur.longitude)
+                    acteur_marker.marker_hide = False
+            else:
+                # cacher
+                if not acteur_marker.marker_hide:
+                    acteur_marker.marker.set_position(-89, -179)
+                    acteur_marker.marker_hide = True
+
 
         # Mise à jour des infosTournees des acteurs
-        #Acteur.updateInfosTournees([tournees_filtered])
+        Acteur.updateInfosTournees([tournees_filtrees])
 
         #tests
-        print(tournees_filtered)
-        print(acteurs_filtered)
+        print(tournees_filtrees)
+        print(acteurs_filtres)
