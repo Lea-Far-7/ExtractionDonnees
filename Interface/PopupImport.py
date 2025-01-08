@@ -7,6 +7,7 @@ from Interface.AfficherCarte import AfficherCarte
 from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
 from Interface.PopUp import PopUp
+from Metier.acteur import Acteur
 from Metier.tache import Tache
 from Metier.tournee import Tournee
 
@@ -173,5 +174,5 @@ class PopupImport:
                         lieu2long = tache.lieu.longitude
 
 
-        # Mise à jour des infosTournees des acteurs (à sans doute déplacer)
-        # Acteur.updateInfosTournees(liste_tournees)
+        # Mise à jour des infosTournees des acteurs
+        Acteur.updateInfosTournees(liste_de_listes_de_tournees)
