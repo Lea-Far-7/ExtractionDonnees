@@ -7,6 +7,9 @@ from Interface.AfficherCarte import AfficherCarte
 from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
 from Interface.PopUp import PopUp
+from Metier.tache import Tache
+from Metier.tournee import Tournee
+
 
 # Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
 class PopupImport:
@@ -132,11 +135,11 @@ class PopupImport:
         self.choixSolutions = list(c for c,b in self.liste_boutons_solutions.items() if b.get() == 1) # Conversion en liste sinon attribut devient un générator
         # On récupère le contenu de chaque fichier solution sélectionné
         liste_tournees = []
+        Tache.deleteAll()
         for index, fichier in enumerate(self.choixSolutions):
-            self.fichiers_solutions.append(self.createur.getContenuFichierSolution(fichier))
+            self.fichiers_solutions.append(self.createur.getContenuFichierSolution(fichier)) # Jusqu'ici tout va bien
             liste_tournees.append(self.createur.getTournees(self.fichiers_solutions[index])) # Ajout de la liste de tournées de chaque fichier
-
-
+            print(self.createur.getTournees(self.fichiers_solutions[index]))
         for tournee_list in liste_tournees:
             for tournee in tournee_list:
                 color = self.interface.mark_list[tournee.producteur.id].color

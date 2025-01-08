@@ -31,3 +31,7 @@ class Tache:
         # return ("Tache " + str(self.idTache) + " : " + self.getType() + " " + str(self.charge)
         #         + " chez Acteur " + str(self.lieu.id) + " pour Acteur " + str(self.infoRequete.id)
         #         + " à " + self.horaire)
+
+    @classmethod
+    def deleteAll(cls):
+        cls.nb = 0
