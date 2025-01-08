@@ -19,7 +19,7 @@ class Tache:
 
     def __del__(self):
         """
-        Détruit la tournée.
+        Détruit la tâche.
         """
         Tache.nb -= 1
 
@@ -35,10 +35,6 @@ class Tache:
         result += " à " + self.horaire
 
         return result
-
-        # return ("Tache " + str(self.idTache) + " : " + self.getType() + " " + str(self.charge)
-        #         + " chez Acteur " + str(self.lieu.id) + " pour Acteur " + str(self.infoRequete.id)
-        #         + " à " + self.horaire)
 
     @classmethod
     def deleteAll(cls):
