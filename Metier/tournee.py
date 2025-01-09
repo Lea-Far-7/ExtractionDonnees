@@ -78,7 +78,7 @@ class Tournee:
                 charge_totale += c
             else:
                 chargeCumulee -= c
-            chargements.append(float(c))
+            chargements.append(float(chargeCumulee))
 
         print("Tournee ", self.idTournee)
         if chargeCumulee != 0:
