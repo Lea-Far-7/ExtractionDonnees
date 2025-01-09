@@ -1,4 +1,6 @@
 from Interface.MarkerActeur import MarkerActeur
+from Interface.TrajetTache import TrajetTache
+
 
 class AfficherCarte:
 
@@ -25,12 +27,9 @@ class AfficherCarte:
                     # print(tache)
                     if temp == 0:
                         lieu2 = self.interface.mark_list[tache.lieu.id].marker.position
-                        self.interface.path_list[tache] = self.interface.map_widget.set_path(
-                            [self.interface.mark_list[tournee.producteur.id].marker.position, lieu2], width=4,
-                            command="", color=color)
+                        self.interface.path_list[tache] = TrajetTache(self.interface.map_widget, tache, tournee, color, lieu2,None, self.interface)
                         temp = 1
                     else:
                         nouv_lieu = self.interface.mark_list[tache.lieu.id].marker.position
-                        self.interface.path_list[tache] = self.interface.map_widget.set_path(
-                            [lieu2, nouv_lieu], width=4, command="", color=color)
+                        self.interface.path_list[tache] = TrajetTache(self.interface.map_widget, tache, tournee, color, lieu2,nouv_lieu, self.interface)
                         lieu2 = nouv_lieu
