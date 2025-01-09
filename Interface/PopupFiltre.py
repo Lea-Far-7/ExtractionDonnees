@@ -69,7 +69,7 @@ class PopupFiltre:
 
 
         validButton = customtkinter.CTkButton(self.popup.window, fg_color="#1d7c69", hover_color="#275855",
-                                                command=self.validate, text="Valider")
+                                                command=self.__validate, text="Valider")
         validButton.grid(row=3, column=0, columnspan=3, padx=20, pady=10)
 
         # Replace la pop-up au centre de la fenêtre principale
@@ -81,7 +81,7 @@ class PopupFiltre:
         interface.wait_window(self.popup.window)
 
 
-    def validate(self):
+    def __validate(self):
 
         producteurs_id = []
         clients_id = []
@@ -140,20 +140,31 @@ class PopupFiltre:
         # Filtrage des acteurs
         acteurs_filtres = filtreActeurs(tournees_filtrees, producteurs_id+clients_id)
 
+
         # Mise à jour de l'affichage des acteurs sur la carte
-        # Pour faire disparaître le marqueur, on a rien trouvé de mieux pour l'instant que de l'envoyer à l'autre bout du monde
-        # (-89;-179) se situe en Antarctique sur le bord de carte du logiciel donc impossible à voir
         for id, acteur_marker in self.interface.mark_list.items():
             if id in acteurs_filtres:
                 # montrer
-                if acteur_marker.marker_hide:
-                    acteur_marker.marker.set_position(acteur_marker.acteur.latitude, acteur_marker.acteur.longitude)
-                    acteur_marker.marker_hide = False
+                acteur_marker.show_marker()
             else:
                 # cacher
-                if not acteur_marker.marker_hide:
-                    acteur_marker.marker.set_position(-89, -179)
-                    acteur_marker.marker_hide = True
+                acteur_marker.hide_marker()
+
+
+        # Mise à jour de l'affichage des trajets sur la carte
+        for tournee in tournees:
+            if tournee in tournees_filtrees:
+                # montrer tous les trajets (tâches) de la tournée
+                # mais avant on vérifie si le 1er trajet n'est pas déjà montré pour éviter de parcourir inutilement
+                if self.interface.path_list[tournee.taches[0]].trajet_hidden:
+                    for tache in tournee.taches:
+                        self.interface.path_list[tache].show_trajet()
+            else:
+                # cacher tous les trajets (tâches) de la tournée
+                # mais avant on vérifie si le 1er trajet n'est pas déjà caché pour éviter de parcourir inutilement
+                if not self.interface.path_list[tournee.taches[0]].trajet_hidden:
+                    for tache in tournee.taches:
+                        self.interface.path_list[tache].hide_trajet()
 
 
         # Mise à jour des infosTournees des acteurs

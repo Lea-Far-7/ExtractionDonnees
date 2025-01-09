@@ -31,8 +31,9 @@ class AfficherCarte:
                     list_duree, _, _ = tournee.duree()
                     list_chargement, _,_  = tournee.chargement()
                     if temp == 0:
+                        lieu1 = self.interface.mark_list[tournee.producteur.id].marker.position
                         lieu2 = self.interface.mark_list[tache.lieu.id].marker.position
-                        self.interface.path_list[tache] = TrajetTache(self.interface.map_widget, tache, tournee, color, lieu2,None, list_dist[temp], list_duree[temp], list_chargement[temp], self.interface)
+                        self.interface.path_list[tache] = TrajetTache(self.interface.map_widget, tache, tournee, color, lieu2, lieu1, list_dist[temp], list_duree[temp], list_chargement[temp], self.interface)
                         temp = 1
                     else:
                         # Temp2 sert à retarder le compte d'une itération pour garder la valeur d'avant pickup ou dropoff et ainsi afficher la bonne valeur sur la popup

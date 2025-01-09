@@ -28,7 +28,7 @@ class MarkerActeur:
             self.marker = map.set_marker(self.acteur.latitude, self.acteur.longitude, marker_color_outside="#000000",
                                          marker_color_circle=self.color, command=self.affichage)
 
-        self.marker_hide = False
+        self.marker_hidden = False
 
 
     # Ajout de taches à l'objet pour les afficher par la suite
@@ -43,3 +43,16 @@ class MarkerActeur:
 
     def hide(self):
         AfficherActeur.hide()
+
+
+    # Pour faire disparaître le marqueur, on n'a rien trouvé de mieux pour l'instant que de l'envoyer à l'autre bout du monde
+    # (-89;-179) se situe en Antarctique sur le bord de carte du logiciel donc impossible à voir
+    def hide_marker(self):
+        if not self.marker_hidden:
+            self.marker.set_position(-89, -179)
+            self.marker_hidden = True
+
+    def show_marker(self):
+        if self.marker_hidden:
+            self.marker.set_position(self.acteur.latitude, self.acteur.longitude)
+            self.marker_hidden = False
