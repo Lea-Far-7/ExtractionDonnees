@@ -76,7 +76,9 @@ class App(customtkinter.CTk):
 
     def update_all_popups_position(self, event=None):
         for marker in self.mark_list.values():
-            marker.popup.update_popup_position()
+            marker.hide()
+        for path in self.path_list.values():
+            path.hide()
 
 
     def interfacePrincipale(self):
