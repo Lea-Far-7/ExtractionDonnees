@@ -1,5 +1,6 @@
 from Interface.MarkerActeur import MarkerActeur
 from Interface.TrajetTache import TrajetTache
+from Modules.distance import distance
 
 
 class AfficherCarte:
@@ -19,17 +20,24 @@ class AfficherCarte:
 
     def path_taches(self, liste_de_listes_de_tournees):
         lieu2 = (0, 0)
+        # Parcourt les tournées et leurs tâches pour créer un trajet correspondant à chaque tâche
         for liste_tournees in liste_de_listes_de_tournees:
             for tournee in liste_tournees:
                 color = self.interface.mark_list[tournee.producteur.id].color
                 temp = 0
+                temp2 = temp
                 for tache in tournee.taches:
-                    # print(tache)
+                    list_dist, _, _ = tournee.distance()
+                    list_duree, _, _ = tournee.duree()
+                    list_chargement, _,_  = tournee.chargement()
                     if temp == 0:
                         lieu2 = self.interface.mark_list[tache.lieu.id].marker.position
-                        self.interface.path_list[tache] = TrajetTache(self.interface.map_widget, tache, tournee, color, lieu2,None, self.interface)
+                        self.interface.path_list[tache] = TrajetTache(self.interface.map_widget, tache, tournee, color, lieu2,None, list_dist[temp], list_duree[temp], list_chargement[temp], self.interface)
                         temp = 1
                     else:
+                        # Temp2 sert à retarder le compte d'une itération pour garder la valeur d'avant pickup ou dropoff et ainsi afficher la bonne valeur sur la popup
                         nouv_lieu = self.interface.mark_list[tache.lieu.id].marker.position
-                        self.interface.path_list[tache] = TrajetTache(self.interface.map_widget, tache, tournee, color, lieu2,nouv_lieu, self.interface)
+                        self.interface.path_list[tache] = TrajetTache(self.interface.map_widget, tache, tournee, color, lieu2, nouv_lieu, list_dist[temp], list_duree[temp], list_chargement[temp2], self.interface)
                         lieu2 = nouv_lieu
+                        temp += 1
+                        temp2 += 1

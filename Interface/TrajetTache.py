@@ -5,9 +5,16 @@ from Metier.tournee import Tournee
 
 
 class TrajetTache:
-    def __init__(self, map, tache:Tache, tournee:Tournee, color, lieu2, nouv_lieu, masterwindow):
+    def __init__(self, map, tache:Tache, tournee:Tournee, color, lieu2, nouv_lieu, distance, duree, chargement, masterwindow):
         self.tache = tache
         self.tournee = tournee
+
+        self.lieu2 = lieu2
+        self.nouv_lieu = nouv_lieu
+        self.distance = distance
+        self.duree = duree
+        self.chargement = chargement
+
 
         # On récupère la fenêtre principale
         self.masterwindow = masterwindow

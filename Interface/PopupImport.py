@@ -16,6 +16,8 @@ class PopupImport:
         self.interface = interface
         self.createur = createur
 
+        Tache.deleteAll()
+
         self.projet_en_cours = "" # Non du projet sélectionné par l'utilisateur
         self.nom_fichier_donnees = "" # Fichier de données associé au projet
         self.liste_noms_fichiers_solutions = [] # Liste des fichiers solution du projet en cours
