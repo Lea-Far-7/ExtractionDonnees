@@ -16,6 +16,8 @@ class PopupImport:
         self.interface = interface
         self.createur = createur
 
+        Tache.deleteAll()
+
         self.projet_en_cours = "" # Non du projet sélectionné par l'utilisateur
         self.nom_fichier_donnees = "" # Fichier de données associé au projet
         self.liste_noms_fichiers_solutions = [] # Liste des fichiers solution du projet en cours
@@ -139,24 +141,7 @@ class PopupImport:
             self.fichiers_solutions[fichier] = (self.createur.getContenuFichierSolution(fichier)) # Jusqu'ici tout va bien
             liste_de_listes_de_tournees.append(self.createur.getTournees(self.fichiers_solutions[fichier], fichier)) # Ajout de la liste de tournées de chaque fichier
 
-        lieu2 = (0,0)
-        for liste_tournees in liste_de_listes_de_tournees:
-            for tournee in liste_tournees:
-                color = self.interface.mark_list[tournee.producteur.id].color
-                temp = 0
-                for tache in tournee.taches:
-                    #print(tache)
-                    if temp == 0 :
-                        lieu2 = self.interface.mark_list[tache.lieu.id].marker.position
-                        self.interface.path_list[tache] = self.interface.map_widget.set_path(
-                            [self.interface.mark_list[tournee.producteur.id].marker.position, lieu2], width=4,
-                            command="", color=color)
-                        temp = 1
-                    else :
-                        nouv_lieu = self.interface.mark_list[tache.lieu.id].marker.position
-                        self.interface.path_list[tache] = self.interface.map_widget.set_path(
-                            [lieu2, nouv_lieu], width=4, command="", color=color)
-                        lieu2 = nouv_lieu
+        afficheurCarte.path_taches(liste_de_listes_de_tournees)
 
 
         # Mise à jour des infosTournees des acteurs
