@@ -76,9 +76,9 @@ class Tournee:
                 chargeCumulee += c
                 charge_max = max(charge_max, chargeCumulee)
                 charge_totale += c
-                chargements.append(float(c))
             else:
                 chargeCumulee -= c
+            chargements.append(float(c))
 
         print("Tournee ", self.idTournee)
         if chargeCumulee != 0:
