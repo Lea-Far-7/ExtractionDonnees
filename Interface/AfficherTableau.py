@@ -171,8 +171,8 @@ class AfficherTableau:
             nbM = dureeT % 60
             dureeTotale = str(nbH) + "h " + str(nbM) + "m"
 
-            _, chargeMax,chargeT = t.chargement()
-            chargeTotale = str(round(chargeT, 2)) + " kg"
+            c, chargeMax,chargeT = t.chargement()
+            chargeTotale = str(chargeT) + " kg"
 
             self.interface.tableau.insert(parent='', index="end", values=(
                 t.idTournee,
@@ -182,7 +182,7 @@ class AfficherTableau:
                 dureeTotale,
                 nbTaches,
                 str(round(distTotale,2)) + " km",
-                str(round(chargeMax,2)) + " kg",
+                str(chargeMax) + " kg",
                 chargeTotale
             ))
 

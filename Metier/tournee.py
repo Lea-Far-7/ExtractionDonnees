@@ -1,9 +1,10 @@
+from decimal import getcontext, Decimal
+
 from Metier.acteur import Acteur
 from Metier.producteur import Producteur
 from Metier.demiJour import DemiJour
 from Metier.tache import Tache
 from Modules.distance import distance
-
 
 class Tournee:
 
@@ -60,20 +61,35 @@ class Tournee:
             - Chargement maximal transporté entre deux tâches.
             - Chargement total transporté durant la tournée.
         """
+
+        getcontext().prec = 28
+
         chargements = []
-        cmax = 0
-        ctot = 0
-        c = 0
+        charge_max = Decimal('0')
+        charge_totale = Decimal('0')
+        chargeCumulee = Decimal('0')
+
         for tache in self.taches:
+            c = Decimal(str(tache.charge))
+
             if tache.type == 'P':
-                ctot += tache.charge
-                c += tache.charge
-                ctot += tache.charge
-                cmax = max(cmax, c)
+                chargeCumulee += c
+                charge_max = max(charge_max, chargeCumulee)
+                charge_totale += c
+                chargements.append(float(c))
             else:
-                c -= tache.charge
-            chargements.append(c)
-        return chargements, cmax, ctot
+                chargeCumulee -= c
+
+        print("Tournee ", self.idTournee)
+        if chargeCumulee != 0:
+            print ("Commande non livrée, reste : ", chargeCumulee)
+        else:
+            print("Reste 0 : toutes les commandes ont été livrées")
+        if charge_max >= self.producteur.capacity:
+            print("Charge maximale : ", charge_max, " kg")
+            print("Supérieur à la capacité du camion : ", self.producteur.capacity, " kg")
+
+        return chargements, float(charge_max), float(charge_totale)
 
     def duree(self)->tuple[list[int], int, int]:
         """
