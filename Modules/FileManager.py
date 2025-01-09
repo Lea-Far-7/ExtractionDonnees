@@ -1,9 +1,9 @@
 # Créé par leleo, le 18/11/2024 en Python 3.7
-from os import listdir, path
+from os import listdir, path, makedirs
+from time import strftime, gmtime
 
 """
-    Cette classe regroupe toutes les opérations concernant la recherche de fichiers
-    -> lister_fichiers : renvoie une liste des noms des fichiers d'un répertoire donné
+    Cette classe regroupe toutes les opérations concernant la recherche et la manipulation de fichiers
 """
 
 class FileManager :
@@ -30,14 +30,15 @@ class FileManager :
             dossiers = [d for d in contenu_repertoire if path.isdir(path.join(repertoire, d))]
             return dossiers
         except FileNotFoundError:
-            print(f"Le répertoire {contenu_repertoire} n'existe pas.")
+            print(f"Le répertoire {repertoire} n'existe pas.")
             return []
 
-"""
-import os
 
-directory = 'Donnees'
-for entry in os.scandir(directory):
-    if entry.is_file() and entry.name.endswith('.txt'):
-        print(entry.name)
-"""
+    def creer_repertoire(self, repertoire):
+        # Crée le répertoire fourni s'il n'existe pas déjà
+        makedirs(repertoire, exist_ok=True)
+
+    def creer_chemin_fichier(self, repertoire):
+        # Crée une chaîne de caractères contenant le chemin vers un nouveau fichier
+        # Dont le nom a la forme : capture_AAAAmmdd_hhs.png
+        return path.join(repertoire, "capture_{}.png".format(strftime("%Y%m%d_%H%M%S", gmtime())))

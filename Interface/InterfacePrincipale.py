@@ -1,16 +1,16 @@
 import tkinter.messagebox
-from time import strftime, gmtime
 from tkinter import *
 from  tkinter import ttk
 
 from tkintermapview import TkinterMapView
-from PIL import Image, ImageGrab
+from PIL import Image
 import customtkinter
 
 from Interface.AfficherTableau import AfficherTableau
 from Interface.Createur import Createur
 from Interface.PopupFiltre import PopupFiltre
 from Interface.PopupImport import PopupImport
+from Modules.Screenshot_Maker import Screenshot_Maker
 
 # Modes: "System", "Dark", "Light"
 customtkinter.set_appearance_mode("Dark")
@@ -22,6 +22,7 @@ class App(customtkinter.CTk):
         self.sidebar = None
         self.createur = Createur()
         self.afficheurTableau = AfficherTableau(self)
+        self.screenshot_maker = Screenshot_Maker()
 
         # Définition des composants essentiels
         self.map_widget = None
@@ -140,15 +141,9 @@ class App(customtkinter.CTk):
         self.tableau_frame.grid_forget()
 
     def screenshot(self):
-        bbox = (self.map_widget.winfo_rootx(), self.map_widget.winfo_rooty(), self.map_widget.winfo_rootx()+self.map_widget.winfo_width(), self.map_widget.winfo_rooty()+self.map_widget.winfo_height())
 
-        # Capture the screenshot
-        screenshot = ImageGrab.grab(bbox)
-
-        # Save the screenshot
-        screenshot.save('../Exports/Screenshot_'+strftime("%Y%m%d_%H%M%S", gmtime())+'.png')
-
-        tkinter.messagebox.showinfo(title="Information", message="Image enregistrée")
+        bbox = self.screenshot_maker.get_bbox(self.map_widget)
+        self.screenshot_maker.capture_ecran(bbox)
 
     # Evenement permettant d'afficher le tableau tout en cachant la map
     def select_tab(self) :
