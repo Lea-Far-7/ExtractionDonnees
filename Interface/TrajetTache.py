@@ -9,8 +9,9 @@ class TrajetTache:
         self.tache = tache
         self.tournee = tournee
 
-        self.lieu2 = lieu2
-        self.lieu1 = lieu1
+        self.lieu2 = lieu2 # Départ
+        self.lieu1 = lieu1 # Arrivée
+
         self.distance = distance
         self.duree = duree
         self.chargement = chargement
@@ -23,6 +24,7 @@ class TrajetTache:
         # On instancie l'objet qui permettra d'afficher les données
         self.popup = AfficherTrajet(self.masterwindow, self, self.tache)
 
+        # Créé un trait d'un point A à un point B
         self.trajet = self.masterwindow.map_widget.set_path([lieu2, lieu1], width=4, command=self.affichage, color=color)
 
 

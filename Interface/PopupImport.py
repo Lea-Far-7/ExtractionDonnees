@@ -114,33 +114,45 @@ class PopupImport:
 
 
     def __synchronisation_carte_tableau(self):
-        # Supprime tous les marqueurs présents sur la map
+        # Supprime tous les marqueurs et trajets présents sur la map
         self.interface.map_widget.delete_all_marker()
         self.interface.map_widget.delete_all_path()
         self.interface.mark_list.clear()
         self.interface.path_list.clear()
 
+        # Créé l'affichage du tableau dans l'application
         afficheurTableau = AfficherTableau(self.interface)
+
         # Supprime toutes les lignes du tableau
         for item in self.interface.tableau.get_children():
             self.interface.tableau.delete(item)
+
         afficheurTableau.tableau_post_import()
 
+        # Créé les objets Acteur : Producteur et Client à partir des données du fichier données du projet sélectionné
         producteurs, clients = self.createur.getActeurs(self.fichier_donnees, self.projet_en_cours)
 
+        # Créé les marqueurs des clients et producteurs
         afficheurCarte = AfficherCarte(self.interface)
         afficheurCarte.markers_producteurs(producteurs)
         afficheurCarte.markers_clients(clients)
 
         # On récupère la liste des noms de fichiers sélectionnés (état switch = 1)
         self.choixSolutions = list(c for c,b in self.liste_boutons_solutions.items() if b.get() == 1) # Conversion en liste sinon attribut devient un générator
+
         # On récupère le contenu de chaque fichier solution sélectionné
         liste_de_listes_de_tournees = []
+
+        # On réinitialise à 0 le nombre total d'instances, il n'y a pas forcément suppression, mais cela aide à éviter
+        # de créer une tâche à partir du nombre n de tâches précédemment créées.
         Tache.deleteAll()
+
+        # On parcourt la liste des fichiers solutions sélectionnés
         for fichier in self.choixSolutions:
-            self.fichiers_solutions[fichier] = (self.createur.getContenuFichierSolution(fichier)) # Jusqu'ici tout va bien
+            self.fichiers_solutions[fichier] = (self.createur.getContenuFichierSolution(fichier)) # Ajout du contenu des fichiers solutions à la liste des données solutions
             liste_de_listes_de_tournees.append(self.createur.getTournees(self.fichiers_solutions[fichier], fichier)) # Ajout de la liste de tournées de chaque fichier
 
+        # Ici, nous initions la création des trajets correspondants aux tâches contenues dans les tournées
         afficheurCarte.path_taches(liste_de_listes_de_tournees)
 
 
