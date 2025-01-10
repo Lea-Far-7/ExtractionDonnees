@@ -19,8 +19,11 @@ class AfficherCarte:
             self.interface.mark_list[cl.id] = (MarkerActeur(self.interface.map_widget, cl, self.interface))
 
     def path_taches(self, liste_de_listes_de_tournees):
+
+        # lieu2 est le lieu de départ d'un trajet
         lieu2 = (0, 0)
-        # Parcourt la liste des listes de tournées, cette variable contient la liste des tournées de chaque fichier
+
+        # Parcourt la liste des listes de tournées, cette variable contient la liste des tournées de chaque fichier.
         # Chaque fichier est une liste et celle-ci contient la liste des tournées
         for liste_tournees in liste_de_listes_de_tournees:
             # Parcourt les tournées de la liste de tournées
