@@ -1,4 +1,4 @@
-from decimal import getcontext, Decimal
+from Modules.Convertisseur import Convertisseur
 
 from Metier.acteur import Acteur
 from Metier.producteur import Producteur
@@ -11,13 +11,14 @@ class Tournee:
     nb = 0  # nombre d'instances créées de Tournee
     instances = []  # instances créées de Tournee
 
-    def __init__(self, demiJour:DemiJour, producteur:Producteur, taches=[]):
+    def __init__(self, demiJour:DemiJour, producteur:Producteur, taches=None):
         self.idTournee = Tournee.nb
         self.demiJour = demiJour
         self.producteur = producteur
-        self.taches = taches
+        self.taches = taches if taches is not None else []
         Tournee.instances.append(self)
         Tournee.nb += 1
+        self.__convertisseur = Convertisseur()
 
     def __del__(self):
         """
@@ -62,15 +63,13 @@ class Tournee:
             - Chargement total transporté durant la tournée.
         """
 
-        getcontext().prec = 28
-
         chargements = []
-        charge_max = Decimal('0')
-        charge_totale = Decimal('0')
-        chargeCumulee = Decimal('0')
+        charge_max = self.__convertisseur.float_to_decimal(0)
+        charge_totale = self.__convertisseur.float_to_decimal(0)
+        chargeCumulee = self.__convertisseur.float_to_decimal(0)
 
         for tache in self.taches:
-            c = Decimal(str(tache.charge))
+            c = self.__convertisseur.float_to_decimal(tache.charge)
 
             if tache.type == 'P':
                 chargeCumulee += c
@@ -78,18 +77,14 @@ class Tournee:
                 charge_totale += c
             else:
                 chargeCumulee -= c
-            chargements.append(float(chargeCumulee))
+            chargements.append(self.__convertisseur.decimal_to_float(chargeCumulee))
 
-        print("Tournee ", self.idTournee)
-        if chargeCumulee != 0:
-            print ("Commande non livrée, reste : ", chargeCumulee)
-        else:
-            print("Reste 0 : toutes les commandes ont été livrées")
         if charge_max >= self.producteur.capacity:
             print("Charge maximale : ", charge_max, " kg")
             print("Supérieur à la capacité du camion : ", self.producteur.capacity, " kg")
 
-        return chargements, float(charge_max), float(charge_totale)
+        return chargements, self.__convertisseur.decimal_to_float(charge_max), self.__convertisseur.decimal_to_float(charge_totale)
+
 
     def duree(self)->tuple[list[int], int, int]:
         """

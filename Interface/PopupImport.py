@@ -107,10 +107,11 @@ class PopupImport:
             # Mise à jour des options du menu déroulant du tableau pour les fichiers solutions
             self.interface.solutions_selectionnees = self.choixSolutions
             self.interface.update_options_menu()
+            self.interface.menu_donnees.set("")
 
             if self.choixSolutions:
                 self.interface.menu_solutions.configure(values=self.choixSolutions)
-                #self.interface.menu_solutions.set(self.choixSolutions[0])
+                self.interface.menu_solutions.set("")
 
 
     def __synchronisation_carte_tableau(self):
@@ -154,7 +155,6 @@ class PopupImport:
 
         # Ici, nous initions la création des trajets correspondants aux tâches contenues dans les tournées
         afficheurCarte.path_taches(liste_de_listes_de_tournees)
-
 
         # Mise à jour des infosTournees des acteurs
         Acteur.updateInfosTournees(liste_de_listes_de_tournees)

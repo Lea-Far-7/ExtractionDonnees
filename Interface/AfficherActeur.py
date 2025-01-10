@@ -2,8 +2,6 @@ import customtkinter
 
 from Metier.ObserverActeur import ObserverActeur
 from Metier.acteur import Acteur
-from Metier.client import Client
-from Metier.producteur import Producteur
 
 class AfficherActeur(ObserverActeur):
 

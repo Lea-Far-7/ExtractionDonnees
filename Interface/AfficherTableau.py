@@ -208,8 +208,8 @@ class AfficherTableau:
     def tableau_post_import(self):
         style = ttk.Style()
         style.configure("Treeview", font=('Arial', 25), rowheight=100)
-        self.interface.tableau.config(columns=("",))
-        self.interface.tableau.heading("", text="")
-        self.interface.tableau.column("", width=self.interface.tableau.winfo_width(), anchor=CENTER)
+        self.interface.tableau.config(columns=("Selection",))
+        self.interface.tableau.heading("Selection", text="Selection")
+        self.interface.tableau.column("Selection", width=self.interface.tableau.winfo_width(), anchor=CENTER)
         self.interface.tableau.insert(parent="", index="end", values=("Veuillez sélectionner une option dans le menu",))
         self.interface.tableau.pack(fill="both", expand=True)

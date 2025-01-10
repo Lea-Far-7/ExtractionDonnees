@@ -55,6 +55,7 @@ class Createur:
             print(nom_fichier, "déjà loaded YOUPI")
             return self.solutions_loaded[nom_fichier]
         else:
-            tournees = self.createur_classes.getTournees(lignes)
-            self.solutions_loaded[nom_fichier] = tournees
+            tournees = self.createur_classes.getTournees(lignes, nom_fichier)
+            if tournees:
+                self.solutions_loaded[nom_fichier] = tournees
             return tournees
