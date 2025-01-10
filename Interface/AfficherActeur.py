@@ -24,8 +24,6 @@ class AfficherActeur(ObserverActeur):
         self.label = customtkinter.CTkLabel(self.window, text=str(acteur), fg_color="transparent")
         self.label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
 
-        #self.ajoutDonnees()
-
 
     @classmethod
     def hide(cls):
@@ -41,21 +39,8 @@ class AfficherActeur(ObserverActeur):
                             self.masterwindow.winfo_rooty() + self.masterwindow.winfo_height() - self.window.winfo_height()))
             self.window.lift()
 
-    # Permet d'ajouter les données du producteur (et des tâches associées par la suite) dans la popup
-    # def ajoutDonnees(self):
-    #     if isinstance(self.acteur, Producteur):
-    #         prod = self.acteur
-    #         label = customtkinter.CTkLabel(self.window, text=str(prod), fg_color="transparent")
-    #     elif isinstance(self.acteur, Client):
-    #         client = self.acteur
-    #         label = customtkinter.CTkLabel(self.window, text=str(client), fg_color="transparent")
-    #     else:
-    #         label = customtkinter.CTkLabel(self.window, text="Acteur inconnu", fg_color="transparent")
-    #
-    #     label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
 
-
-    # Appel effectué à chaque fois que infoTournees de l'acteur change
+    # Appel effectué à chaque fois qu'infoTournees de l'acteur change
     def update(self):
         newtext = str(self.acteur)
         infosTournees = self.acteur.getInfosTournees()
@@ -67,7 +52,9 @@ class AfficherActeur(ObserverActeur):
 
     def afficher(self):
         self.window.deiconify()
+
         # Force la mise à jour de l'interface utilisateur
         self.masterwindow.update_idletasks()
+
         # Ajoute un délai de 100 ms pour éviter le décalage entre le popup et la fenêtre principale
         self.update_popup_position() # Mettre un délai window.after()
