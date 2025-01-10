@@ -6,6 +6,14 @@ from Metier.client import Client
 from Metier.tache import Tache
 
 class MarkerActeur:
+
+    image_client = None
+
+    @classmethod
+    def charger_image_client(cls):
+        if cls.image_client is None:
+            cls.image_client = ImageTk.PhotoImage(Image.open("..\Images\\client.png").resize((20, 20)))
+
     def __init__(self, map, acteur:Acteur, masterwindow):
         self.acteur = acteur
         self.taches = None
@@ -20,9 +28,9 @@ class MarkerActeur:
 
         # Charge l'image pour l'icône des clients
         if isinstance(acteur, Client):
-            image_client = ImageTk.PhotoImage(Image.open("..\Images\\client.png").resize((35, 35)))
             # Crée un marker sur la carte basé sur l'identifiant du client
-            self.marker = map.set_marker(self.acteur.latitude, self.acteur.longitude, icon=image_client, command=self.affichage)
+            MarkerActeur.charger_image_client()
+            self.marker = map.set_marker(self.acteur.latitude, self.acteur.longitude, icon=MarkerActeur.image_client, command=self.affichage)
         else:
             # Crée un marker sur la carte basé sur l'identifiant du producteur
             self.marker = map.set_marker(self.acteur.latitude, self.acteur.longitude, marker_color_outside="#000000",
