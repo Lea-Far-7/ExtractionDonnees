@@ -138,8 +138,13 @@ class PopupFiltre:
         tournees_filtrees = filtreTournees(tournees, producteurs_id, clients_id, demi_jours_num)
 
         # Filtrage des acteurs
-        acteurs_filtres = filtreActeurs(tournees_filtrees, producteurs_id+clients_id)
+        acteurs_select = producteurs_id+clients_id
+        acteurs_filtres = filtreActeurs(tournees_filtrees, acteurs_select)
 
+
+        # Mise à jour des conditions d'affichage dans le tableau
+        self.interface.afficheurTableau.acteurs_id_filtres = acteurs_select
+        self.interface.afficheurTableau.tournees_filtrees = tournees_filtrees
 
         # Mise à jour de l'affichage des acteurs sur la carte
         for id, acteur_marker in self.interface.mark_list.items():

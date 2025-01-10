@@ -9,6 +9,9 @@ class AfficherTableau:
         self.interface = interface
         self.nb_commandes_par_acteur = None
         self.projet_en_cours = ""
+        self.acteurs_id_filtres = None  # mise à jour de cette liste post filtrage
+        self.tournees_filtrees = None    # mise à jour de cette liste post filtrage
+
 
     def __set_tableau(self, colonnes, proportions):
         # Supprimer les anciennes colonnes et données
@@ -65,26 +68,28 @@ class AfficherTableau:
         nb_tournees_par_prod = Tournee.getNbTourneesProd()
         for prod in infos_producteurs:
 
-            coord = f"({round(prod.latitude, 6)}, {round(prod.longitude, 6)})"
-            partners = ", ".join([str(partner.id) for partner in prod.partners])
-            dispos = ", ".join([str(dispo.num) for dispo in prod.dispos])
+            if not self.acteurs_id_filtres or prod.id in self.acteurs_id_filtres:
 
-            nbTournees = (nb_tournees_par_prod[prod] if prod in nb_tournees_par_prod else 0)
+                coord = f"({round(prod.latitude, 6)}, {round(prod.longitude, 6)})"
+                partners = ", ".join([str(partner.id) for partner in prod.partners])
+                dispos = ", ".join([str(dispo.num) for dispo in prod.dispos])
 
-            if not self.nb_commandes_par_acteur or self.projet_en_cours != projet:
-                self.projet_en_cours = projet
-                self.nb_commandes_par_acteur = Demande.getNbDemandesActeurs()
-            nbCommandes = (self.nb_commandes_par_acteur[prod] if prod in self.nb_commandes_par_acteur else 0)
+                nbTournees = (nb_tournees_par_prod[prod] if prod in nb_tournees_par_prod else 0)
 
-            self.interface.tableau.insert(parent='', index="end", values=(
-                prod.id,
-                coord,
-                prod.capacity,
-                partners,
-                dispos,
-                nbTournees,
-                nbCommandes
-            ))
+                if not self.nb_commandes_par_acteur or self.projet_en_cours != projet:
+                    self.projet_en_cours = projet
+                    self.nb_commandes_par_acteur = Demande.getNbDemandesActeurs()
+                nbCommandes = (self.nb_commandes_par_acteur[prod] if prod in self.nb_commandes_par_acteur else 0)
+
+                self.interface.tableau.insert(parent='', index="end", values=(
+                    prod.id,
+                    coord,
+                    prod.capacity,
+                    partners,
+                    dispos,
+                    nbTournees,
+                    nbCommandes
+                ))
 
 
     def tableau_clients(self, infos_clients: list, projet: str):
@@ -102,20 +107,22 @@ class AfficherTableau:
 
         for cl in infos_clients:
 
-            coord = f"({round(cl.latitude, 6)}, {round(cl.longitude, 6)})"
-            dispos = ", ".join([str(dispo.num) for dispo in cl.dispos])
+            if not self.acteurs_id_filtres or cl.id in self.acteurs_id_filtres:
 
-            if not self.nb_commandes_par_acteur or self.projet_en_cours != projet:
-                self.projet_en_cours = projet
-                self.nb_commandes_par_acteur = Demande.getNbDemandesActeurs()
-            nbCommandes = (self.nb_commandes_par_acteur[cl] if cl in self.nb_commandes_par_acteur else 0)
+                coord = f"({round(cl.latitude, 6)}, {round(cl.longitude, 6)})"
+                dispos = ", ".join([str(dispo.num) for dispo in cl.dispos])
 
-            self.interface.tableau.insert(parent='', index="end", values=(
-                cl.id,
-                coord,
-                dispos,
-                nbCommandes
-            ))
+                if not self.nb_commandes_par_acteur or self.projet_en_cours != projet:
+                    self.projet_en_cours = projet
+                    self.nb_commandes_par_acteur = Demande.getNbDemandesActeurs()
+                nbCommandes = (self.nb_commandes_par_acteur[cl] if cl in self.nb_commandes_par_acteur else 0)
+
+                self.interface.tableau.insert(parent='', index="end", values=(
+                    cl.id,
+                    coord,
+                    dispos,
+                    nbCommandes
+                ))
 
 
     def tableau_commandes(self, infos_commandes : list):
@@ -160,31 +167,33 @@ class AfficherTableau:
 
         for t in infos_tournees:
 
-            nbTaches = len(t.taches)
-            horaireDebut = t.taches[0].horaire
-            horaireFin = t.taches[nbTaches-1].horaire
+            if not self.tournees_filtrees or t in self.tournees_filtrees:
 
-            _, _, distTotale = t.distance()
+                nbTaches = len(t.taches)
+                horaireDebut = t.taches[0].horaire
+                horaireFin = t.taches[nbTaches-1].horaire
 
-            liste_durees, _, dureeT = t.duree()
-            nbH = dureeT // 60
-            nbM = dureeT % 60
-            dureeTotale = str(nbH) + "h " + str(nbM) + "m"
+                _, _, distTotale = t.distance()
 
-            c, chargeMax,chargeT = t.chargement()
-            chargeTotale = str(chargeT) + " kg"
+                liste_durees, _, dureeT = t.duree()
+                nbH = dureeT // 60
+                nbM = dureeT % 60
+                dureeTotale = str(nbH) + "h " + str(nbM) + "m"
 
-            self.interface.tableau.insert(parent='', index="end", values=(
-                t.idTournee,
-                t.producteur.id,
-                t.demiJour.__repr__(),
-                horaireDebut + ' - ' + horaireFin,
-                dureeTotale,
-                nbTaches,
-                str(round(distTotale,2)) + " km",
-                str(chargeMax) + " kg",
-                chargeTotale
-            ))
+                c, chargeMax,chargeT = t.chargement()
+                chargeTotale = str(chargeT) + " kg"
+
+                self.interface.tableau.insert(parent='', index="end", values=(
+                    t.idTournee,
+                    t.producteur.id,
+                    t.demiJour.__repr__(),
+                    horaireDebut + ' - ' + horaireFin,
+                    dureeTotale,
+                    nbTaches,
+                    str(round(distTotale,2)) + " km",
+                    str(chargeMax) + " kg",
+                    chargeTotale
+                ))
 
 
     def tableau_vide(self):
