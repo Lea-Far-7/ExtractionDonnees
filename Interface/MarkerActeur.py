@@ -30,11 +30,6 @@ class MarkerActeur:
 
         self.marker_hidden = False
 
-
-    # Ajout de taches à l'objet pour les afficher par la suite
-    def ajoutTaches(self, tache:Tache):
-        self.taches.append(tache)
-
     def affichage(self, event):
         # Cache toutes les bulles d'information de tous les affichages
         AfficherActeur.hide()
