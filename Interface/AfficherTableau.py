@@ -139,12 +139,13 @@ class AfficherTableau:
         self.__set_tableau(colonnes, proportions)
 
         for c in infos_commandes:
-            self.interface.tableau.insert(parent='', index="end", values=(
-                c.idDemande,
-                c.client.id,
-                c.producteur.id,
-                str(c.masse) + "kg"
-            ))
+            if not self.acteurs_id_filtres or c.client.id in self.acteurs_id_filtres or c.producteur.id in self.acteurs_id_filtres:
+                self.interface.tableau.insert(parent='', index="end", values=(
+                    c.idDemande,
+                    c.client.id,
+                    c.producteur.id,
+                    str(c.masse) + "kg"
+                ))
 
 
     def tableau_tournees(self, infos_tournees : list):
