@@ -1,4 +1,4 @@
+from Interface.InterfacePrincipale import App
 
-class Main:
-    if __name__ == "__main__":
-        print("test")
+app = App()
+app.mainloop()
