@@ -3,7 +3,7 @@ from tkinter import *
 from  tkinter import ttk
 
 from tkintermapview import TkinterMapView
-from PIL import Image
+from PIL import Image, ImageTk
 import customtkinter
 
 from Interface.AfficherTableau import AfficherTableau
@@ -37,11 +37,11 @@ class App(customtkinter.CTk):
 
         # Permet de mettre un titre et de définir la taille originale de la fenêtre
         self.title("OLOCAP Viewer")
-        self.iconbitmap("../Images/Logo_Olocap_small.ico")
+        self.iconbitmap("Images/Logo_Olocap_small.ico")
         self.geometry(f"{1100}x{580}")
 
         # Crée une Image mise dans un Label pour être affichée et contenue dans la sidebar
-        self.my_image = customtkinter.CTkImage(light_image=Image.open("../Images/Logo_Olocap.png"), dark_image=Image.open("../Images/Logo_Olocap.png"), size=(192,58))
+        self.my_image = customtkinter.CTkImage(light_image=Image.open("Images/Logo_Olocap.png"), dark_image=Image.open("Images/Logo_Olocap.png"), size=(192,58))
 
         # Mise en arrière définitive de la fenêtre (pour que les pop-ups puissent toujours se situer devant)
         self.attributes('-topmost', False)
@@ -97,7 +97,7 @@ class App(customtkinter.CTk):
         image_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         # Utilisation d'une image contenant une seule couleur pour l'appliquer sur les boutons
-        couleur_bouton = customtkinter.CTkImage(light_image=Image.open('../Images/Couleur_Boutons.png'),
+        couleur_bouton = customtkinter.CTkImage(light_image=Image.open('Images/Couleur_Boutons.png'),
                                                      size=(500, 150))
         # Création des boutons dans la sidebar
         importer = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",

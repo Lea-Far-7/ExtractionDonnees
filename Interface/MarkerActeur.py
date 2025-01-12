@@ -11,7 +11,7 @@ class MarkerActeur:
     @classmethod
     def charger_image_client(cls):
         if cls.image_client is None:
-            cls.image_client = ImageTk.PhotoImage(Image.open("..\Images\\client.png").resize((20, 20)))
+            cls.image_client = ImageTk.PhotoImage(Image.open("Images\\client.png").resize((20, 20)))
 
     def __init__(self, map, acteur:Acteur, masterwindow):
         self.acteur = acteur

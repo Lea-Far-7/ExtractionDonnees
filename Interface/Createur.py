@@ -20,15 +20,15 @@ class Createur:
 
     def getDossiers(self) -> list:
         # On utilisera cette fonction seulement pour récupérer les noms de dossiers du dossier Projets
-        return self.fileManager.lister_dossiers("..\Projets")
+        return self.fileManager.lister_dossiers("Projets")
 
     def getFichiers(self, repertoire : str) -> list:
         # On précisera en paramètre le projet voulu et \Solutions si c'est ce que l'on veut récupérer
-        return self.fileManager.lister_fichiers("..\Projets\\" + repertoire)
+        return self.fileManager.lister_fichiers("Projets\\" + repertoire)
 
     def getContenuFichierDonnees(self, chemin_vers_fichier : str) -> list:
         # On précisera en paramètre le projet et le nom du fichier
-        return self.extracteur.extraction("..\Projets\\" + chemin_vers_fichier)
+        return self.extracteur.extraction("Projets\\" + chemin_vers_fichier)
 
     def getActeurs(self, lignes : list, projet : str) -> (list[Producteur], list[Client]) :
         # Avec la création unique des instances de la classe CreerClasses
@@ -48,7 +48,7 @@ class Createur:
 
     def getContenuFichierSolution(self, nom_fichier : str) -> list:
         # On précisera en paramètre le nom du fichier voulu
-        return self.extracteur.extraction_solution("..\Projets\\" + self.projet + "\Solutions\\" + nom_fichier)
+        return self.extracteur.extraction_solution("Projets\\" + self.projet + "\Solutions\\" + nom_fichier)
 
     def getTournees(self, lignes : list, nom_fichier) -> list[Tournee] :
         if nom_fichier in self.solutions_loaded:

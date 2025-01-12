@@ -6,7 +6,7 @@ import mss.tools
 
 class Screenshot_Maker:
 
-    def __init__(self, repertoire = "..\\Exports"):
+    def __init__(self, repertoire = "Exports"):
         self.repertoire = repertoire
         self.fileManager = FileManager()
         self.__creer_repertoire()
