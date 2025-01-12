@@ -15,12 +15,12 @@ class Screenshot_Maker:
         self.fileManager.creer_repertoire(self.repertoire)
 
     def capture_ecran(self, bbox):
+        fichier ="vide"
         try:
             # Capture de la zone définit par le bbox
             with mss.mss() as sct:
                 screenshot = sct.grab(bbox)
 
-            fichier ="vide"
             # Création du chemin avec le nom de la capture
             fichier = self.fileManager.creer_chemin_fichier(self.repertoire)
 

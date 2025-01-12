@@ -80,7 +80,6 @@ class App(customtkinter.CTk):
         for path in self.path_list.values():
             path.hide()
 
-
     def interfacePrincipale(self):
         # Permet de configurer la grid,
         # "weight = 1" permet de remplir au maximum l'espace de la grid désigné

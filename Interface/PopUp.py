@@ -26,8 +26,5 @@ class PopUp:
         self.sidebar_button_1.grid(row=10, column=0, columnspan=10, padx=20, pady=10)
 
         # Placement de la fenêtre à des coordonnées relatives à la fenêtre principale
-        if (self.masterwindow != None) :
+        if self.masterwindow is not None:
             self.window.geometry("+%d+%d" % (self.masterwindow.winfo_rootx()+self.masterwindow.winfo_width()/2, self.masterwindow.winfo_rooty()+self.masterwindow.winfo_height()/2))
-
-
-

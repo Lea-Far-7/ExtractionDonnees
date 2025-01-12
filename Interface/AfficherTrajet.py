@@ -40,7 +40,6 @@ class AfficherTrajet():
                             self.masterwindow.winfo_rooty() + self.masterwindow.winfo_height() - self.window.winfo_height()))
             self.window.lift()
 
-
     def afficher(self):
         self.window.deiconify()
         # Force la mise à jour de l'interface utilisateur
