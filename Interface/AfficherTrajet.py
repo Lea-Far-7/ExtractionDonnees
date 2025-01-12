@@ -17,7 +17,12 @@ class AfficherTrajet():
         self.window.withdraw()
         self.window.overrideredirect(True)
 
-        self.label = customtkinter.CTkLabel(self.window, text=str(tache)+"\nPoids transporté : "+str(round(self.trajet.chargement,2))+" kg\nDistance Parcourue : "+str(round(self.trajet.distance,2))+" km\nDuree du trajet : "+str(round(self.trajet.duree,2))+" min", fg_color="transparent")
+        text = ("Objectif : " + str(tache) + " " + repr(self.trajet.tournee.demiJour) + " par " + repr(self.trajet.tournee.producteur)
+                + "\nCharge transportée : "+str(round(self.trajet.chargement,2))+" kg"
+                + "\nDistance : "+str(round(self.trajet.distance,2))+" km"
+                + "\nDurée : "+str(round(self.trajet.duree,2))+" min")
+
+        self.label = customtkinter.CTkLabel(self.window, text=text, fg_color="transparent")
         self.label.grid(row=0, column=0, columnspan=1, padx=20, pady=10)
 
 

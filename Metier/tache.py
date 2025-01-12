@@ -27,13 +27,12 @@ class Tache:
         return Tache.types[self.type]
 
     def __str__(self)->str:
-        result = "Tache " + str(self.idTache) + " : " + self.getType() + " " + str(self.charge)
+        result = "Tâche " + str(self.idTache) + "\n" + self.getType() + " " + str(self.charge)
         if self.type == "P":
             result += " chez Producteur " + str(self.lieu.id) + " pour Client " + str(self.infoRequete.id)
         else:
-            result += " chez Client " + str(self.lieu.id) + " pour Producteur " + str(self.infoRequete.id)
+            result += " chez Client " + str(self.lieu.id) + " de Producteur " + str(self.infoRequete.id)
         result += " à " + self.horaire
-
         return result
 
     @classmethod
