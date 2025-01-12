@@ -50,9 +50,6 @@ class AfficherActeur(ObserverActeur):
 
     def afficher(self):
         self.window.deiconify()
-
         # Force la mise à jour de l'interface utilisateur
         self.masterwindow.update_idletasks()
-
-        # Ajoute un délai de 100 ms pour éviter le décalage entre le popup et la fenêtre principale
-        self.update_popup_position() # Mettre un délai window.after()
+        self.update_popup_position()

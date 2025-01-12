@@ -29,12 +29,13 @@ class AfficherTrajet():
     @classmethod
     def hide(cls):
         for i in cls.instances:
-            i.window.withdraw()
+            if hasattr(i, 'window') and i.window.winfo_exists():
+                i.window.withdraw()
         AfficherActeur.hide()
 
     # Garde la popup en bas à droite de l'écran
     def update_popup_position(self, event=None):
-        if self.window.state() != 'withdrawn':
+        if hasattr(self, 'window') and self.window.winfo_exists():#self.window.state() != 'withdrawn':
             self.window.geometry(
                 "+%d+%d" % (self.masterwindow.winfo_rootx() + self.masterwindow.winfo_width() - self.window.winfo_width(),
                             self.masterwindow.winfo_rooty() + self.masterwindow.winfo_height() - self.window.winfo_height()))

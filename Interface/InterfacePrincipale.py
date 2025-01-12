@@ -74,6 +74,7 @@ class App(customtkinter.CTk):
         # Lier l'événement de configuration pour mettre à jour les popups
         self.bind('<Configure>', self.update_all_popups_position)
 
+
     def update_all_popups_position(self, event=None):
         for marker in self.mark_list.values():
             marker.hide()
@@ -98,25 +99,25 @@ class App(customtkinter.CTk):
 
         # Utilisation d'une image contenant une seule couleur pour l'appliquer sur les boutons
         couleur_bouton = customtkinter.CTkImage(light_image=Image.open('../Images/Couleur_Boutons.png'),
-                                                     size=(500, 150))
+                                                size=(500, 150))
         # Création des boutons dans la sidebar
         importer = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
-                                                command=lambda: PopupImport(self, self.createur), text="Importer")
+                                           command=lambda: PopupImport(self, self.createur), text="Importer")
         importer.grid(row=1, column=0, padx=20, pady=10)
         filtre_bouton = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
-                                              command=lambda: PopupFiltre(self, self.createur), text="Filtres")
+                                                command=lambda: PopupFiltre(self, self.createur), text="Filtres")
         filtre_bouton.grid(row=4, column=0, padx=20, pady=10)
         export_bouton = customtkinter.CTkButton(self.sidebar, fg_color="#1d7c69", hover_color="#275855",
-                                              command=self.screenshot, text="Export")
+                                                command=self.screenshot, text="Export")
         export_bouton.grid(row=6, column=0, padx=20, pady=10)
 
         # Création des boutons de navigation entre la map et le tableau
         button_map = customtkinter.CTkButton(self, fg_color="#1d7c69", hover_color="#275855",
-                                                  command=self.select_map, text="Carte")
+                                             command=self.select_map, text="Carte")
         button_map.grid(row=0, column=2, sticky="e", padx=5, pady=5)
 
         button_tableau = customtkinter.CTkButton(self, fg_color="#1d7c69", hover_color="#275855",
-                                                      command=self.select_tab, text="Tableau")
+                                                 command=self.select_tab, text="Tableau")
         button_tableau.grid(row=0, column=3, sticky="w", padx=5, pady=5)
 
     def creationCarte(self):

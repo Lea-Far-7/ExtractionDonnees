@@ -1,5 +1,6 @@
 from PIL import ImageTk, Image
 from Interface.AfficherActeur import AfficherActeur
+from Interface.AfficherTrajet import AfficherTrajet
 from Interface.colors import color_palette, colors_nb
 from Metier.acteur import Acteur
 from Metier.client import Client
@@ -41,6 +42,7 @@ class MarkerActeur:
     def affichage(self, event):
         # Cache toutes les bulles d'information de tous les affichages
         AfficherActeur.hide()
+        AfficherTrajet.hide()
         # Affiche le marqueur sur lequel on a cliqué
         self.popup.afficher()
 

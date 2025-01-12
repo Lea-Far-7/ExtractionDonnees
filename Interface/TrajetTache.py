@@ -1,3 +1,4 @@
+from Interface.AfficherActeur import AfficherActeur
 from Interface.AfficherTrajet import AfficherTrajet
 from Metier import tournee
 from Metier.tache import Tache
@@ -27,16 +28,15 @@ class TrajetTache:
         # Créé un trait d'un point A à un point B
         self.trajet = self.masterwindow.map_widget.set_path([lieu2, lieu1], width=4, command=self.affichage, color=color)
 
-
     def affichage(self, event):
         # Cache toutes les bulles d'information de tous les affichages
         AfficherTrajet.hide()
+        AfficherActeur.hide()
         # Affiche le marqueur sur lequel on a cliqué
         self.popup.afficher()
 
     def hide(self):
         AfficherTrajet.hide()
-
 
     # Comme pour les marqueurs d'acteurs, on envoie les trajets à l'autre bout du monde
     def hide_trajet(self):
