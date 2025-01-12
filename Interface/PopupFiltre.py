@@ -176,5 +176,5 @@ class PopupFiltre:
         Acteur.updateInfosTournees([tournees_filtrees])
 
         #tests
-        print(tournees_filtrees)
-        print(acteurs_filtres)
+        print("Tournées filtrées :", tournees_filtrees)
+        print("ID Acteurs filtrés :", acteurs_filtres)
