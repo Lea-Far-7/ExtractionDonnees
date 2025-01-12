@@ -3,7 +3,6 @@ from Interface.AfficherActeur import AfficherActeur
 from Interface.colors import color_palette, colors_nb
 from Metier.acteur import Acteur
 from Metier.client import Client
-from Metier.tache import Tache
 
 class MarkerActeur:
 

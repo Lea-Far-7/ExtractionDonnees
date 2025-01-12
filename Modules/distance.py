@@ -1,6 +1,6 @@
 ## Programme pour calculer la distance entre 2 points sur Terre avec leurs coordonnées
 
-from math import *
+from math import radians, cos, sin, asin, sqrt
 r = 6371 #rayon de la Terre en km
 
 def distance(A:list,B:list):
