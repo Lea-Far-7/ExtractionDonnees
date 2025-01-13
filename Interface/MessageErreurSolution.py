@@ -1,22 +1,21 @@
 from tkinter import messagebox
 
-class PopupErreurSolution:
+class MessageErreurSolution:
 
-    def __init__(self, erreurs:dict[str:int]):
+    def __init__(self):
+        pass
 
-        self.erreurs = erreurs
-
-    def afficher_question_erreur(self, nom_fichier):
+    def afficher_question_erreur(self, nom_fichier, erreurs:dict[str:int]):
         drop_pick_message = "Commande non récupérée"
         charge_message = "Commande non livrée"
         acteurs_message = "Acteur de la tournée inconnu"
         dispo_message = "Acteur indisponible au cours de la tournée"
 
         message_erreur = ("Le chargement du fichier " + nom_fichier + " a rencontré des erreurs :\n"
-                                + acteurs_message + " : " + str(self.erreurs["acteurs"]) + "\n"
-                                + dispo_message + " : " + str(self.erreurs["demi_jour"]) + "\n"
-                                + drop_pick_message + " : " + str(self.erreurs["drop_pick"]) + "\n"
-                                + charge_message + " : " + str(self.erreurs["charge"]) + "\n"
+                                + acteurs_message + " : " + str(erreurs["acteurs"]) + "\n"
+                                + dispo_message + " : " + str(erreurs["demi_jour"]) + "\n"
+                                + drop_pick_message + " : " + str(erreurs["drop_pick"]) + "\n"
+                                + charge_message + " : " + str(erreurs["charge"]) + "\n"
                                 + "Voulez-vous quand même continuer le chargement du fichier ?"
                                 )
         return messagebox.askyesno("Des erreurs sont survenues !", message_erreur)

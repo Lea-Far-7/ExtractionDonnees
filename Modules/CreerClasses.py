@@ -1,4 +1,4 @@
-from Interface.PopupErreurSolution import PopupErreurSolution
+from Interface.MessageErreurSolution import MessageErreurSolution
 from Modules.Convertisseur import Convertisseur
 
 from Metier.acteur import Acteur
@@ -37,7 +37,7 @@ class CreerClasses:
         # {erreur : compteur de l'erreur}
         self.erreurs = {"charge" : 0, "drop_pick" : 0, "acteurs" : 0, "demi_jour" : 0}
         self.nb_total_erreurs = 0
-        self.message_erreur = PopupErreurSolution(self.erreurs)
+        self.message_erreur = MessageErreurSolution()
 
 
 
@@ -94,7 +94,7 @@ class CreerClasses:
             self.message_erreur.afficher_information_nb_erreurs(nom_fichier, self.nb_total_erreurs)
         self.chargeCumulee = self.__convertisseur.float_to_decimal(0)
         self.afficherErreur = True
-        self.erreurs = {"charge": 0, "drop_pick": 0, "acteur": 0, "demi_jour": 0}
+        self.erreurs = {"charge": 0, "drop_pick": 0, "acteurs": 0, "demi_jour": 0}
         self.nb_total_erreurs = 0
         return self.tournees
 
@@ -285,8 +285,9 @@ class CreerClasses:
                     self.nb_total_erreurs += 1
 
                 self.tournees.append(Tournee(demiJour, producteur, liste_taches))
+                print(self.erreurs)
                 if self.nb_total_erreurs > 0 and self.afficherErreur :
-                    continuer = self.message_erreur.afficher_question_erreur(nom_fichier)
+                    continuer = self.message_erreur.afficher_question_erreur(nom_fichier, self.erreurs)
                     if not continuer:
                         Tournee.deleteAll()
                         self.tournees = []
@@ -294,6 +295,7 @@ class CreerClasses:
                         break
                     else:
                         self.afficherErreur = False
+            print (self.erreurs)
 
 
 

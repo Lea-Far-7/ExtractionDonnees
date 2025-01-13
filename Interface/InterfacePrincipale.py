@@ -208,8 +208,3 @@ class App(customtkinter.CTk):
             if choix in self.solutions:
                 liste_tournees = self.createur.getTournees(self.solutions[choix], choix)
                 self.afficheurTableau.tableau_tournees(liste_tournees)
-
-
-if __name__ == "__main__":
-    app = App()
-    app.mainloop()
