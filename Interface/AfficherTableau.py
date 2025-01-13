@@ -155,13 +155,13 @@ class AfficherTableau:
         proportions = {
             "ID": 3,
             "Producteur": 8,
-            "DemiJ": 10,
+            "DemiJ": 11,
             "Horaire": 10,
             "DureeTotale": 10,
             "NbTaches": 8,
             "Prod/Clients visités": 15,
             "DistanceTotale": 12,
-            "ChargeMax": 12,
+            "ChargeMax": 11,
             "ChargementTotal": 12
         }
 

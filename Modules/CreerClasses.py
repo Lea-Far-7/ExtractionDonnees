@@ -285,8 +285,9 @@ class CreerClasses:
                     self.nb_total_erreurs += 1
 
                 self.tournees.append(Tournee(demiJour, producteur, liste_taches))
-                print(self.erreurs)
+
                 if self.nb_total_erreurs > 0 and self.afficherErreur :
+                    # Demande à l'utilisateur s'il souhaite continuer le chargement du fichier en dépit des erreurs
                     continuer = self.message_erreur.afficher_question_erreur(nom_fichier, self.erreurs)
                     if not continuer:
                         Tournee.deleteAll()
@@ -295,7 +296,6 @@ class CreerClasses:
                         break
                     else:
                         self.afficherErreur = False
-            print (self.erreurs)
 
 
 
