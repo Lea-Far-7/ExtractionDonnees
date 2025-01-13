@@ -35,6 +35,13 @@ class Tournee:
         self.taches.remove(tache)
         del(tache)
 
+    def get_id_lieux(self)->list:
+        id_lieux = []
+        for tache in self.taches:
+            if not tache.lieu.id in id_lieux:
+                id_lieux.append(tache.lieu.id)
+        return id_lieux
+
     def distance(self)->tuple[list[float], float, float]:
         """
         Calcule les distances parcourues pour effectuer chaque tâche, le maximum et le total.
