@@ -149,19 +149,20 @@ class AfficherTableau:
 
 
     def tableau_tournees(self, infos_tournees : list):
-        colonnes = ("ID", "Producteur", "DemiJ", "Horaire", "DureeTotale", "NbTaches", "DistanceTotale", "ChargeMax", "ChargementTotal")
+        colonnes = ("ID", "Producteur", "DemiJ", "Horaire", "DureeTotale", "NbTaches", "Prod/Clients visités", "DistanceTotale", "ChargeMax", "ChargementTotal")
 
         # Calcul des proportions pour chaque colonne (total = 100)
         proportions = {
-            "ID": 5,
-            "Producteur": 10,
+            "ID": 3,
+            "Producteur": 8,
             "DemiJ": 10,
             "Horaire": 10,
             "DureeTotale": 10,
-            "NbTaches": 10,
-            "DistanceTotale": 15,
-            "ChargeMax": 15,
-            "ChargementTotal": 15
+            "NbTaches": 8,
+            "Prod/Clients visités": 15,
+            "DistanceTotale": 12,
+            "ChargeMax": 12,
+            "ChargementTotal": 12
         }
 
         self.__set_tableau(colonnes, proportions)
@@ -184,13 +185,16 @@ class AfficherTableau:
                 c, chargeMax,chargeT = t.chargement()
                 chargeTotale = str(chargeT) + " kg"
 
+                lieux = ", ".join([str(id) for id in t.get_id_lieux()])
+
                 self.interface.tableau.insert(parent='', index="end", values=(
                     t.idTournee,
                     t.producteur.id,
-                    t.demiJour.__repr__(),
+                    repr(t.demiJour),
                     horaireDebut + ' - ' + horaireFin,
                     dureeTotale,
                     nbTaches,
+                    lieux,
                     str(round(distTotale,2)) + " km",
                     str(chargeMax) + " kg",
                     chargeTotale
