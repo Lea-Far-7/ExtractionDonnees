@@ -10,6 +10,13 @@ from Modules.CreerClasses import CreerClasses
 from Modules.DataExtractor import DataExtractor
 from Modules.FileManager import FileManager
 
+"""
+Classe de test des différentes classes gérant directement les données depuis les fichiers :
+FileManager
+DataExtractor
+CreerClasses
+"""
+
 class TestDonnees(unittest.TestCase):
     manager = FileManager()
     extractor = DataExtractor()
@@ -64,7 +71,10 @@ class TestDonnees(unittest.TestCase):
     t1_faux =Tournee(DemiJour(9), prod4, liste_taches_t1_faux)
 
     def test_FileManager_dossiers(self):
-        # Tests de la recherche et du listage de dossiers
+        """
+        Tests de la recherche et du listage de dossiers
+        :return:
+        """
 
         # Quand il y a uniquement des dossiers dans le répertoire :
         resultA = TestDonnees.manager.lister_dossiers("../Projets")
@@ -83,7 +93,10 @@ class TestDonnees(unittest.TestCase):
                              "Test File Manager aucun dossiers échoué")
 
     def test_FileManager_fichiers(self):
-        # Tests de la recherche et du listage de fichiers
+        """
+        Tests de la recherche et du listage de fichiers
+        :return:
+        """
 
         # Quand il y a uniquement des dossiers dans le répertoire :
         resultA = TestDonnees.manager.lister_fichiers("..\Projets")
@@ -102,7 +115,10 @@ class TestDonnees(unittest.TestCase):
                              "Test File Manager fichiers uniquement échoué")
 
     def test_DataExtractor(self):
-        # Tests des extractions des lignes des fichiers
+        """
+        Tests des extractions des lignes des fichiers
+        :return:
+        """
 
         # Extraction d'un fichier de données
         resultA = TestDonnees.extractor.extraction("../Projets/Projet_3/" + TestDonnees.nom_fichier_donnees)
@@ -137,7 +153,10 @@ class TestDonnees(unittest.TestCase):
 
 
     def test_createur_classes_donnees(self):
-        # Tests de la création des instances de classe correspondant aux fichiers de données
+        """
+        Tests de la création des instances de classe correspondant aux fichiers de données
+        :return:
+        """
         TestDonnees.createur.load_donnees(TestDonnees.fichier_donnees)
 
         # Pour les producteurs :
@@ -155,7 +174,10 @@ class TestDonnees(unittest.TestCase):
 
 
     def test_createur_classes_solution(self):
-        # Tests de la création des tournées correspondant aux fichiers solution
+        """
+        Tests de la création des tournées correspondant aux fichiers solution
+        :return:
+        """
 
         # Avec un fichier solution correct :
         resultA = self.createur.getTournees(TestDonnees.fichier_solution_bon, TestDonnees.nom_fichier_solution_bon)
@@ -172,22 +194,3 @@ class TestDonnees(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-
-# Le user sélectionne un projet dans la liste -> renvoie "Projet_1"
-# S'affiche le fichier de données à gauche -> fonction qui retourne les (le) fichiers du dossier "Projet_1"
-# S'affichent à droite les fichiers du sous-dossier solutions -> fonction qui retourne les(le) fichier du dossier
-# En fait, on garde la fonction mais on oblige la récupération que des fichiers et on prend le nom en paramètre.
-# Faire une variable qui crée le chemin avec le projet choisi
-# Faire une variable statique dans la classe qui utilise la fonction pour "Projets" et "Solutions"
-
-
-
-
-
-# On fournit une liste de liste au créateur de classes
-# Il prend le premier élément qui est le nb de producteurs et de clients et créé les bornes
-# Il parcourt la liste de l'indice 1 à nb_producteurs +1
-# Il créé à chaque itération un nouvel objet Producteur dans lequel il place les différents arguments
-# Il fait de même en parcourant les éléments à partir de l'indice nb_clients à la fin.
-# Il créé une instance Client à chaque itération en mettant les bons arguments

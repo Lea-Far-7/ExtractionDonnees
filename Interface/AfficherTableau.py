@@ -3,52 +3,37 @@ from tkinter import ttk, CENTER
 from Metier.demande import Demande
 from Metier.tournee import Tournee
 
+"""
+Cette classe doit gérer l'ensemble de l'affichage dans l'onglet tableau :
+-> Lorsqu'il est vide avant l'importation de données
+-> Lorsqu'il est vide après l'importation de données
+-> Lorsqu'un affichage est choisi par l'utilisateur
+Les affichages possibles sont :
+-> Le tableau des producteurs
+-> Le tableau des clients
+-> Le tableau des commandes
+-> Le tableau des tournées du fichier solution sélectionné parmi ceux importés
+"""
+
 class AfficherTableau:
 
     def __init__(self, interface):
-        self.interface = interface
+
+        self.interface = interface # L'interface principale
         self.nb_commandes_par_acteur = None
         self.projet_en_cours = ""
-        self.acteurs_id_filtres = None  # mise à jour de cette liste post filtrage
-        self.tournees_filtrees = None    # mise à jour de cette liste post filtrage
-
-
-    def __set_tableau(self, colonnes, proportions):
-        # Supprimer les anciennes colonnes et données
-        for item in self.interface.tableau.get_children():
-            self.interface.tableau.delete(item)
-
-        # Configurer les nouvelles colonnes
-        self.interface.tableau.configure(columns=colonnes, show='headings')
-
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
-        style.configure("Treeview", font=('Arial', 11), rowheight=25)
-
-        # Largeur du tableau
-        width_totale = self.interface.tableau.winfo_width()
-
-        for col in colonnes:
-            self.interface.tableau.heading(col, text=col)
-            width = int( (width_totale * proportions[col]) / 100) # Calcul de la largeur
-            self.interface.tableau.column(col, width=width, anchor=CENTER)
-
-        # Configuration de la scrollbar
-        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
-        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
-
-        # Liaison avec l'évènement de redimensionnement
-        self.interface.tableau.bind('<Configure>', lambda event : self.__redimensionnement(event, colonnes, proportions))
-
-    def __redimensionnement(self, event, colonnes, proportions):
-        # Recalculer les largeurs quand la fenêtre est redimensionnée
-        new_width = event.width
-        for col in colonnes:
-            width = int((new_width * proportions[col]) / 100)
-            self.interface.tableau.column(col, width=width)
+        self.acteurs_id_filtres = None # Mise à jour de cette liste post filtrage
+        self.tournees_filtrees = None # Mise à jour de cette liste post filtrage
 
 
     def tableau_producteurs(self, infos_producteurs: list, projet: str):
+        """
+        Se charge de récupérer et mettre en forme le contenu du tableau pour les producteurs.
+        :param infos_producteurs: Liste des producteurs à afficher.
+        :param projet: Nom du projet en cours d'affichage.
+        :return: Remplissage du tableau de producteurs.
+        """
+
         colonnes = ("ID", "Coord", "Capacite", "Partenaires", "Dispo", "NbTournees", "NbCommandes")
 
         # Calcul des proportions pour chaque colonne (total = 100)
@@ -66,8 +51,10 @@ class AfficherTableau:
 
         # Ajout des données
         nb_tournees_par_prod = Tournee.getNbTourneesProd()
+
         for prod in infos_producteurs:
 
+            # On vérifie que le producteur n'est pas filtré
             if not self.acteurs_id_filtres or prod.id in self.acteurs_id_filtres:
 
                 coord = f"({round(prod.latitude, 6)}, {round(prod.longitude, 6)})"
@@ -93,6 +80,13 @@ class AfficherTableau:
 
 
     def tableau_clients(self, infos_clients: list, projet: str):
+        """
+        Se charge de récupérer et mettre en forme le contenu du tableau pour les clients.
+        :param infos_clients: Liste des clients à afficher.
+        :param projet: Nom du projet en cours d'affichage.
+        :return: Remplissage du tableau de clients.
+        """
+
         colonnes = ("ID", "Coord", "Dispo", "NbCommandes")
 
         # Calcul des proportions pour chaque colonne (total = 100)
@@ -107,6 +101,7 @@ class AfficherTableau:
 
         for cl in infos_clients:
 
+            # On vérifie que le client n'est pas filtré
             if not self.acteurs_id_filtres or cl.id in self.acteurs_id_filtres:
 
                 coord = f"({round(cl.latitude, 6)}, {round(cl.longitude, 6)})"
@@ -126,6 +121,12 @@ class AfficherTableau:
 
 
     def tableau_commandes(self, infos_commandes : list):
+        """
+        Se charge de récupérer et mettre en forme le contenu du tableau pour les commandes.
+        :param infos_commandes: Liste des commandes à afficher.
+        :return: Remplissage du tableau de commandes.
+        """
+
         colonnes = ("ID", "IDClient", "IDProducteur", "Masse")
 
         # Calcul des proportions pour chaque colonne (total = 100)
@@ -139,6 +140,8 @@ class AfficherTableau:
         self.__set_tableau(colonnes, proportions)
 
         for c in infos_commandes:
+
+            # On vérifie que les acteurs de la commande ne sont pas (tous) filtrés
             if not self.acteurs_id_filtres or c.client.id in self.acteurs_id_filtres or c.producteur.id in self.acteurs_id_filtres:
                 self.interface.tableau.insert(parent='', index="end", values=(
                     c.idDemande,
@@ -149,6 +152,12 @@ class AfficherTableau:
 
 
     def tableau_tournees(self, infos_tournees : list):
+        """
+        Se charge de récupérer et mettre en forme le contenu du tableau pour les tournées.
+        :param infos_tournees: Liste des tournées à afficher.
+        :return: Remplissage du tableau de tournées.
+        """
+
         colonnes = ("ID", "Producteur", "DemiJ", "Horaire", "DureeTotale", "NbTaches", "Prod/Clients visités", "DistanceTotale", "ChargeMax", "ChargementTotal")
 
         # Calcul des proportions pour chaque colonne (total = 100)
@@ -169,6 +178,7 @@ class AfficherTableau:
 
         for t in infos_tournees:
 
+            # On vérifie que la tournée n'est pas filtrée
             if not self.tournees_filtrees or t in self.tournees_filtrees:
 
                 nbTaches = len(t.taches)
@@ -202,6 +212,10 @@ class AfficherTableau:
 
 
     def tableau_vide(self):
+        """
+        Se charge du tableau vide avant import des données
+        :return: Affiche un message
+        """
         style = ttk.Style()
         style.configure("Treeview", font=('Arial', 25), rowheight=100)
         self.interface.tableau = ttk.Treeview(self.interface.tableau_frame, columns=("VIDE",), show='')
@@ -211,6 +225,10 @@ class AfficherTableau:
         self.interface.tableau.pack(fill="both", expand=True)
 
     def tableau_post_import(self):
+        """
+        Se charge du tableau vide après import des données
+        :return: Affiche un message
+        """
         style = ttk.Style()
         style.configure("Treeview", font=('Arial', 25), rowheight=100)
         self.interface.tableau.config(columns=("Selection",))
@@ -218,3 +236,55 @@ class AfficherTableau:
         self.interface.tableau.column("Selection", width=self.interface.tableau.winfo_width(), anchor=CENTER)
         self.interface.tableau.insert(parent="", index="end", values=("Veuillez sélectionner une option dans le menu",))
         self.interface.tableau.pack(fill="both", expand=True)
+
+
+    def __set_tableau(self, colonnes : tuple, proportions : dict[str, int]):
+        """
+        Se charge du layout commun à tous les affichages de tableau.
+        :param colonnes: Le nom de toutes les colonnes à afficher.
+        :param proportions: Les proportions de chacune de ces colonnes.
+        :return: Affiche le tableau vide avec le nom des colonnes.
+        """
+
+        # Supprimer les anciennes colonnes et données
+        for item in self.interface.tableau.get_children():
+            self.interface.tableau.delete(item)
+
+        # Configurer les nouvelles colonnes
+        self.interface.tableau.configure(columns=colonnes, show='headings')
+
+        # Choix du style des éléments
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=('Arial', 13, 'bold'))
+        style.configure("Treeview", font=('Arial', 11), rowheight=25)
+
+        # Largeur du tableau
+        width_totale = self.interface.tableau.winfo_width()
+
+        # Placement des colonnes
+        for col in colonnes:
+            self.interface.tableau.heading(col, text=col)
+            width = int( (width_totale * proportions[col]) / 100) # Calcul de la largeur
+            self.interface.tableau.column(col, width=width, anchor=CENTER)
+
+        # Configuration de la scrollbar
+        self.interface.scrollbar.configure(command=self.interface.tableau.yview)
+        self.interface.tableau.configure(yscrollcommand=self.interface.scrollbar.set)
+
+        # Liaison avec l'évènement de redimensionnement
+        self.interface.tableau.bind('<Configure>', lambda event : self.__redimensionnement(event, colonnes, proportions))
+
+
+    def __redimensionnement(self, event, colonnes, proportions : dict[str, int]):
+        """
+        Redimensionne le tableau en fonction de la taille de la fenêtre.
+        :param event: Détection d'un changement de dimensions.
+        :param colonnes: Le nom des colonnes.
+        :param proportions: Les proportions de chacune de ces colonnes.
+        :return: L'affichage du tableau avec les proportions ajustées
+        """
+        # Calcul des largeurs quand la fenêtre est redimensionnée
+        new_width = event.width
+        for col in colonnes:
+            width = int((new_width * proportions[col]) / 100)
+            self.interface.tableau.column(col, width=width)
