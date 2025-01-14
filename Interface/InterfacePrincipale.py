@@ -173,19 +173,37 @@ class App(customtkinter.CTk):
         self.menu_donnees.grid_forget()
         self.menu_solutions.grid_forget()
 
+
     def update_options_menu(self):
+        """
+        Met à jour les options du menu principal du tableau en fonction de
+        si l'utilisateur a importé des fichiers solution ou seulement un fichier de données.
+        :return: void
+        """
         if self.solutions_selectionnees:
             self.options = ["Producteurs", "Clients", "Commandes", "Tournées"]
         else:
             self.options = ["Producteurs", "Clients", "Commandes"]
         self.menu_donnees.configure(values=self.options)
 
+
     def update_options_menu_solutions(self):
+        """
+        Met à jour les options du menu solution en fonction des fichiers importés.
+        :return: void
+        """
         if self.solutions_selectionnees:
             self.options_solution = self.solutions_selectionnees
             self.menu_solutions.configure(values=self.options_solution)
 
+
     def update_menu(self, choix):
+        """
+        Affiche le tableau en fonction de l'option sélectionnée par l'utilisateur.
+        Si Tournées est sélectionnée, on affiche le second menu déroulant
+        :param choix: Option sélectionnée
+        :return: void
+        """
         producteurs, clients = self.createur.getActeurs(self.donnees, self.createur.projet)
         commandes = self.createur.getCommandes()
 
@@ -203,7 +221,13 @@ class App(customtkinter.CTk):
             self.update_options_menu_solutions()
             self.menu_solutions.grid()
 
+
     def update_menu_solutions(self, choix):
+        """
+        Affiche le tableau en fonction du choix effectué par l'utilisateur.
+        :param choix: Option sélectionnée
+        :return: void
+        """
         if choix:   # Si une solution est sélectionnée
             if choix in self.solutions:
                 liste_tournees = self.createur.getTournees(self.solutions[choix], choix)

@@ -1,5 +1,8 @@
-# Créé par leleo, le 18/11/2024 en Python 3.7
 from csv import reader
+
+"""
+Cette classe doit gérer l'extraction des lignes des fichiers de données et solution, ainsi que leur organisation.
+"""
 
 class DataExtractor:
     def __init__(self, delimiteur=" "):
