@@ -1,5 +1,4 @@
 import tkinter
-
 import customtkinter
 
 from Interface.AfficherCarte import AfficherCarte
@@ -9,8 +8,12 @@ from Interface.PopUp import PopUp
 from Metier.acteur import Acteur
 from Metier.tache import Tache
 
-# Création d'une pop-up et inclusion d'éléments pour l'importation de fichiers
+"""
+Cette classe doit créer une pop-up et inclure les éléments pour l'importation de fichiers
+"""
+
 class PopupImport:
+
     def __init__(self, interface, createur : Createur):
 
         self.interface = interface
@@ -61,6 +64,12 @@ class PopupImport:
 
 
     def assignProjet(self, projet, frame_solutions):
+        """
+        Met à jour les attributs de classe, et crée les switch à afficher pour les fichiers solution.
+        :param projet: Le projet en cours
+        :param frame_solutions:
+        :return: void
+        """
 
         self.projet_en_cours = projet
         # Si des marqueurs sont déjà présents, on les cache pour éviter une surcharge visuelle
@@ -96,8 +105,15 @@ class PopupImport:
 
 
     def valider(self):
+        """
+        Déclanche les actions découlant de la validation d'une importation
+        -> Mise à jour carte
+        -> Mise à jour tableau
+        :return: void
+        """
 
         if self.fichier_donnees:
+
             self.__synchronisation_carte_tableau()
 
             # On met à jour les attributs "données" et "solution" de l'interface principale pour les filtres
@@ -115,6 +131,10 @@ class PopupImport:
 
 
     def __synchronisation_carte_tableau(self):
+        """
+        Améliore la compréhension de la fonction valider
+        :return: void
+        """
         # Supprime tous les marqueurs et trajets présents sur la map
         self.interface.map_widget.delete_all_marker()
         self.interface.map_widget.delete_all_path()
