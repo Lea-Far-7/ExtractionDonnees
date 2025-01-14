@@ -11,34 +11,38 @@ from Metier.tournee import Tournee
 
 """
 Cette classe doit créer les instances de producteurs et de clients présents dans le fichier concerné.
-Le fichier est fourni à la classe sous forme de liste de listes. Chaque sous-liste correspondant à une ligne du fichier.
-Et chaque ligne du fichier étant un producteur ou un client.
+Le fichier de données est fourni à la méthode load_donnees sous forme de liste de listes (sous-liste = ligne).
+Le fichier solution est fourni à la méthode getTournees sous forme de liste de listes (sous-liste = ligne).
+
+Dans un fichier de données :
+-> Chaque ligne est un producteur ou un client.
+Dans un fichier solution :
+-> Chaque bloc de lignes est une tournée.
 """
 
 class CreerClasses:
 
     def __init__(self):
 
+        # Conserver les listes créées permet de ne pas faire d'opérations coûteuses inutilement.
         self.producteurs = []
         self.clients = []
         self.demandes = []
         self.tournees = []
         self.donnees_loaded = False
+
         self.__convertisseur = Convertisseur()
+        self.message_erreur = MessageErreurSolution()
 
         # Pour vérifier que toutes les commandes de la tournée sont livrées
         self.chargeCumulee = self.__convertisseur.float_to_decimal(0)
-        # On conserve les tâches pick-up dans un dictionnaire pour s'assurer que
-        # toutes les commandes à délivrer ont été récupérées
+        # Tâches pick-up conservées dans un dictionnaire pour s'assurer que toutes les commandes à délivrer ont été récupérées
         self.taches_P = {}
-        # Si l'utilisateur dit qu'il veut continuer à charger le fichier solution malgré la présence d'au moins une erreur
+        # Si l'utilisateur choisit de continuer à charger le fichier solution malgré la présence d'au moins une erreur,
         # Alors, pour les performances, on n'effectue plus de vérification et on génère les tournées jusqu'à la fin.
         self.afficherErreur = True
-        # {erreur : compteur de l'erreur}
-        self.erreurs = {"charge" : 0, "drop_pick" : 0, "acteurs" : 0, "demi_jour" : 0}
+        self.erreurs = {"charge" : 0, "drop_pick" : 0, "acteurs" : 0, "demi_jour" : 0} # {nom_erreur : compteur}
         self.nb_total_erreurs = 0
-        self.message_erreur = MessageErreurSolution()
-
 
 
     def load_donnees(self, fichier : list):
@@ -46,7 +50,7 @@ class CreerClasses:
         Création des instances de Producteur et Client avec les méthodes privées
         `__creerProducteurs` et `__creerClients`
         Booléen self.donnees_loaded garantit l'unique instanciation des producteurs et des clients
-        :param fichier:
+        :param fichier: Liste de lignes
         :return: void
         """
         if not self.donnees_loaded:
@@ -75,7 +79,7 @@ class CreerClasses:
 
     def getDemandes(self) -> "list" :
         """
-        :return: la liste des Demandes
+        :return: La liste des Demandes
         """
         return self.demandes
 
@@ -84,31 +88,36 @@ class CreerClasses:
         """
         Pas d'unique instanciation comme pour le fichier de données,
         car plusieurs fichiers solution sont sélectionnables pour un projet
-        :param fichier: list
-        :return: la liste des Tournees du fichier donné.
+        :param fichier: Liste de lignes
+        :return: La liste des Tournees du fichier donné.
         """
         Tournee.deleteAll()
-        self.tournees = []
+        self.tournees = [] # On remet à vide sinon les nouvelles tournées s'ajoutent aux anciennes
+
         self.__creerTournees(fichier, nom_fichier)
+
         if not self.afficherErreur:
             self.message_erreur.afficher_information_nb_erreurs(nom_fichier, self.nb_total_erreurs)
+
+        # On réinitialise les paramètres de vérification
         self.chargeCumulee = self.__convertisseur.float_to_decimal(0)
         self.afficherErreur = True
         self.erreurs = {"charge": 0, "drop_pick": 0, "acteurs": 0, "demi_jour": 0}
         self.nb_total_erreurs = 0
+
         return self.tournees
 
 
     def getNbProducteurs(self) -> "int" :
         """
-        :return: le nombre de producteurs créés
+        :return: Le nombre de producteurs créés
         """
         return len(self.producteurs)
 
 
     def getNbClients(self) -> "int" :
         """
-        :return: le nombre de clients créés
+        :return: Le nombre de clients créés
         """
         return len(self.clients)
 
@@ -120,16 +129,17 @@ class CreerClasses:
         """
 
         if fichier:
+
             nbProducteurs = int(fichier[0][0])
             # Les partenaires sont une liste de Prodcteurs.
             # Ceux-ci ne sont pas encore créés, on va donc stocker leurs numéros dans une liste temporaire
             partners_tempo = []
 
-            # On parcourt le fichier de la première ligne au nombre de producteurs + 1
+            for i in range (1, nbProducteurs + 1):
 
-            for i in range(1, nbProducteurs + 1):
                 # On récupère la ligne courante
                 producteur = fichier[i]
+
                 # On crée une variable indice comme pointeur que l'on va incrémenter
                 # au fur et à mesure de l'avancée dans la ligne.
                 indice = 0
@@ -176,11 +186,13 @@ class CreerClasses:
         """
 
         if fichier:
+
             debutClients = int(fichier[0][0]) + 1
 
-            # On parcourt le fichier de debutClients à la fin du fichier
             for i in range(debutClients, len(fichier)):
+
                 client_en_cours = fichier[i]
+
                 # On crée une variable indice comme pointeur que l'on va incrémenter
                 # au fur et à mesure de l'avancée dans la ligne.
                 indice = 0
@@ -212,7 +224,7 @@ class CreerClasses:
     def __creerTache(self, ligne : list):
         """
         Parcours la ligne et récupère les informations nécessaires à la création d'une tâche
-        :param ligne: liste
+        :param ligne: Liste
         :return: Une Tache
         """
 
@@ -220,7 +232,7 @@ class CreerClasses:
         type = ligne[0]
         charge = float(ligne[1])
 
-        if type == 'P':
+        if type == 'P': # Pick-up
 
             lieu = self.producteurs[int(ligne[2])]
             # Numero premier client commence à nbProducteurs
@@ -231,7 +243,7 @@ class CreerClasses:
             self.chargeCumulee += self.__convertisseur.float_to_decimal(charge)
             self.taches_P[(info_requete, lieu)] = (lieu, info_requete)
 
-        else:
+        else: # Drop-off
             acteurs = []
             acteurs.extend(self.producteurs)
             acteurs.extend(self.clients)
@@ -245,6 +257,7 @@ class CreerClasses:
 
         horaire = ligne[4]
 
+        # Pour vérification de conformité
         if lieu not in Acteur.instances.values() or info_requete not in Acteur.instances.values():
             self.erreurs["acteurs"] += 1
             self.nb_total_erreurs += 1
@@ -255,11 +268,12 @@ class CreerClasses:
     def __creerTournees(self, fichier : list, nom_fichier : str):
         """
         Méthode privée qui crée les tournées associées au fichier
-        :param fichier : liste de lignes
+        :param fichier : Liste de lignes
         :return: void, car les attributs de classe sont directement modifiés
         """
 
         if fichier:
+
             # Pour chaque tournée du fichier, on conserve son numéro
             for tournee in fichier:
 
@@ -298,8 +312,13 @@ class CreerClasses:
                         self.afficherErreur = False
 
 
-
     def __comparer_dispos(self, jour:int, listeDispos:list):
+        """
+        Vérifie que les acteurs sont disponibles pour la tournée
+        :param jour: numéro du demi-jour
+        :param listeDispos: Liste de DemiJour
+        :return: void, modifie directement les attributs de classe
+        """
         liste_jours = []
         for d in listeDispos:
             liste_jours.append(d.num)
