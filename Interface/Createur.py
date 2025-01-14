@@ -28,6 +28,7 @@ class Createur:
 
     def getContenuFichierDonnees(self, chemin_vers_fichier : str) -> list:
         # On précisera en paramètre le projet et le nom du fichier
+        print(self.extracteur.extraction("Projets\\" + chemin_vers_fichier))
         return self.extracteur.extraction("Projets\\" + chemin_vers_fichier)
 
     def getActeurs(self, lignes : list, projet : str) -> (list[Producteur], list[Client]) :
@@ -48,14 +49,15 @@ class Createur:
 
     def getContenuFichierSolution(self, nom_fichier : str) -> list:
         # On précisera en paramètre le nom du fichier voulu
+        print(self.extracteur.extraction_solution("Projets\\" + self.projet + "\Solutions\\" + nom_fichier))
         return self.extracteur.extraction_solution("Projets\\" + self.projet + "\Solutions\\" + nom_fichier)
 
     def getTournees(self, lignes : list, nom_fichier) -> list[Tournee] :
         if nom_fichier in self.solutions_loaded:
-            print(nom_fichier, "déjà loaded YOUPI")
             return self.solutions_loaded[nom_fichier]
         else:
             tournees = self.createur_classes.getTournees(lignes, nom_fichier)
             if tournees:
                 self.solutions_loaded[nom_fichier] = tournees
+                print(tournees)
             return tournees

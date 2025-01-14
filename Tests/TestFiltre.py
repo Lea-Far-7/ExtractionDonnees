@@ -1,8 +1,5 @@
 import unittest
-from unittest import result
-
 from Modules import filtres
-from Modules.filtres import filtreTournees
 from Metier.demiJour import DemiJour
 from Metier.client import Client
 from Metier.producteur import Producteur
