@@ -67,6 +67,10 @@ class PopupFiltre:
                 self.switch_dj[dj.num] = switch
                 i += 1
 
+        # Création du menu déroulant pour choisir un fichier de tournées (solution) en particulier
+        self.menu_solutions = customtkinter.CTkOptionMenu(self.popup.window, values=["tous les fichiers solution"]+self.interface.solutions_selectionnees,
+            fg_color="#1d7c69", button_color="#1d7c69", button_hover_color="#275855")
+        self.menu_solutions.grid(row=1, column=2, padx=10)
 
         validButton = customtkinter.CTkButton(self.popup.window, fg_color="#1d7c69", hover_color="#275855",
                                                 command=self.__validate, text="Valider")
@@ -81,6 +85,7 @@ class PopupFiltre:
         interface.wait_window(self.popup.window)
 
 
+
     def __validate(self):
 
         producteurs_id = []
@@ -89,6 +94,7 @@ class PopupFiltre:
 
         filtrage_text_prod = self.entry_prod.get()
         filtrage_text_cl = self.entry_cl.get()
+        filtrage_solution = self.menu_solutions.get()
 
         # Récupération des producteurs à filtrer
         if filtrage_text_prod != "":
@@ -127,15 +133,23 @@ class PopupFiltre:
             if switch.get():
                 demi_jours_num.append(key)
 
+
         # Récupération des tournées
         tournees = []
-        if self.createur.projet:
-            for nom_fichier in self.interface.solutions_selectionnees:
-                fichier = self.interface.solutions[nom_fichier]
-                tournees.extend(self.createur.getTournees(fichier, nom_fichier))
+        tournees_pre_filtrees = [] # contient les tournées d'un seul ou tous les fichiers solutions
+        for nom_fichier in self.interface.solutions_selectionnees:
+            fichier = self.interface.solutions[nom_fichier]
+            list_tournees = self.createur.getTournees(fichier, nom_fichier)
+            tournees.extend(list_tournees)
+            if filtrage_solution == nom_fichier:
+                tournees_pre_filtrees.extend(list_tournees)
+
 
         # Filtrage des tournées
-        tournees_filtrees = filtreTournees(tournees, producteurs_id, clients_id, demi_jours_num)
+        if filtrage_solution == "tous les fichiers solution":
+            tournees_filtrees = filtreTournees(tournees, producteurs_id, clients_id, demi_jours_num)
+        else:
+            tournees_filtrees = filtreTournees(tournees_pre_filtrees, producteurs_id, clients_id, demi_jours_num)
 
         # Filtrage des acteurs
         acteurs_select = producteurs_id+clients_id
@@ -145,6 +159,7 @@ class PopupFiltre:
         # Mise à jour des conditions d'affichage dans le tableau
         self.interface.afficheurTableau.acteurs_id_filtres = acteurs_select
         self.interface.afficheurTableau.tournees_filtrees = tournees_filtrees
+
 
         # Mise à jour de l'affichage des acteurs sur la carte
         for id, acteur_marker in self.interface.mark_list.items():
