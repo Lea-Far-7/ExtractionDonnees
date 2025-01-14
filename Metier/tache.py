@@ -1,6 +1,5 @@
 from Metier.acteur import Acteur
 
-
 class Tache:
 
     nb = 0 # nombre d'instances créées de Tache

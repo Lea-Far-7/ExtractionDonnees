@@ -1,6 +1,5 @@
 from Interface.AfficherActeur import AfficherActeur
 from Interface.AfficherTrajet import AfficherTrajet
-from Metier import tournee
 from Metier.tache import Tache
 from Metier.tournee import Tournee
 

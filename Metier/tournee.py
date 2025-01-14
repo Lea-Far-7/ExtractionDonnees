@@ -1,5 +1,4 @@
 from Modules.Convertisseur import Convertisseur
-
 from Metier.acteur import Acteur
 from Metier.producteur import Producteur
 from Metier.demiJour import DemiJour

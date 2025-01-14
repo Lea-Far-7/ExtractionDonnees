@@ -1,5 +1,4 @@
 from tkinter import messagebox
-
 from Modules.FileManager import FileManager
 import mss
 import mss.tools

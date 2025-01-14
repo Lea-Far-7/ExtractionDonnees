@@ -3,7 +3,7 @@ from tkinter import *
 from  tkinter import ttk
 
 from tkintermapview import TkinterMapView
-from PIL import Image, ImageTk
+from PIL import Image
 import customtkinter
 
 from Interface.AfficherTableau import AfficherTableau

@@ -1,7 +1,5 @@
 from Interface.MarkerActeur import MarkerActeur
 from Interface.TrajetTache import TrajetTache
-from Modules.distance import distance
-
 
 class AfficherCarte:
 

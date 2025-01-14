@@ -1,7 +1,5 @@
 import customtkinter
-
 from Interface.AfficherActeur import AfficherActeur
-
 
 class AfficherTrajet():
     instances = []

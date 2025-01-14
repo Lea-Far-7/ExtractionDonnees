@@ -1,4 +1,3 @@
-# Créé par leleo, le 18/11/2024 en Python 3.7
 from os import listdir, path, makedirs
 from time import strftime, gmtime
 

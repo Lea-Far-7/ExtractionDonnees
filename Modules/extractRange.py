@@ -1,4 +1,3 @@
-
 def extractRange(text: str) -> list[int]:
 
     """

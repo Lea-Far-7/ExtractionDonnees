@@ -1,5 +1,4 @@
 from tkinter import ttk, CENTER
-
 from Metier.demande import Demande
 from Metier.tournee import Tournee
 

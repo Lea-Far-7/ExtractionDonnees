@@ -1,6 +1,5 @@
 from Metier.acteur import Acteur
 
-
 class Client(Acteur):
 
     """

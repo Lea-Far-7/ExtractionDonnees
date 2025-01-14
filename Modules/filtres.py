@@ -1,4 +1,3 @@
-
 def filtreTournees(tournees:list, producteursId:list, clientsId:list, demiJoursNum:list)->list:
 
     """

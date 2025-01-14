@@ -1,7 +1,6 @@
 from Metier.producteur import Producteur
 from Metier.client import Client
 
-
 class Demande:
 
     nb = 0  # nombre d'instances de Demande

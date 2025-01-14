@@ -1,7 +1,6 @@
 from Metier.acteur import Acteur
 from Metier.demiJour import DemiJour
 
-
 class Producteur(Acteur):
 
     """

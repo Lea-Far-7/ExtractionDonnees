@@ -1,4 +1,3 @@
-
 class DemiJour:
 
     """Classe représentant une demi-journée."""
