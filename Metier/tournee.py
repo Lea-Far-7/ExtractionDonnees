@@ -7,10 +7,23 @@ from Modules.distance import distance
 
 class Tournee:
 
+    """
+    Classe représentant une tournée.
+
+    L'attribut de classe **instances** permet de récupérer la liste des instances créées.
+    Et **nb** le nombre d'instances créées.
+    """
+
     nb = 0  # nombre d'instances créées de Tournee
     instances = []  # instances créées de Tournee
 
     def __init__(self, demiJour:DemiJour, producteur:Producteur, taches=None):
+        """
+        Initialise la tournée.
+        :param DemiJour demiJour: Demi-journée sur laquelle la tournée se déroule.
+        :param Producteur producteur: Producteur qui mène la tournée.
+        :param list[Tache] taches: Liste des tâches qui composent la tournée.
+        """
         self.idTournee = Tournee.nb
         self.demiJour = demiJour
         self.producteur = producteur
@@ -26,15 +39,32 @@ class Tournee:
         Tournee.nb -= 1
 
     def addTache(self, t:chr, charge:float, lieu:Acteur, infoRequete:Acteur, horaire:str):
+        """
+        Créer une tâche et l'ajoute à la tournée.
+        :param chr t: Type de tâche, 'P' pour Pick-Up, 'D' pour Drop-Off.
+        :param charge: Charge récupérée ou déposée durant la tâche.
+        :param lieu: Acteur chez lequel se déroule la tâche.
+        :param infoRequete: Autre Acteur qui est lié à la demande assurée par cette tâche.
+        :param horaire: Heure au format HH:MM de la tâche.
+        :return: Tâche créée.
+        """
         tache = Tache(t,charge,lieu,infoRequete,horaire)
         self.taches.append(tache)
         return tache
 
     def removeTache(self, tache:Tache):
+        """
+        Supprime la tâche de la tournée et tente de la détruire.
+        :param tache: Tâche à supprimer.
+        """
         self.taches.remove(tache)
         del(tache)
 
     def get_id_lieux(self)->list:
+        """
+        Récupérer les ID des acteurs dont la tournée passe par chez eux.
+        :return: Liste des ID.
+        """
         id_lieux = []
         for tache in self.taches:
             if not tache.lieu.id in id_lieux:
@@ -125,6 +155,9 @@ class Tournee:
 
     @classmethod
     def deleteAll(cls):
+        """
+        Efface toutes les instances de Tournee.
+        """
         cls.instances.clear()
         cls.nb = 0
 

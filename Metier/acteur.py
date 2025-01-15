@@ -13,7 +13,8 @@ class Acteur(abc.ABC):
 
     L'identifiant d'un Acteur dépend de son ordre d'instanciation.
 
-    L'attribut de classe **nb** permet de récupérer le nombre d'instances créées.
+    L'attribut de classe **instances** permet de récupérer la liste des instances créées.
+    Et **nb** le nombre d'instances créées.
     """
 
     nb = 0 # nombre d'instances créées d'Acteur
@@ -57,6 +58,9 @@ class Acteur(abc.ABC):
         self.dispos.remove(dispo)
 
     def getInfosTournees(self)->str:
+        """
+        Récupérer les lignes donnant les évènements de tournées auxquels l'acteur participe.
+        """
         result = ""
         for part in self.infosTournees:
             for info in part:
@@ -64,10 +68,16 @@ class Acteur(abc.ABC):
         return result[:-1]
 
     def attachObserver(self, observer:ObserverActeur):
+        """
+        Ajouter un objet qui est notifié lorsque les informations de tournées stockées **infosTournees** changent.
+        """
         if observer not in self.observers:
             self.observers.append(observer)
 
     def detachObserver(self, observer:ObserverActeur):
+        """
+        Retirer un objet des observateurs.
+        """
         if observer in self.observers:
             self.observers.remove(observer)
 
@@ -81,11 +91,19 @@ class Acteur(abc.ABC):
 
     @classmethod
     def deleteAll(cls):
+        """
+        Efface toutes les instances d'Acteur.
+        """
         cls.instances.clear()
         cls.nb = 0
 
     @classmethod
     def updateInfosTournees(cls, listSolutions:list):   # listSolutions = liste de listes de tournées
+        """
+        Modifie selon une liste de tournées les informations de tournées stockées dans chaque instance d'Acteur.
+        Notifie également les objets observateurs.
+        :param listSolutions: Liste de listes de tournées.
+        """
         for instance in cls.instances.values():
             instance.infosTournees = [[],[]]    #initialisation
         for listTournees in listSolutions:
