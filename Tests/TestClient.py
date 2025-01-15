@@ -13,8 +13,8 @@ class TestClient(unittest.TestCase):
     dj4 = DemiJour(1, "Lundi M")
 
     # Creation de clients
-    client0 = Client(144.36546, -146.346546, [dj1])
-    client1 = Client(165.346546, 34.346546, [dj2, dj4])
+    client0 = Client(44.36546, -146.346546, [dj1])
+    client1 = Client(65.346546, 34.346546, [dj2, dj4])
 
     def test_affichageInfos(self):
         result = Client.__str__(TestClient.client0)
