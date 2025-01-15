@@ -30,7 +30,7 @@ class TestDemande(unittest.TestCase):
         result = Demande.__del__(TestDemande.demande2)
         self.assertEqual(Demande.nb, 2)
 
-    def testAffichage(self):
+    def test_Affichage(self):
         result = Demande.__str__(TestDemande.demande0)
         self.assertEqual(result, "Demande 0 : 23.4 kg de Client 2 à Producteur 1")
 
