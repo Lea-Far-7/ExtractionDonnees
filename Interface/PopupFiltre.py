@@ -12,6 +12,11 @@ class PopupFiltre:
     """Pop-up pour la gestion des filtres"""
 
     def __init__(self, interface, createur : Createur):
+        """
+        Créer une fenêtre pour choisir les options de filtrage.
+        :param interface: Interface principale (fenêtre mère).
+        :param createur: Créateur des objets métier permettant également de les récupérer.
+        """
 
         self.interface = interface
         self.createur = createur
