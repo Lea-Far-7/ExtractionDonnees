@@ -15,11 +15,11 @@ class TestDemande(unittest.TestCase):
 
     # Creation de producteurs
     producteur0 = Producteur(35.31365, -34.3456, 32.7, [dj2], [])
-    producteur1 = Producteur(131.31313, 145.31555, 56.1, [dj1, dj3], [])
+    producteur1 = Producteur(31.31313, 145.31555, 56.1, [dj1, dj3], [])
 
     # Creation de clients
     client2 = Client(31.4564, -134.34654, [dj1, dj2])
-    client3 = Client(156.31354, 112.4546, [dj2, dj3])
+    client3 = Client(56.31354, 112.4546, [dj2, dj3])
 
     # Creation de demandes
     demande0 = Demande(client2, producteur1, 23.4)
