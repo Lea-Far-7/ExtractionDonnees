@@ -15,12 +15,12 @@ class TestFiltre(unittest.TestCase):
     dj5 = DemiJour(3, None)
     dj6 = DemiJour(10, "Vendredi AM")
 
-    client0 = Client(166.46466, -135.46464213, [dj2, dj5])
+    client0 = Client(16.46466, -135.46464213, [dj2, dj5])
     client1 = Client(36.667846, 145.345433, [dj1])
-    client2 = Client(133.46436643, -43.6454364, [dj4, dj2])
+    client2 = Client(33.46436643, -43.6454364, [dj4, dj2])
 
-    producteur3 = Producteur(145.3346546, -113.361565, 120.34, [dj1, dj4])
-    producteur4 = Producteur(124.646498465, 134.3464677, 50.65, [dj2, dj4])
+    producteur3 = Producteur(14.3346546, -113.361565, 120.34, [dj1, dj4])
+    producteur4 = Producteur(24.646498465, 134.3464677, 50.65, [dj2, dj4])
     producteur5 = Producteur(56.2346, -54.13456, 26.1, [dj1, dj3, dj6])
 
     tache1 = Tache("P", 57.2, producteur5, client1, "10h")
