@@ -12,8 +12,8 @@ class TestTache(unittest.TestCase):
     dj3 = (8, "Jeudi AM")
 
     # Creation d'acteurs
-    acteur0 = Acteur(115.3546, -31.3156646, [dj2])
-    acteur1 = Acteur(154.36546, 33.1546, [dj1, dj2])
+    acteur0 = Acteur(11.3546, -31.3156646, [dj2])
+    acteur1 = Acteur(54.36546, 33.1546, [dj1, dj2])
     acteur2 = Acteur(-35.33546, 101.31346, [dj3])
 
     # Creation de taches
