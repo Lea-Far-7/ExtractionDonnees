@@ -13,7 +13,7 @@ class TestActeur(unittest.TestCase):
 
 
     # Creation de plusieurs Acteurs
-    acteur0 = Acteur(126.4654, -34.343643, [dj1, dj3])
+    acteur0 = Acteur(26.4654, -34.343643, [dj1, dj3])
     acteur1 = Acteur(23.45646, 134.46546, [dj2, dj4])
     acteur2 = Acteur(-32.36565, 46.3561153, [dj3])
 
