@@ -14,8 +14,8 @@ class TestProducteur(unittest.TestCase):
 
     # Creation de producteurs
     producteur0 = Producteur(35.31654, 132.3155, 50.2, [dj1, dj3], [producteur1])
-    producteur1 = Producteur(-146.34687, -34.3454, 57.8, [dj2], [])
-    producteur2 = Producteur(164.35468, 34.534454, 20.4, [dj3, dj4], [producteur0, producteur1])
+    producteur1 = Producteur(-46.34687, -34.3454, 57.8, [dj2], [])
+    producteur2 = Producteur(64.35468, 34.534454, 20.4, [dj3, dj4], [producteur0, producteur1])
 
     def test_addPartner(self):
         result = Producteur.addPartner(TestProducteur.producteur1, TestProducteur.producteur0)
