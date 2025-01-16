@@ -1,4 +1,4 @@
-Le logiciel se trouve dans l'archive [OLOCAP Viewer.zip](OLOCAP%20Viewer.zip)
+Le logiciel se trouve dans l'archive [OLOCAP Viewer.zip](OLOCAP%20Viewer.zip) 
 Il contient le programme exécutable ainsi que le dossier *Projet* où placer les données et le dossier *Exports* pour récupérer les captures d'écran.
 
 **Configuration requise :**
