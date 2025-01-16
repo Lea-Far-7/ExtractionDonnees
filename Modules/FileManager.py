@@ -22,6 +22,11 @@ class FileManager :
             return []
 
     def lister_dossiers(self, repertoire : str) -> list:
+        """
+        Liste les dossiers du répertoire fourni
+        :param repertoire: Le nom d'un répertoire
+        :return: La liste des dossiers
+        """
         try:
             # Récupère tous les éléments dans le répertoire
             contenu_repertoire = listdir(repertoire)
@@ -34,10 +39,18 @@ class FileManager :
 
 
     def creer_repertoire(self, repertoire):
-        # Crée le répertoire fourni s'il n'existe pas déjà
+        """
+        Crée le répertoire fourni s'il n'existe pas déjà
+        :param repertoire: Le nom du répertoire à créer
+        :return: void, intéragit directement avec le gestionnaire de fichiers
+        """
         makedirs(repertoire, exist_ok=True)
 
     def creer_chemin_fichier(self, repertoire):
-        # Crée une chaîne de caractères contenant le chemin vers un nouveau fichier
-        # Dont le nom a la forme : capture_AAAAmmdd_hhs.png
+        """
+        Crée une chaîne de caractères contenant le chemin vers un nouveau fichier
+        Dont le nom a la forme : capture_AAAAmmdd_hhs.png
+        :param repertoire: Le nom du répertoire du fichier
+        :return: Le chemin vers le fichier à créer
+        """
         return path.join(repertoire, "capture_{}.png".format(strftime("%Y%m%d_%H%M%S", gmtime())))
