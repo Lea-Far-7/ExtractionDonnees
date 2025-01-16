@@ -3,7 +3,14 @@ import customtkinter
 # Un fichier de données, plusieurs fichiers de solutions. Peut-être importer un projet au lieu de Données et Solutions différents
 
 class PopUp:
+    """
+    Cette classe est une base utilisée pour faire les popups d'import et de filtres.
+    """
     def __init__(self, masterwindow):
+        """
+        Constructeur de la classe PopUp, créé une popup sans topbar et avec un bouton de fermeture de popup.
+        :param masterwindow: Fenêtre principale.
+        """
         super().__init__()
 
         # Récupération de l'interface mère

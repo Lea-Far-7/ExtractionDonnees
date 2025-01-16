@@ -8,13 +8,18 @@ from Interface.PopUp import PopUp
 from Metier.acteur import Acteur
 from Metier.tache import Tache
 
-"""
-Cette classe doit créer une pop-up et inclure les éléments pour l'importation de fichiers
-"""
-
 class PopupImport:
+    """
+    Cette classe doit créer une pop-up et inclure les éléments pour l'importation de fichiers
+    """
 
     def __init__(self, interface, createur : Createur):
+        """
+        Met en place la pop-up d'import contenant une interface permettant de selectionner les fichier de données des projets,
+        ainsi que les fichiers solution qui leur sont associés.
+        :param interface: Fenêtre principale.
+        :param createur: Le créateur d'objets utilisant les informations provenant des fichiers importés.
+        """
 
         self.interface = interface
         self.createur = createur
@@ -65,7 +70,7 @@ class PopupImport:
 
     def assignProjet(self, projet, frame_solutions):
         """
-        Met à jour les attributs de classe, et crée les switch à afficher pour les fichiers solution.
+        Met à jour les attributs de classe, et créé les switch à afficher pour les fichiers solution.
         :param projet: Le projet en cours
         :param frame_solutions:
         :return: void
@@ -106,7 +111,7 @@ class PopupImport:
 
     def valider(self):
         """
-        Déclanche les actions découlant de la validation d'une importation
+        Déclenche les actions découlant de la validation d'une importation
         -> Mise à jour carte
         -> Mise à jour tableau
         :return: void
@@ -132,7 +137,8 @@ class PopupImport:
 
     def __synchronisation_carte_tableau(self):
         """
-        Améliore la compréhension de la fonction valider
+        Améliore la compréhension de la fonction valider, s'occupe de l'import des données après validation.
+        Utilise la classe AfficherCarte.
         :return: void
         """
         # Supprime tous les marqueurs et trajets présents sur la map

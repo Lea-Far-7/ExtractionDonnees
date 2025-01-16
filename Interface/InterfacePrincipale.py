@@ -16,6 +16,10 @@ from Modules.Screenshot_Maker import Screenshot_Maker
 customtkinter.set_appearance_mode("Dark")
 
 class App(customtkinter.CTk):
+    """
+    Cette classe est la classe principale concernant l'affichage et affiche une fenêtre contenant le tableau,
+    la carte ainsi qu'un menu statique les entourant.
+    """
     def __init__(self):
         super().__init__()
         self.tableau_frame = None
@@ -75,12 +79,20 @@ class App(customtkinter.CTk):
         self.bind('<Configure>', self.update_all_popups_position)
 
     def update_all_popups_position(self, event=None):
+        """
+        Cette fonction permet de cacher les informations affichées en bas à droite
+        si la fenêtre est modifiée (mouvement ou redimensionnement).
+        """
         for marker in self.mark_list.values():
             marker.hide()
         for path in self.path_list.values():
             path.hide()
 
     def interfacePrincipale(self):
+        """
+        Fonction prinicpale de l'interface, met en place les éléments créés précédemment
+        et leur ajoute un comportement attendu.
+        """
         # Permet de configurer la grid,
         # "weight = 1" permet de remplir au maximum l'espace de la grid désigné
         # "weight = 0" permet de réduire au minimum l'espace de la grid désigné
@@ -120,7 +132,9 @@ class App(customtkinter.CTk):
         button_tableau.grid(row=0, column=3, sticky="w", padx=5, pady=5)
 
     def creationCarte(self):
-        # Création de la map et mise dans une grid (ligne 1 et colonne 1)
+        """
+        Création de la carte et mise dans une grille pour faciliter sa gestion (ligne 1 et colonne 1)
+        """
         self.map_widget = TkinterMapView()
         self.map_widget.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
         self.map_widget.set_zoom(8)
@@ -129,7 +143,9 @@ class App(customtkinter.CTk):
         self.map_widget.set_position(47.3565655, 0.7035767)
 
     def creationTableau(self):
-        # Créer un frame conteneur pour le tableau
+        """
+        Créer une frame conteneur pour le tableau
+        """
         self.tableau_frame = customtkinter.CTkFrame(self)
         self.tableau_frame.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
 
@@ -142,12 +158,16 @@ class App(customtkinter.CTk):
         self.tableau_frame.grid_forget()
 
     def screenshot(self):
-
+        """
+        Fonction de capture d'écran pour enregistrer une vue de la carte
+        """
         bbox = self.screenshot_maker.get_bbox(self.map_widget)
         self.screenshot_maker.capture_ecran(bbox)
 
-    # Evenement permettant d'afficher le tableau tout en cachant la map
     def select_tab(self) :
+        """
+        Evenement permettant d'afficher le tableau tout en cachant la carte
+        """
         self.map_widget.grid_forget()
         self.tableau_frame.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
 
@@ -164,6 +184,9 @@ class App(customtkinter.CTk):
 
     # Evenement permettant d'afficher la map tout en cachant le tableau
     def select_map(self) :
+        """
+        Evenement permettant d'afficher la carte tout en cachant le tableau
+        """
         self.tableau_frame.grid_forget()
         self.map_widget.grid(row=1, rowspan=8, column=1, columnspan=4, sticky="nsew")
 

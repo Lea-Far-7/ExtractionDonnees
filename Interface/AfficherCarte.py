@@ -2,22 +2,35 @@ from Interface.MarkerActeur import MarkerActeur
 from Interface.TrajetTache import TrajetTache
 
 class AfficherCarte:
+    """
+    Classe s'occupant de la création des marqueurs et trajets sur la carte, selon la liste des données importées.
+    """
 
     def __init__(self, interface):
         self.interface = interface
 
     def markers_producteurs(self, infos_producteur):
-        # Parcourt les producteurs créés et crée les marqueurs associés
+        """
+        Parcourt les producteurs créés et crée les marqueurs associés.
+        :param infos_producteur: Producteurs à créer.
+        """
         for prod in infos_producteur:
             self.interface.mark_list[prod.id] = (MarkerActeur(self.interface.map_widget, prod, self.interface))
 
     def markers_clients(self, infos_clients):
-        # Parcourt les clients créés et crée les marqueurs associés
+        """
+        Parcourt les clients créés et crée les marqueurs associés.
+        :param infos_clients: Clients à créer.
+        """
         for cl in infos_clients:
             self.interface.mark_list[cl.id] = (MarkerActeur(self.interface.map_widget, cl, self.interface))
 
     def path_taches(self, liste_de_listes_de_tournees):
-
+        """
+        Permet la création des trajets, ainsi que de l'ajout des données des tâches aux marqueurs des acteurs.
+        :param liste_de_listes_de_tournees: Liste de la liste de tournées, correspond aux tournées rangées par fichier d'import.
+        :return:
+        """
         # lieu2 est le lieu de départ d'un trajet
         lieu2 = (0, 0)
 
