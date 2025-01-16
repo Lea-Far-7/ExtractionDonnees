@@ -18,12 +18,12 @@ def filtreTournees(tournees:list, producteursId:list, clientsId:list, demiJoursN
         # Contrainte sur les demi-journées
         if not demiJoursNum or tournee.demiJour.num in demiJoursNum:
 
-            print("T"+str(tournee.idTournee)+" DJ OK")
+            #print("T"+str(tournee.idTournee)+" DJ OK")
 
             # Contrainte sur les producteurs (on prend en compte seulement les producteurs qui font les tournées)
             if not producteursId or tournee.producteur.id in producteursId:
 
-                print("T" + str(tournee.idTournee) + " Prod OK")
+                #print("T" + str(tournee.idTournee) + " Prod OK")
 
                 # Contrainte sur les clients
                 clContrainte = not clientsId # not liste renvoie true si liste vide
@@ -36,7 +36,7 @@ def filtreTournees(tournees:list, producteursId:list, clientsId:list, demiJoursN
                     t+=1
 
                 if clContrainte:
-                    print("T" + str(tournee.idTournee) + " Cl OK")
+                    #print("T" + str(tournee.idTournee) + " Cl OK")
                     tourneesFiltrees.append(tournee)
 
     return tourneesFiltrees
